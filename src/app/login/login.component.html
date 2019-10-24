@@ -1,0 +1,34 @@
+<div class="fondo">
+  <div class="main-div">
+    <mat-card class="card">
+      <mat-card-header>
+        <div mat-card-avatar class="header-image"></div>
+      </mat-card-header>
+        <img class="titulo" src="../../assets/img/titulo.png">
+      <mat-card-content>
+        <form class="form">
+          <mat-form-field class="example-full-width">
+            <mat-icon matPrefix>person</mat-icon>
+            <input matInput placeholder=" Usuario" >
+          </mat-form-field>
+          <mat-form-field class="example-full-width" >
+            <mat-icon matPrefix>lock</mat-icon>
+            <input matInput placeholder=" Password">
+          </mat-form-field>
+          <mat-form-field class="selectTipo">
+            <mat-icon matPrefix>people</mat-icon>
+            <mat-label>&nbsp;Tipo</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let rol of roles" [value]=" rol.value">
+                {{rol.viewValue}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+          <mat-card-actions>
+            <button mat-stroked-button class="btnIniciarSesion" routerLink="/paginaPrincipal"> Iniciar Sesión </button>
+          </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

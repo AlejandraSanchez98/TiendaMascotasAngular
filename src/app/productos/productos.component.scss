@@ -1,0 +1,60 @@
+.fondo{
+    background: url('../../assets/img/fondo10.jpg');
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: top;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+  }
+  .example-container {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(39, 38, 38, 0.5);
+    }
+    
+    .logoPaginas{
+      margin: 10px;
+      display: table;
+      padding-top: 0px;
+      width: 160px;
+    }
+  
+  
+    table {
+      width: 100%;
+      background-color: rgba(50, 50,50, 0.3);
+    }
+    
+    .mat-form-field {
+      font-size: 14px;
+      width: 100%;
+    }
+    
+    td, th {
+      width: 25%;
+    }
+  th{
+    color: orange;
+    font-size: 15px;
+  }
+  
+  .toolbar{
+    background-color: orange;
+    width: 100%;
+    position: fixed;
+  }
+  
+  h1{
+    text-align: center;
+    margin: 60px;
+  }
+  
+  .card {
+    background-color: rgba(255, 165, 0, 0.5);
+    margin-bottom: 10px;
+    
+  }

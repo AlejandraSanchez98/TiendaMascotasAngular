@@ -1,0 +1,59 @@
+.fondo{
+  background-color: #f4be60;;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: top;
+    background-size: cover;
+  }
+
+.logoPaginas{
+    margin-top: 20px;
+    margin-bottom: 24px;
+    margin-left: 90px;
+    margin-right: 10px;
+    width: 130px;
+
+  }
+
+  mat-toolbar{
+      height: 70px;
+  }
+
+  .sizecarousel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+  }
+
+  .card {
+    background-color: rgba(255, 165, 0, 0.5);
+    width: 950px;
+    margin: 50px;
+   
+}
+
+.main-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+mat-chip {
+  max-width: 300px;
+  max-height: 200px;
+  font-size: 30px;
+  padding: 40px;
+  background-color: rgba(39, 38, 38, 0.5);
+}
+
+mat-icon{
+  font-size: 35px;
+}
+
+.colorMatChip{
+  background-color: rgba(38, 38, 38, 0.4);
+}
