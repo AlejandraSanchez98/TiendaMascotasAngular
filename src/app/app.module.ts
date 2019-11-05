@@ -1,7 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { HttpClientModule } from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,15 +22,22 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
 import {MatListModule} from '@angular/material/list';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatTabsModule} from '@angular/material/tabs';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { ProductosComponent } from './productos/productos.component';
 import { ProveedoresComponent } from './proveedores/proveedores.component';
 import { ClientesComponent } from './clientes/clientes.component';
-import { VendedoresComponent } from './vendedores/vendedores.component';
 import { VentasComponent } from './ventas/ventas.component';
 import { DevolucionesComponent } from './devoluciones/devoluciones.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { AccesosComponent } from './accesos/accesos.component';
+import { AgregarVentaCarritoComponent } from './agregar-venta-carrito/agregar-venta-carrito.component';
+import { ViaEnvioComponent } from './via-envio/via-envio.component';
+import { MetodoPagoComponent } from './metodo-pago/metodo-pago.component';
+import { TipoDevolucionComponent } from './tipo-devolucion/tipo-devolucion.component';
+import { ReportesComponent } from './reportes/reportes.component';
+
 
 @NgModule({
   declarations: [
@@ -40,15 +48,23 @@ import { AccesosComponent } from './accesos/accesos.component';
     ProductosComponent,
     ProveedoresComponent,
     ClientesComponent,
-    VendedoresComponent,
     VentasComponent,
     DevolucionesComponent,
     UsuariosComponent,
-    AccesosComponent
+    AccesosComponent,
+    AgregarVentaCarritoComponent,
+    ViaEnvioComponent,
+    MetodoPagoComponent,
+    TipoDevolucionComponent,
+    ReportesComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    NgbModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     MatCardModule,
     MatButtonModule,
@@ -63,7 +79,9 @@ import { AccesosComponent } from './accesos/accesos.component';
     MatSortModule,
     MatListModule,
     MatChipsModule,
-    NgbModule
+    MatTooltipModule,
+    MatTabsModule
+
 
   ],
   providers: [],

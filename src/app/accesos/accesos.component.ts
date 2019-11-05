@@ -12,4 +12,5 @@ export class AccesosComponent implements OnInit {
   ngOnInit() {
   }
 
+
 }

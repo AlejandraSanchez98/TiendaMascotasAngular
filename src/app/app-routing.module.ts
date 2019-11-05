@@ -6,13 +6,15 @@ import { CategoriaComponent } from './categoria/categoria.component';
 import {ProductosComponent} from './productos/productos.component';
 import { ProveedoresComponent } from './proveedores/proveedores.component';
 import { ClientesComponent } from './clientes/clientes.component';
-import { VendedoresComponent } from './vendedores/vendedores.component';
 import { VentasComponent } from './ventas/ventas.component';
 import { DevolucionesComponent } from './devoluciones/devoluciones.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { AccesosComponent } from './accesos/accesos.component';
-
-import { from } from 'rxjs';
+import {AgregarVentaCarritoComponent } from './agregar-venta-carrito/agregar-venta-carrito.component';
+import { ViaEnvioComponent } from './via-envio/via-envio.component';
+import { MetodoPagoComponent } from './metodo-pago/metodo-pago.component';
+import { TipoDevolucionComponent } from './tipo-devolucion/tipo-devolucion.component';
+import { ReportesComponent } from './reportes/reportes.component';
 
 
 const routes: Routes = [
@@ -22,11 +24,15 @@ const routes: Routes = [
   {path: 'productos', component:ProductosComponent},
   {path: 'proveedores', component:ProveedoresComponent},
   {path: 'clientes', component:ClientesComponent},
-  {path: 'vendedores', component:VendedoresComponent},
   {path: 'ventas', component:VentasComponent},
   {path: 'devoluciones', component: DevolucionesComponent},
   {path: 'usuarios', component: UsuariosComponent},
-  {path: 'accesos', component: AccesosComponent}
+  {path: 'accesos', component: AccesosComponent},
+  {path: 'carrito', component: AgregarVentaCarritoComponent},
+  {path: 'viaEnvio', component: ViaEnvioComponent},
+  {path: 'metodoPago', component: MetodoPagoComponent},
+  {path: 'tipoDevolucion', component:TipoDevolucionComponent},
+  {path: 'reportes', component:ReportesComponent}
 ];
 
 @NgModule({

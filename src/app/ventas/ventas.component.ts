@@ -4,24 +4,22 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-export interface UserData {
-  id: string;
-  name: string;
-  progress: string;
-  color: string;
-  ciudad: string;
-  email: string;
+export interface IDatos {
+  id: number;
+  montoSinIVA: number;
+  iva: number;
+  montoConIVA: number;
+  fechaVenta: string;
+  producto: string;
+  vendedor:string;
   cliente:string;
+  metodoPago:string;
 }
 
-const COLORS: string[] = [
-  'maroon', 'red', 'orange', 'yellow', 'olive', 'green', 'purple', 'fuchsia', 'lime', 'teal',
-  'aqua', 'blue', 'navy', 'black', 'gray'
+const Contenido: IDatos[] = [
+  {id:1, montoSinIVA:86, iva:13, montoConIVA:100,fechaVenta:'25/10/2019',producto:'Croquetas',vendedor:'Tonatiuh', cliente:'José',metodoPago:'efectivo'}
 ];
-const NAMES: string[] = [
-  'Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack', 'Charlotte', 'Theodore', 'Isla', 'Oliver',
-  'Isabella', 'Jasper', 'Cora', 'Levi', 'Violet', 'Arthur', 'Mia', 'Thomas', 'Elizabeth'
-];
+
 
 @Component({
   selector: 'app-ventas',
@@ -30,15 +28,13 @@ const NAMES: string[] = [
 })
 export class VentasComponent implements OnInit {
   public modal: NgbModalRef;
-  displayedColumns: string[] = ['id', 'name', 'progress', 'color', 'ciudad', 'email', 'cliente'];
-  dataSource: MatTableDataSource<UserData>;
+  displayedColumns: string[] = ['id', 'montoSinIVA', 'iva', 'montoConIVA', 'fechaVenta', 'producto', 'vendedor','cliente','metodoPago','acciones'];
+  dataSource = new MatTableDataSource<IDatos> (Contenido) ;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   constructor(private modalService: NgbModal) {
-    const users = Array.from({ length: 100 }, (_, k) => createNewUser(k + 1));
-    this.dataSource = new MatTableDataSource(users);
   }
   public openAlta(content) {
     this.modal = this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
@@ -53,24 +49,7 @@ export class VentasComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
 
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      this .dataSource.paginator = this .paginator;
     }
   }
-
-}
-
-
-function createNewUser(id: number): UserData {
-  const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))] + ' ' +
-    NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) + '.';
-
-  return {
-    id: id.toString(),
-    name: name,
-    progress: Math.round(Math.random() * 100).toString(),
-    color: COLORS[Math.round(Math.random() * (COLORS.length - 1))],
-    ciudad: COLORS[Math.round(Math.random() * (COLORS.length - 1))],
-    email: COLORS[Math.round(Math.random() * (COLORS.length - 1))],
-    cliente: COLORS[Math.round(Math.random() * (COLORS.length - 1))]
-  };
 }
