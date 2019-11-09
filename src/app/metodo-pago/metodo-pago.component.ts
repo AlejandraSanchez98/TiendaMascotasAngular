@@ -4,13 +4,9 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
-import {ApiService} from '../api.service';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
-
-export interface IMetodosPago {
-  id: number;
-  tipoPago: string;
-}
+import {ApiService} from '../api.service';
+import { IMetodosPago } from '../api.service';
 
 
 @Component({
@@ -26,7 +22,7 @@ export class MetodoPagoComponent implements OnInit {
   public formValid:Boolean=false;
   public titulo:string;
 
-  displayedColumns = ['id', 'tipoPago','acciones'];
+  displayedColumns: string[] = ['idMetodoPago', 'tipoPago','acciones'];
   dataSource:MatTableDataSource<IMetodosPago>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -35,10 +31,11 @@ export class MetodoPagoComponent implements OnInit {
 
   constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
     //Inizializacion
-    this.titulo=""
+    this.titulo="";
+    this.arregloMetodosPago=[];
     //INICIALIZACION (CONSTRUCCION) DEL FORMGROUP, SOLO SE AGREGARAN ESTOS DATOS YA QUE SON LOS ESPECIFICADOS EN EL MODAL
     this.frmMetodosPago= this.formBuilder.group({
-      id:[""],
+      idMetodoPago:[""],
       tipoPago:["",Validators.required]
     });
   }
@@ -50,11 +47,11 @@ export class MetodoPagoComponent implements OnInit {
     this.titulo="Agregar Método De Pago"
   }
 
-  public openEditar(content, id: number, tipoPago: string){
+  public openEditar(content, idMetodoPago: number, tipoPago: string){
     this.modal= this.modalService.open(content,{ariaLabelledBy:'modal-basic-title'});
     this.titulo = "Editar Método De Pago";
 
-    this.frmMetodosPago.controls['id'].setValue(id);
+    this.frmMetodosPago.controls['idMetodoPago'].setValue(idMetodoPago);
     this.frmMetodosPago.controls['tipoPago'].setValue(tipoPago);
   }
 
@@ -79,11 +76,11 @@ export class MetodoPagoComponent implements OnInit {
     }
     if (this.titulo == "Editar Método De Pago") {
       //OBTENEMOS LOS VALORES DEL FORMULARIO
-      let id = this.frmMetodosPago.get('id').value; //recuerda que el id esta oculto asi que el user no podra editarlo
+      let idMetodoPago = this.frmMetodosPago.get('idMetodoPago').value; //recuerda que el id esta oculto asi que el user no podra editarlo
       let tipoPagoForm = this.frmMetodosPago.get('tipoPago').value;
 
       //EJECUTANDO PETICION PUT
-      this.API.editarMetodoPago(id,tipoPagoForm).subscribe(
+      this.API.editarMetodoPago(idMetodoPago,tipoPagoForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
           location.reload();//recarga la pagina para poder notar lo cambios
@@ -96,8 +93,8 @@ export class MetodoPagoComponent implements OnInit {
   }
 
   //eliminar metodo de pago
-  public eliminarMetodoPago(id:number){
-    this.API.eliminarMetodoPago(id).subscribe(
+  public eliminarMetodoPago(idMetodoPago:number){
+    this.API.eliminarMetodoPago(idMetodoPago).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
         location.reload();

@@ -1,33 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {ApiService} from '../api.service';
-
-export interface IProductosMasVendidos {
-  id: number;
-  nombreProducto: string;
-  cantidadProducto:number;
-}
-
-export interface IVendedoresMasVentas {
-  id: number;
-  nombreUsuario: string;
-  montoConIVA:number;
-}
-
-export interface IProductoStockMinimo {
-  id: number;
-  nombreProducto: string;
-  precioUnitario:number;
-  descripcionProducto:string;
-  stock:number;
-}
-
-
-export interface IUtilidad {
-  MontoTotalVentas: number;
-  MontoTotalCompras: number;
-  Utilidad:number;
-}
+import { IProductosMasVendidos } from '../api.service';
+import { IVendedoresMasVentas } from '../api.service';
+import { IProductoStockMinimo } from '../api.service';
+import { IUtilidad } from '../api.service';
 
 
 @Component({
@@ -41,13 +18,13 @@ export class ReportesComponent implements OnInit {
   public arregloProductoStockMinimo:IProductoStockMinimo[];
   public arregloUtilidad : IUtilidad[];
 
-  displayedColumns = ['id', 'nombreProducto','cantidadProducto'];
+  displayedColumns: string[] = ['idProducto', 'Producto','TotalVentas'];
   dataSource:MatTableDataSource<IProductosMasVendidos>;
 
-  dcVendedoresMasVentas = ['id','nombreUsuario','montoConIVA'];
+  dcVendedoresMasVentas = ['idUsuario','Vendedor','ImporteVenta'];
   dsVendedoresMasVentas:MatTableDataSource<IVendedoresMasVentas>;
 
-  dcProductoStockMinimo = ['id','nombreProducto','precioUnitario', 'descripcionProducto', 'stock'];
+  dcProductoStockMinimo = ['idProducto','nombreProducto','precioUnitario', 'descripcionProducto', 'stock'];
   dsProductoStockMinimo:MatTableDataSource<IProductoStockMinimo>;
 
   dcUtilidad = ['MontoTotalVentas','MontoTotalCompras','Utilidad'];
@@ -55,7 +32,12 @@ export class ReportesComponent implements OnInit {
   //dataSource: MatTableDataSource<TableRecord> = new MatTableDataSource([])
 
 
-  constructor(public API:ApiService) { }
+  constructor(public API:ApiService) {
+    this.arregloProductosMasVendidos=[];
+    this.arregloVendedoresMasVentas=[];
+    this.arregloProductoStockMinimo=[];
+    this.arregloUtilidad=[];
+  }
 
   //listar productosMasVendidos
   public  productosMasVendidos(){

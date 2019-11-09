@@ -1,6 +1,131 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+export interface ICategoria {
+  idCategoria: number;
+  nombreCategoria: string;
+  subCategoria: string;
+  descripcion: string;
+}
+
+export interface IClientes {
+  idCliente: number;
+  nombreCliente: string;
+  direccionCliente: string;
+  ciudadCliente: string;
+  telefonoCliente: string;
+  emailCliente: string;
+  passwordCliente:string;
+}
+
+export interface IMetodosPago {
+  idMetodoPago: number;
+  tipoPago: string;
+}
+
+export interface IProductos{
+  idProducto: number;
+  nombreProducto: string;
+  precioUnitario: number;
+  descripcionProducto: string;
+  stock: number;
+  idCategoria:number;
+}
+
+export interface IProveedores {
+  idProveedor: string;
+  nombreProveedor: string;
+  direccionProveedor: string;
+  telefonoProveedor: string;
+  ciudadProveedor: string;
+  emailProveedor: string;
+  RFCProveedor: string;
+  razonSocial: string;
+}
+
+
+export interface IProductosMasVendidos {
+  idProducto: number;
+  Producto: string;
+  TotalVentas:number;
+}
+
+export interface IVendedoresMasVentas {
+  idUsuario: number;
+  Vendedor: string;
+  ImporteVenta:number;
+}
+
+export interface IProductoStockMinimo {
+  idProducto: number;
+  nombreProducto: string;
+  precioUnitario:number;
+  descripcionProducto:string;
+  stock:number;
+}
+
+export interface IUtilidad {
+  MontoTotalVentas: number;
+  MontoTotalCompras: number;
+  Utilidad:number;
+}
+
+export interface ITiposDevoluciones{
+  idTipoDevolucion: number;
+  tipoDevolucion: string;
+  descripcion: string;
+}
+
+export interface IUsuarios {
+  idUsuario: number;
+  nombreUsuario: string;
+  telefonoUsuario:string;
+  direccionUsuario:string;
+  correo:string;
+  passwordUsuario:string;
+  tipoUsuario:string;
+}
+
+export interface IViaEnvios {
+  idViaEnvio: number;
+  medioEnvio: string;
+  descripcion: string;
+}
+
+export interface IDevoluciones{
+  idDevolucion: number;
+  montoDevolucion:number;
+  motivoDevolucion:string;
+  idCliente: number;
+  idTipoDevolucion:number;
+  idProducto:number;
+}
+
+export interface ITransaccionesVentas{
+  idVenta:number;
+  montoSinIVA:number;
+  IVA:number;
+  montoConIVA:number;
+  cantidadTotalProductos:number;
+  pago:number;
+  cambio:number;
+  fechaRegistro:string;
+  nombreProducto:string;
+  nombreUsuario:string;
+  nombreCliente:string;
+  tipoPago:string;
+}
+
+export interface ITransaccionesCompras{
+  idCompra: number;
+  montoTotal:number;
+  fechaRegistro:string;
+  nombreProveedor:string;
+  nombreUsuario:string;
+  nombreProducto:string;
+  cantidadProducto:number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,12 +148,12 @@ export class ApiService {
     return this.http.post('http://localhost:3000/categoria/agregarCategoria',{nombreCategoria,subCategoria,descripcion},{headers:this.headers});
   }
 
-  public editarCategoria(id:number,nombreCategoria: string, subCategoria:string, descripcion: string){
-    return this.http.put('http://localhost:3000/categoria/modificarCategoria/'+id,{nombreCategoria,subCategoria,descripcion},{headers:this.headers});
+  public editarCategoria(idCategoria:number,nombreCategoria: string, subCategoria:string, descripcion: string){
+    return this.http.put('http://localhost:3000/categoria/modificarCategoria/'+idCategoria,{nombreCategoria,subCategoria,descripcion},{headers:this.headers});
   }
 
-  public eliminarCategoria(id:number){
-    return this.http.delete('http://localhost:3000/categoria/eliminarCategoria/'+id,{headers:this.headers});
+  public eliminarCategoria(idCategoria:number){
+    return this.http.delete('http://localhost:3000/categoria/eliminarCategoria/'+idCategoria,{headers:this.headers});
   }
 
 
@@ -42,12 +167,12 @@ export class ApiService {
     return this.http.post('http://localhost:3000/clientes/agregarCliente',{ nombreCliente,direccionCliente,ciudadCliente,telefonoCliente,emailCliente,passwordCliente},{headers:this.headers});
   }
 
-  public editarCliente(id:number, nombreCliente: string, direccionCliente:string, ciudadCliente:string, telefonoCliente: string, emailCliente:string, passwordCliente:string){
-    return this.http.put('http://localhost:3000/clientes/modificarCliente/'+id,{nombreCliente,direccionCliente,ciudadCliente,telefonoCliente,emailCliente,passwordCliente},{headers:this.headers});
+  public editarCliente(idCliente:number, nombreCliente: string, direccionCliente:string, ciudadCliente:string, telefonoCliente: string, emailCliente:string, passwordCliente:string){
+    return this.http.put('http://localhost:3000/clientes/modificarCliente/'+idCliente,{nombreCliente,direccionCliente,ciudadCliente,telefonoCliente,emailCliente,passwordCliente},{headers:this.headers});
   }
 
-  public eliminarCliente(id:number){
-    return this.http.delete('http://localhost:3000/clientes/eliminarCliente/'+id,{headers:this.headers});
+  public eliminarCliente(idCliente:number){
+    return this.http.delete('http://localhost:3000/clientes/eliminarCliente/'+idCliente,{headers:this.headers});
   }
 
 
@@ -61,12 +186,12 @@ export class ApiService {
     return this.http.post('http://localhost:3000/proveedores/agregarProveedor',{nombreProveedor,direccionProveedor,telefonoProveedor,ciudadProveedor,emailProveedor,RFCProveedor,razonSocial},{headers:this.headers});
   }
 
-  public editarProveedor(id:number, nombreProveedor:string, direccionProveedor:string, telefonoProveedor:string, ciudadProveedor:string, emailProveedor:string, RFCProveedor:string, razonSocial:string){
-    return this.http.put('http://localhost:3000/proveedores/modificarProveedor/'+ id,{nombreProveedor,direccionProveedor,telefonoProveedor,ciudadProveedor,emailProveedor,RFCProveedor,razonSocial}, {headers:this.headers});
+  public editarProveedor(idProveedor:number, nombreProveedor:string, direccionProveedor:string, telefonoProveedor:string, ciudadProveedor:string, emailProveedor:string, RFCProveedor:string, razonSocial:string){
+    return this.http.put('http://localhost:3000/proveedores/modificarProveedor/'+ idProveedor,{nombreProveedor,direccionProveedor,telefonoProveedor,ciudadProveedor,emailProveedor,RFCProveedor,razonSocial}, {headers:this.headers});
   }
 
-  public eliminarProveedor(id:number){
-    return this.http.delete('http://localhost:3000/proveedores/eliminarProveedor/'+id,{headers:this.headers});
+  public eliminarProveedor(idProveedor:number){
+    return this.http.delete('http://localhost:3000/proveedores/eliminarProveedor/'+idProveedor,{headers:this.headers});
   }
 
 
@@ -76,16 +201,16 @@ export class ApiService {
     return this.http.get('http://localhost:3000/productos/listarProductos',{headers:this.headers});
   }
 
-  public agregarProducto(nombreProducto:string, precioUnitario:number, descripcionProducto:string, stock:number, idCategoria:string){
+  public agregarProducto(nombreProducto:string, precioUnitario:number, descripcionProducto:string, stock:number, idCategoria:number){
     return this.http.post('http://localhost:3000/productos/agregarProducto',{nombreProducto,precioUnitario,descripcionProducto,stock,idCategoria},{headers:this.headers});
   }
 
-  public editarProducto(id:number, nombreProducto:string, precioUnitario:number, descripcionProducto:string, stock:number, idCategoria:number){
-    return this.http.put('http://localhost:3000/productos/modificarProducto/'+ id,{nombreProducto,precioUnitario,descripcionProducto,stock,idCategoria}, {headers:this.headers});
+  public editarProducto(idProducto:number, nombreProducto:string, precioUnitario:number, descripcionProducto:string, stock:number, idCategoria:number){
+    return this.http.put('http://localhost:3000/productos/modificarProducto/'+ idProducto,{nombreProducto,precioUnitario,descripcionProducto,stock,idCategoria}, {headers:this.headers});
   }
 
-  public eliminarProducto(id:number){
-    return this.http.delete('http://localhost:3000/productos/eliminarProducto/'+id,{headers:this.headers});
+  public eliminarProducto(idProducto:number){
+    return this.http.delete('http://localhost:3000/productos/eliminarProducto/'+idProducto,{headers:this.headers});
   }
 
 
@@ -99,12 +224,12 @@ export class ApiService {
     return this.http.post('http://localhost:3000/viaEnvios/agregarMedioEnvio',{medioEnvio,descripcion},{headers:this.headers});
   }
 
-  public editarMedioEnvio(id:number, medioEnvio:string, descripcion:string){
-    return this.http.put('http://localhost:3000/viaEnvios/modificarMedioEnvio/'+ id,{medioEnvio,descripcion}, {headers:this.headers});
+  public editarMedioEnvio(idViaEnvio:number, medioEnvio:string, descripcion:string){
+    return this.http.put('http://localhost:3000/viaEnvios/modificarMedioEnvio/'+ idViaEnvio,{medioEnvio,descripcion}, {headers:this.headers});
   }
 
-  public eliminarMedioEnvio(id:number){
-    return this.http.delete('http://localhost:3000/viaEnvios/eliminarMedioEnvio/'+id,{headers:this.headers});
+  public eliminarMedioEnvio(idViaEnvio:number){
+    return this.http.delete('http://localhost:3000/viaEnvios/eliminarMedioEnvio/'+idViaEnvio,{headers:this.headers});
   }
 
 
@@ -117,12 +242,12 @@ export class ApiService {
     return this.http.post('http://localhost:3000/metodoPago/agregarMetodoPago',{tipoPago},{headers:this.headers});
   }
 
-  public editarMetodoPago(id:number, tipoPago:string ){
-    return this.http.put('http://localhost:3000/metodoPago/modificarMetodoPago/'+ id,{tipoPago}, {headers:this.headers});
+  public editarMetodoPago(idMetodoPago:number, tipoPago:string ){
+    return this.http.put('http://localhost:3000/metodoPago/modificarMetodoPago/'+ idMetodoPago,{tipoPago}, {headers:this.headers});
   }
 
-  public eliminarMetodoPago(id:number){
-    return this.http.delete('http://localhost:3000/metodoPago/eliminarMetodoPago/'+id,{headers:this.headers});
+  public eliminarMetodoPago(idMetodoPago:number){
+    return this.http.delete('http://localhost:3000/metodoPago/eliminarMetodoPago/'+idMetodoPago,{headers:this.headers});
   }
 
 
@@ -135,12 +260,12 @@ export class ApiService {
     return this.http.post('http://localhost:3000/usuarios/agregarUsuario',{nombreUsuario, telefonoUsuario, direccionUsuario, correo, passwordUsuario, tipoUsuario},{headers:this.headers});
   }
 
-  public editarUsuario(id:number, nombreUsuario:string, telefonoUsuario:string, direccionUsuario:string, correo:string, passwordUsuario:string, tipoUsuario:string){
-    return this.http.put('http://localhost:3000/usuarios/modificarUsuario/'+ id,{nombreUsuario, telefonoUsuario, direccionUsuario, correo, passwordUsuario,tipoUsuario}, {headers:this.headers});
+  public editarUsuario(idUsuario:number, nombreUsuario:string, telefonoUsuario:string, direccionUsuario:string, correo:string, passwordUsuario:string, tipoUsuario:string){
+    return this.http.put('http://localhost:3000/usuarios/modificarUsuario/'+ idUsuario,{nombreUsuario, telefonoUsuario, direccionUsuario, correo, passwordUsuario,tipoUsuario}, {headers:this.headers});
   }
 
-  public eliminarUsuario(id:number){
-    return this.http.delete('http://localhost:3000/usuarios/eliminarUsuario/'+id,{headers:this.headers});
+  public eliminarUsuario(idUsuario:number){
+    return this.http.delete('http://localhost:3000/usuarios/eliminarUsuario/'+idUsuario,{headers:this.headers});
   }
 
 
@@ -153,12 +278,12 @@ export class ApiService {
     return this.http.post('http://localhost:3000/tipoDevolucion/agregarTipoDevolucion',{tipoDevolucion, descripcion},{headers:this.headers});
   }
 
-  public editarTipoDevolucion(id:number, tipoDevolucion:string, descripcion:string){
-    return this.http.put('http://localhost:3000/tipoDevolucion/modificarTipoDevolucion/'+ id,{tipoDevolucion,descripcion}, {headers:this.headers});
+  public editarTipoDevolucion(idTipoDevolucion:number, tipoDevolucion:string, descripcion:string){
+    return this.http.put('http://localhost:3000/tipoDevolucion/modificarTipoDevolucion/'+ idTipoDevolucion,{tipoDevolucion,descripcion}, {headers:this.headers});
   }
 
-  public eliminarTipoDevolucion(id:number){
-    return this.http.delete('http://localhost:3000/tipoDevolucion/eliminarTipoDevolucion/'+id,{headers:this.headers});
+  public eliminarTipoDevolucion(idTipoDevolucion:number){
+    return this.http.delete('http://localhost:3000/tipoDevolucion/eliminarTipoDevolucion/'+idTipoDevolucion,{headers:this.headers});
   }
 
 
@@ -184,4 +309,27 @@ export class ApiService {
   public utilidad(){
     return this.http.get('http://localhost:3000/utilidad/calcularUtilidad',{headers:this.headers});
   }
+
+
+  // METODOS QUE CONTIENEN LOS DIFERENTES TIPOS DE PETICIONES DEL MODULO DE DEVOLUCIONES
+  public listarDevoluciones(){
+    return this.http.get('http://localhost:3000/devoluciones/listarDevoluciones',{headers:this.headers});
+  }
+
+  public agregarDevolucion(montoDevolucion:number, motivoDevolucion:string, idCliente:number, idTipoDevolucion:number,idProducto:number){
+    return this.http.post('http://localhost:3000/devoluciones/agregarDevolucion',{montoDevolucion, motivoDevolucion,idCliente,idTipoDevolucion,idProducto},{headers:this.headers});
+  }
+
+
+  // METODOS QUE CONTIENEN LA PETICIÓN PARA LISTAR LAS VENTAS
+  public listarVentas(){
+    return this.http.get('http://localhost:3000/ventas/listarVentas',{headers:this.headers});
+  }
+
+  // METODOS QUE CONTIENEN LA PETICIÓN PARA LISTAR LAS COMPRAS
+  public listarCompras(){
+    return this.http.get('http://localhost:3000/compras/listarCompras',{headers:this.headers});
+  }
+
+
 }

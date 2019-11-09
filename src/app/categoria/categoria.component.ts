@@ -4,16 +4,11 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
-import {ApiService} from '../api.service';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
+import {ApiService} from '../api.service';
+import { ICategoria } from '../api.service';
 import { error } from '@angular/compiler/src/util';
 
-export interface ICategoria {
-  id: number;
-  nombre: string;
-  subcategoria: string;
-  descripcion: string;
-}
 
 @Component({
   selector: 'app-categoria',
@@ -21,7 +16,6 @@ export interface ICategoria {
   styleUrls: ['./categoria.component.scss']
 })
 export class CategoriaComponent implements OnInit {
-
   public arregloCategorias:ICategoria[];
   public modal: NgbModalRef;
 
@@ -29,24 +23,21 @@ export class CategoriaComponent implements OnInit {
   public formValid:Boolean=false;
   public titulo:string;
 
-  displayedColumns = ['id', 'nombre', 'subcategoria', 'descripcion','acciones'];
+  displayedColumns: string[] = ['idCategoria', 'nombreCategoria', 'subCategoria', 'descripcion','acciones'];
   dataSource:MatTableDataSource<ICategoria>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-
-
-
-
   constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
     //Inizializacion
-    this.titulo=""
+    this.titulo="";
+    this.arregloCategorias=[];
     //INICIALIZACION (CONSTRUCCION) DEL FORMGROUP, SOLO SE AGREGARAN ESTOS DATOS YA QUE SON LOS ESPECIFICADOS EN EL MODAL
     this.frmCategorias= this.formBuilder.group({
-      id:[""],
-      nombre:["",Validators.required],
-      subcategoria:["",Validators.required],
+      idCategoria:[""],
+      nombreCategoria:["",Validators.required],
+      subCategoria:["",Validators.required],
       descripcion:["",Validators.required]
     });
   }
@@ -57,27 +48,27 @@ export class CategoriaComponent implements OnInit {
     this.titulo="Agregar Categoria"
   }
 
-  public openEditar(content, id: number, nombre: string, subcategoria:string, descripcion:string){
+  public openEditar(content, idCategoria: number, nombreCategoria: string, subCategoria:string, descripcion:string){
     this.modal= this.modalService.open(content,{ariaLabelledBy:'modal-basic-title'});
     this.titulo = "Editar Categoria";
 
-    this.frmCategorias.controls['id'].setValue(id);
-    this.frmCategorias.controls['nombre'].setValue(nombre);
-    this.frmCategorias.controls['subcategoria'].setValue(subcategoria);
+    this.frmCategorias.controls['idCategoria'].setValue(idCategoria);
+    this.frmCategorias.controls['nombreCategoria'].setValue(nombreCategoria);
+    this.frmCategorias.controls['subCategoria'].setValue(subCategoria);
     this.frmCategorias.controls['descripcion'].setValue(descripcion);
   }
 
   //DAR DE ALTA SEGUN LOS DATOS DEL MODAL //anteriormente se llamaba darAlta
   public ejecutarPeticion(){
     //DATOS PROVENIENTES DEL FORMGROUP
-    let nombreForm = this.frmCategorias.get('nombre').value;
-    let subcategoriaForm = this.frmCategorias.get('subcategoria').value;
+    let nombreCategoriaForm = this.frmCategorias.get('nombreCategoria').value;
+    let subCategoriaForm = this.frmCategorias.get('subCategoria').value;
     let descripcionForm = this.frmCategorias.get('descripcion').value;
     //EVITAMOS CREAR 2 MODALES, SIMPLEMENTE USAMOS 1 MODAL Y TIENE SU FUNCION SEGUN SU NOMBRE
     if (this.titulo == "Agregar Categoria") {
 
       //SE AGREGAN REGISTROS MEDIANTE POST
-      this.API.agregarCategoria(nombreForm, subcategoriaForm, descripcionForm).subscribe(
+      this.API.agregarCategoria(nombreCategoriaForm, subCategoriaForm, descripcionForm).subscribe(
         (success: any)=>{
           alert("exito: "+ JSON.stringify(success));
           location.reload();
@@ -90,13 +81,13 @@ export class CategoriaComponent implements OnInit {
     }
     if (this.titulo == "Editar Categoria") {
       //OBTENEMOS LOS VALORES DEL FORMULARIO
-      let id = this.frmCategorias.get('id').value; //recuerda que el id esta oculto asi que el user no podra editarlo
-      let nombreForm = this.frmCategorias.get('nombre').value;
-      let subcategoriaForm = this.frmCategorias.get('subcategoria').value;
+      let idCategoria = this.frmCategorias.get('idCategoria').value; //recuerda que el id esta oculto asi que el user no podra editarlo
+      let nombreCategoriaForm = this.frmCategorias.get('nombreCategoria').value;
+      let subCategoriaForm = this.frmCategorias.get('subCategoria').value;
       let descripcionForm = this.frmCategorias.get('descripcion').value;
 
       //EJECUTANDO PETICION PUT
-      this.API.editarCategoria(id,nombreForm,subcategoriaForm,descripcionForm).subscribe(
+      this.API.editarCategoria(idCategoria,nombreCategoriaForm,subCategoriaForm,descripcionForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
           location.reload();//recarga la pagina para poder notar lo cambios
@@ -109,8 +100,8 @@ export class CategoriaComponent implements OnInit {
   }//----------------------fin operaciones-------------------------------------------------------------------
 
   //eliminar categoria
-  public eliminarCategoria(id:number){
-    this.API.eliminarCategoria(id).subscribe(
+  public eliminarCategoria(idCategoria:number){
+    this.API.eliminarCategoria(idCategoria).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
         location.reload();
@@ -136,7 +127,7 @@ export class CategoriaComponent implements OnInit {
       }
     );
   }
-  
+
   ngOnInit() {
     this.listarCategorias();
   }

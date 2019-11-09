@@ -4,20 +4,9 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
-import {ApiService} from '../api.service';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
-
-
-export interface IProveedores {
-  id: string;
-  nombre: string;
-  direccion: string;
-  telefono: string;
-  ciudad: string;
-  email: string;
-  rfc: string;
-  razonsocial: string;
-}
+import {ApiService} from '../api.service';
+import { IProveedores } from '../api.service';
 
 
 @Component({
@@ -35,7 +24,7 @@ export class ProveedoresComponent implements OnInit {
   public formValid:Boolean=false;
   public titulo:string;
 
-  displayedColumns = ['id', 'nombre', 'direccion', 'telefono', 'ciudad', 'email', 'rfc','razonsocial','acciones'];
+  displayedColumns: string[] = ['idProveedor', 'nombreProveedor', 'direccionProveedor', 'telefonoProveedor', 'ciudadProveedor', 'emailProveedor', 'RFCProveedor','razonSocial','acciones'];
   dataSource: MatTableDataSource<IProveedores>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -46,16 +35,17 @@ export class ProveedoresComponent implements OnInit {
 
     //inicializacion
     this.titulo="";
+    this.arregloProveedores=[];
     //INICIALIZACION (CONSTRUCCION) DEL FORMGROUP, SOLO SE AGREGARAN ESTOS DATOS YA QUE SON LOS ESPECIFICADOS EN EL MODAL
     this.frmProveedores= this.formBuilder.group({
-      id:[""],
-      nombre:["",Validators.required],
-      direccion:["",Validators.required],
-      telefono:["",Validators.required],
-      ciudad:["",Validators.required],
-      email:["",Validators.required],
-      rfc:["",Validators.required],
-      razonsocial:["",Validators.required]
+      idProveedor:[""],
+      nombreProveedor:["",Validators.required],
+      direccionProveedor:["",Validators.required],
+      telefonoProveedor:["",Validators.required],
+      ciudadProveedor:["",Validators.required],
+      emailProveedor:["",Validators.required],
+      RFCProveedor:["",Validators.required],
+      razonSocial:["",Validators.required]
     });
 
   }
@@ -67,18 +57,18 @@ export class ProveedoresComponent implements OnInit {
   }
 
 
-  public openEditar(content, id: number, nombre: string, direccion:string, telefono:string, ciudad:string, email:string, rfc:string,razonsocial:string){
+  public openEditar(content, idProveedor: number, nombreProveedor: string, direccionProveedor:string, telefonoProveedor:string, ciudadProveedor:string, emailProveedor:string, RFCProveedor:string,razonSocial:string){
     this.modal= this.modalService.open(content,{ariaLabelledBy:'modal-basic-title'});
     this.titulo = "Editar Proveedor";
 
-    this.frmProveedores.controls['id'].setValue(id);
-    this.frmProveedores.controls['nombre'].setValue(nombre);
-    this.frmProveedores.controls['direccion'].setValue(direccion);
-    this.frmProveedores.controls['telefono'].setValue(telefono);
-    this.frmProveedores.controls['ciudad'].setValue(ciudad);
-    this.frmProveedores.controls['email'].setValue(email);
-    this.frmProveedores.controls['rfc'].setValue(rfc);
-    this.frmProveedores.controls['razonsocial'].setValue(razonsocial);
+    this.frmProveedores.controls['idProveedor'].setValue(idProveedor);
+    this.frmProveedores.controls['nombreProveedor'].setValue(nombreProveedor);
+    this.frmProveedores.controls['direccionProveedor'].setValue(direccionProveedor);
+    this.frmProveedores.controls['telefonoProveedor'].setValue(telefonoProveedor);
+    this.frmProveedores.controls['ciudadProveedor'].setValue(ciudadProveedor);
+    this.frmProveedores.controls['emailProveedor'].setValue(emailProveedor);
+    this.frmProveedores.controls['RFCProveedor'].setValue(RFCProveedor);
+    this.frmProveedores.controls['razonSocial'].setValue(razonSocial);
 
 
   }
@@ -86,13 +76,13 @@ export class ProveedoresComponent implements OnInit {
   //DAR DE ALTA SEGUN LOS DATOS DEL MODAL
   public ejecutarPeticion(){
     //DATOS PROVENIENTES DEL FORMGROUP
-    let nombreForm = this.frmProveedores.get('nombre').value;
-    let direccionForm = this.frmProveedores.get('direccion').value;
-    let telefonoForm = this.frmProveedores.get('telefono').value;
-    let ciudadForm = this.frmProveedores.get('ciudad').value;
-    let emailForm = this.frmProveedores.get('email').value;
-    let rfcForm = this.frmProveedores.get('rfc').value;
-    let razonsocialForm = this.frmProveedores.get('razonsocial').value;
+    let nombreProveedorForm = this.frmProveedores.get('nombreProveedor').value;
+    let direccionProveedorForm = this.frmProveedores.get('direccionProveedor').value;
+    let telefonoProveedorForm = this.frmProveedores.get('telefonoProveedor').value;
+    let ciudadProveedorForm = this.frmProveedores.get('ciudadProveedor').value;
+    let emailProveedorForm = this.frmProveedores.get('emailProveedor').value;
+    let RFCProveedorForm = this.frmProveedores.get('RFCProveedor').value;
+    let razonSocialForm = this.frmProveedores.get('razonSocial').value;
 
 
 
@@ -100,7 +90,7 @@ export class ProveedoresComponent implements OnInit {
     if (this.titulo == "Agregar Proveedor") {
 
       //SE AGREGAN REGISTROS MEDIANTE POST
-      this.API.agregarProveedor(nombreForm, direccionForm, telefonoForm, ciudadForm, emailForm, rfcForm, razonsocialForm).subscribe(
+      this.API.agregarProveedor(nombreProveedorForm, direccionProveedorForm, telefonoProveedorForm, ciudadProveedorForm, emailProveedorForm, RFCProveedorForm, razonSocialForm).subscribe(
         (success: any)=>{
           alert("exito: "+ JSON.stringify(success));
           location.reload();
@@ -113,17 +103,17 @@ export class ProveedoresComponent implements OnInit {
     }
     if (this.titulo == "Editar Proveedor") {
       //OBTENEMOS LOS VALORES DEL FORMULARIO
-      let id = this.frmProveedores.get('id').value; //recuerda que el id esta oculto asi que el user no podra editarlo
-      let nombreForm = this.frmProveedores.get('nombre').value;
-      let direccionForm = this.frmProveedores.get('direccion').value;
-      let telefonoForm = this.frmProveedores.get('telefono').value;
-      let ciudadForm = this.frmProveedores.get('ciudad').value;
-      let emailForm = this.frmProveedores.get('email').value;
-      let rfcForm = this.frmProveedores.get('rfc').value;
-      let razonsocialForm = this.frmProveedores.get('razonsocial').value;
+      let idProveedor = this.frmProveedores.get('idProveedor').value; //recuerda que el id esta oculto asi que el user no podra editarlo
+      let nombreProveedorForm = this.frmProveedores.get('nombreProveedor').value;
+      let direccionProveedorForm = this.frmProveedores.get('direccionProveedor').value;
+      let telefonoProveedorForm = this.frmProveedores.get('telefonoProveedor').value;
+      let ciudadProveedorForm = this.frmProveedores.get('ciudadProveedor').value;
+      let emailProveedorForm = this.frmProveedores.get('emailProveedor').value;
+      let RFCProveedorForm = this.frmProveedores.get('RFCProveedor').value;
+      let razonSocialForm = this.frmProveedores.get('razonSocial').value;
 
       //EJECUTANDO PETICION PUT
-      this.API.editarProveedor(id, nombreForm, direccionForm,telefonoForm, ciudadForm, emailForm, rfcForm, razonsocialForm).subscribe(
+      this.API.editarProveedor(idProveedor, nombreProveedorForm, direccionProveedorForm,telefonoProveedorForm, ciudadProveedorForm, emailProveedorForm, RFCProveedorForm, razonSocialForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
           location.reload();//recarga la pagina para poder notar lo cambios
@@ -136,8 +126,8 @@ export class ProveedoresComponent implements OnInit {
   }
 
   //eliminar categoria
-  public eliminarProveedor(id:number){
-    this.API.eliminarProveedor(id).subscribe(
+  public eliminarProveedor(idProveedor:number){
+    this.API.eliminarProveedor(idProveedor).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
         location.reload();

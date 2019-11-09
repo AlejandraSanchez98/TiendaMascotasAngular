@@ -1,8 +1,8 @@
 <div class="fondo">
   <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="push" [(opened)]="opened" style="background-color: rgba(39, 38, 38, 0.5);">
+    <mat-sidenav #sidenav mode="push" [(opened)]="opened" style="background-color:rgba(28, 34, 37, 0.62); ">
       <img class="logoPaginas" src="../../assets/img/logoPaginas.png">
-      <mat-list role="list" style="margin-top: 50px;">
+      <mat-list role="list" style="margin-top: 30px;">
         <mat-list-item role="listitem" routerLink="/categoria">
           <mat-icon>category</mat-icon>&nbsp;&nbsp;Categoria
         </mat-list-item>
@@ -25,7 +25,7 @@
           <mat-icon>settings_backup_restore</mat-icon>&nbsp;&nbsp; Tipo De Devolución
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/viaEnvio">
-          <mat-icon>settings_backup_restore</mat-icon>&nbsp;&nbsp; Medio De Envio
+          <mat-icon>commute</mat-icon>&nbsp;&nbsp; Medio De Envio
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/ventas">
           <mat-icon>credit_card</mat-icon>&nbsp;&nbsp;Ventas
@@ -34,7 +34,10 @@
           <mat-icon>rotate_90_degrees_ccw</mat-icon>&nbsp;&nbsp;Devoluciones
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/carrito">
-          <mat-icon>assignment</mat-icon>&nbsp;&nbsp;Carrito
+          <mat-icon>shopping_cart</mat-icon>&nbsp;&nbsp;Carrito
+        </mat-list-item>
+        <mat-list-item role="listitem" routerLink="/reportes">
+          <mat-icon>assignment</mat-icon>&nbsp;&nbsp;Reportes
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/accesos">
           <mat-icon>lock_open</mat-icon>&nbsp;&nbsp;Bitacora De Accesos
@@ -70,19 +73,19 @@
         </mat-card>
         <div class="mat-elevation-z8">
           <table mat-table [dataSource]="dataSource" matSort>
-            <ng-container matColumnDef="id">
+            <ng-container matColumnDef="idProducto">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
               <td mat-cell *matCellDef="let row"> {{row.idProducto}} </td>
             </ng-container>
-            <ng-container matColumnDef="nombre">
+            <ng-container matColumnDef="nombreProducto">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
               <td mat-cell *matCellDef="let row"> {{row.nombreProducto}}</td>
             </ng-container>
-            <ng-container matColumnDef="preciounitario">
+            <ng-container matColumnDef="precioUnitario">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio Unitario </th>
               <td mat-cell *matCellDef="let row"> {{row.precioUnitario}} </td>
             </ng-container>
-            <ng-container matColumnDef="descripcion">
+            <ng-container matColumnDef="descripcionProducto">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Descripción </th>
               <td mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.descripcionProducto}}
               </td>
@@ -109,7 +112,7 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
-          <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: #141719;"></mat-paginator>
         </div>
       </div>
       <ng-template #content let-modal style="background: url('../../assets/img/fondo8.jpg');">
@@ -121,29 +124,29 @@
         </div>
         <div class="modal-body" style="background-color: rgba(0, 0, 0, 0.7);">
           <form class="form" [formGroup]="frmProductos">
-            <input formControlName="id" type="hidden">
+            <input formControlName="idProducto" type="hidden">
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Nombre" formControlName="nombre" type="text" style="color: white;">
+              <input matInput placeholder="Nombre" formControlName="nombreProducto" type="text" style="color: white;">
             </mat-form-field>
-            <label *ngIf="frmProductos.controls.nombre.invalid && frmProductos.controls.nombre.dirty">Este campo es obligatorio</label>
+            <label *ngIf="frmProductos.controls.nombreProducto.invalid && frmProductos.controls.nombreProducto.dirty">Este campo es obligatorio</label>
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Precio Unitario" formControlName="preciounitario" type="text" style="color: white;">
+              <input matInput placeholder="Precio Unitario" formControlName="precioUnitario" type="number" style="color: white;">
             </mat-form-field>
-            <label *ngIf="frmProductos.controls.preciounitario.invalid && frmProductos.controls.preciounitario.dirty">Este campo es obligatorio</label>
+            <label *ngIf="frmProductos.controls.precioUnitario.invalid && frmProductos.controls.precioUnitario.dirty">Este campo es obligatorio</label>
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Descripción" formControlName="descripcion" type="text" style="color: white;">
+              <input matInput placeholder="Descripción" formControlName="descripcionProducto" type="text" style="color: white;">
             </mat-form-field>
-            <label *ngIf="frmProductos.controls.descripcion.invalid && frmProductos.controls.descripcion.dirty">Este campo es obligatorio</label>
+            <label *ngIf="frmProductos.controls.descripcionProducto.invalid && frmProductos.controls.descripcionProducto.dirty">Este campo es obligatorio</label>
             <mat-form-field class="example-full-width">
               <input matInput placeholder="Stock" formControlName="stock" type="text" style="color: white;">
             </mat-form-field>
             <label *ngIf="frmProductos.controls.stock.invalid && frmProductos.controls.stock.dirty">Este campo es obligatorio</label>
             <mat-form-field>
-              <mat-label>Categoria Del Producto</mat-label>
-              <mat-select>
-                <mat-option *ngFor="let i of arregloCategoria" value="{{i.idCategoria}}">{{i.nombreCategoria}} </mat-option>
+              <mat-select formControlName="idCategoria" placeholder="Categoria Del Producto" >
+                <mat-option *ngFor="let i of arregloProductosSelect" [value]="i.idCategoria">{{ i.nombreCategoria }} </mat-option>
               </mat-select>
             </mat-form-field>
+            <label *ngIf="frmProductos.controls.idCategoria.invalid && frmProductos.controls.idCategoria.dirty">Este campo es obligatorio</label>
           </form>
         </div>
         <div class="modal-footer" style="background-color: rgba(255,150,0,0.9);">

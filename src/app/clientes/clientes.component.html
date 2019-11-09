@@ -1,8 +1,8 @@
 <div class="fondo">
   <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="push" [(opened)]="opened" style="background-color: rgba(39, 38, 38, 0.5);">
+    <mat-sidenav #sidenav mode="push" [(opened)]="opened" style="background-color:rgba(28, 34, 37, 0.62);">
       <img class="logoPaginas" src="../../assets/img/logoPaginas.png">
-      <mat-list role="list" style="margin-top: 50px;">
+      <mat-list role="list" style="margin-top: 30px;">
         <mat-list-item role="listitem" routerLink="/categoria">
           <mat-icon>category</mat-icon>&nbsp;&nbsp;Categoria
         </mat-list-item>
@@ -25,7 +25,7 @@
           <mat-icon>settings_backup_restore</mat-icon>&nbsp;&nbsp; Tipo De Devolución
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/viaEnvio">
-          <mat-icon>settings_backup_restore</mat-icon>&nbsp;&nbsp; Medio De Envio
+          <mat-icon>commute</mat-icon>&nbsp;&nbsp; Medio De Envio
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/ventas">
           <mat-icon>credit_card</mat-icon>&nbsp;&nbsp;Ventas
@@ -34,7 +34,10 @@
           <mat-icon>rotate_90_degrees_ccw</mat-icon>&nbsp;&nbsp;Devoluciones
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/carrito">
-          <mat-icon>assignment</mat-icon>&nbsp;&nbsp;Carrito
+          <mat-icon>shopping_cart</mat-icon>&nbsp;&nbsp;Carrito
+        </mat-list-item>
+        <mat-list-item role="listitem" routerLink="/reportes">
+          <mat-icon>assignment</mat-icon>&nbsp;&nbsp;Reportes
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/accesos">
           <mat-icon>lock_open</mat-icon>&nbsp;&nbsp;Bitacora De Accesos
@@ -69,27 +72,27 @@
         </mat-card>
         <div class="mat-elevation-z8">
           <table mat-table [dataSource]="dataSource" matSort>
-            <ng-container matColumnDef="id">
+            <ng-container matColumnDef="idCliente">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
               <td mat-cell *matCellDef="let row"> {{row.idCliente}} </td>
             </ng-container>
-            <ng-container matColumnDef="nombre">
+            <ng-container matColumnDef="nombreCliente">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
               <td mat-cell *matCellDef="let row"> {{row.nombreCliente}} </td>
             </ng-container>
-            <ng-container matColumnDef="direccion">
+            <ng-container matColumnDef="direccionCliente">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Dirección </th>
               <td mat-cell *matCellDef="let row"> {{row.direccionCliente}} </td>
             </ng-container>
-            <ng-container matColumnDef="ciudad">
+            <ng-container matColumnDef="ciudadCliente">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Ciudad </th>
               <td mat-cell *matCellDef="let row"> {{row.ciudadCliente}} </td>
             </ng-container>
-            <ng-container matColumnDef="telefono">
+            <ng-container matColumnDef="telefonoCliente">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Telefono </th>
               <td mat-cell *matCellDef="let row"> {{row.telefonoCliente}} </td>
             </ng-container>
-            <ng-container matColumnDef="email">
+            <ng-container matColumnDef="emailCliente">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
               <td mat-cell *matCellDef="let row"> {{row.emailCliente}} </td>
             </ng-container>
@@ -107,7 +110,7 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
-          <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: #141719;"></mat-paginator>
         </div>
       </div>
       <ng-template #content let-modal>
@@ -119,31 +122,31 @@
         </div>
         <div class="modal-body" style="background-color: rgba(0, 0, 0, 0.7);">
           <form class="form" [formGroup]="frmClientes">
-            <input formControlName="id" type="hidden">
+            <input formControlName="idCliente" type="hidden">
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Nombre" formControlName="nombre" type="text" style="color: white;">
+              <input matInput placeholder="Nombre" formControlName="nombreCliente" type="text" style="color: white;">
             </mat-form-field>
-            <label *ngIf="frmClientes.controls.nombre.invalid && frmClientes.controls.nombre.dirty">Este campo es obligatorio</label>
+            <label *ngIf="frmClientes.controls.nombreCliente.invalid && frmClientes.controls.nombreCliente.dirty">Este campo es obligatorio</label>
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Direccion" formControlName="direccion" type="text" style="color: white;">
+              <input matInput placeholder="Direccion" formControlName="direccionCliente" type="text" style="color: white;">
             </mat-form-field>
-            <label *ngIf="frmClientes.controls.direccion.invalid && frmClientes.controls.direccion.dirty">Este campo es obligatorio</label>
+            <label *ngIf="frmClientes.controls.direccionCliente.invalid && frmClientes.controls.direccionCliente.dirty">Este campo es obligatorio</label>
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Ciudad" formControlName="ciudad" type="text" style="color: white;">
+              <input matInput placeholder="Ciudad" formControlName="ciudadCliente" type="text" style="color: white;">
             </mat-form-field>
-            <label *ngIf="frmClientes.controls.ciudad.invalid && frmClientes.controls.ciudad.dirty">Este campo es obligatorio</label>
+            <label *ngIf="frmClientes.controls.ciudadCliente.invalid && frmClientes.controls.ciudadCliente.dirty">Este campo es obligatorio</label>
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Telefono" formControlName="telefono" type="tel" style="color: white;">
+              <input matInput placeholder="Telefono" formControlName="telefonoCliente" type="tel" style="color: white;">
             </mat-form-field>
-            <label *ngIf="frmClientes.controls.telefono.invalid && frmClientes.controls.telefono.dirty">Este campo es obligatorio</label>
+            <label *ngIf="frmClientes.controls.telefonoCliente.invalid && frmClientes.controls.telefonoCliente.dirty">Este campo es obligatorio</label>
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Email" formControlName="email" type="email" style="color: white;">
+              <input matInput placeholder="Email" formControlName="emailCliente" type="email" style="color: white;">
             </mat-form-field>
-            <label *ngIf="frmClientes.controls.email.invalid && frmClientes.controls.email.dirty">Este campo es obligatorio</label>
+            <label *ngIf="frmClientes.controls.emailCliente.invalid && frmClientes.controls.emailCliente.dirty">Este campo es obligatorio</label>
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Password" formControlName="password" type="password" style="color: white;">
+              <input matInput placeholder="Password" formControlName="passwordCliente" type="password" style="color: white;">
             </mat-form-field>
-            <label *ngIf="frmClientes.controls.password.invalid && frmClientes.controls.password.dirty">Este campo es obligatorio</label>
+            <label *ngIf="frmClientes.controls.passwordCliente.invalid && frmClientes.controls.passwordCliente.dirty">Este campo es obligatorio</label>
           </form>
         </div>
         <div class="modal-footer" style="background-color: rgba(255,150,0,0.9);">

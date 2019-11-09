@@ -1,8 +1,8 @@
 <div class="fondo">
   <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="push" [(opened)]="opened" style="background-color: rgba(39, 38, 38, 0.5);">
+    <mat-sidenav #sidenav mode="push" [(opened)]="opened" style="background-color: rgba(28, 34, 37, 0.62);">
       <img class="logoPaginas" src="../../assets/img/logoPaginas.png">
-      <mat-list role="list" style="margin-top: 50px;">
+      <mat-list role="list" style="margin-top: 30px;">
         <mat-list-item role="listitem" routerLink="/categoria">
           <mat-icon>category</mat-icon>&nbsp;&nbsp;Categoria
         </mat-list-item>
@@ -25,7 +25,7 @@
           <mat-icon>settings_backup_restore</mat-icon>&nbsp;&nbsp; Tipo De Devolución
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/viaEnvio">
-          <mat-icon>settings_backup_restore</mat-icon>&nbsp;&nbsp; Medio De Envio
+          <mat-icon>commute</mat-icon>&nbsp;&nbsp; Medio De Envio
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/ventas">
           <mat-icon>credit_card</mat-icon>&nbsp;&nbsp;Ventas
@@ -34,7 +34,10 @@
           <mat-icon>rotate_90_degrees_ccw</mat-icon>&nbsp;&nbsp;Devoluciones
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/carrito">
-          <mat-icon>assignment</mat-icon>&nbsp;&nbsp;Carrito
+          <mat-icon>shopping_cart</mat-icon>&nbsp;&nbsp;Carrito
+        </mat-list-item>
+        <mat-list-item role="listitem" routerLink="/reportes">
+          <mat-icon>assignment</mat-icon>&nbsp;&nbsp;Reportes
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/accesos">
           <mat-icon>lock_open</mat-icon>&nbsp;&nbsp;Bitacora De Accesos
@@ -70,7 +73,7 @@
         </mat-card>
         <div class="mat-elevation-z8">
           <table mat-table [dataSource]="dataSource" matSort>
-            <ng-container matColumnDef="id">
+            <ng-container matColumnDef="idMetodoPago">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
               <td mat-cell *matCellDef="let row"> {{row.idMetodoPago}} </td>
             </ng-container>
@@ -92,7 +95,7 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
-          <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: #141719;"></mat-paginator>
         </div>
       </div>
       <ng-template #content let-modal>
@@ -104,7 +107,7 @@
         </div>
         <div class="modal-body" style="background-color: rgba(0, 0, 0, 0.7);">
           <form class="form" [formGroup]="frmMetodosPago">
-            <input formControlName="id" type="hidden">
+            <input formControlName="idMetodoPago" type="hidden">
             <mat-form-field class="example-full-width">
               <input matInput placeholder="Tipo De Pago" formControlName="tipoPago" type="text" style="color: white;">
             </mat-form-field>

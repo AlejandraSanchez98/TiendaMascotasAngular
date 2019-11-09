@@ -37,6 +37,7 @@ import { ViaEnvioComponent } from './via-envio/via-envio.component';
 import { MetodoPagoComponent } from './metodo-pago/metodo-pago.component';
 import { TipoDevolucionComponent } from './tipo-devolucion/tipo-devolucion.component';
 import { ReportesComponent } from './reportes/reportes.component';
+import { TransaccionesComponent } from './transacciones/transacciones.component';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { ReportesComponent } from './reportes/reportes.component';
     ViaEnvioComponent,
     MetodoPagoComponent,
     TipoDevolucionComponent,
-    ReportesComponent
+    ReportesComponent,
+    TransaccionesComponent
   ],
   imports: [
     BrowserModule,

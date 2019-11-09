@@ -1,5 +1,5 @@
 .fondo{
-  background: url('../../assets/img/fondo21.jpg');
+  background: url('../../assets/img/fondo46.jpg');
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-position: top;
@@ -7,6 +7,7 @@
   height: 100vh;
   width: 100vw;
 }
+
 .example-container {
   position: absolute;
   top: 0;
@@ -25,7 +26,7 @@
 
 table {
   width: 100%;
-  background-color: rgba(50, 50,50, 0.3);
+  background-color:rgba(30, 35, 41, 0.6);
 }
 
 .mat-form-field {
@@ -34,18 +35,21 @@ table {
 }
 
 td, th {
-  width: 25%;
+  width: 20%;
+  text-align: center;
 }
 
 th{
-  color: orange;
-  font-size: 15px;
+  color: #5daed4;
+  font-size: 16px;
 }
 
 .toolbar{
-  background-color: orange;
+  background-color: #174677f0;
   width: 100%;
+  height: 8%;
   position: fixed;
+  z-index: 100;
 }
 
 h1{
@@ -54,6 +58,12 @@ h1{
 }
 
 .card {
-  background-color: rgba(255, 165, 0, 0.5);
+  background-color: #1a566d0d;
+  border-color: #091c2d;
   margin-bottom: 10px;
+}
+
+:host ::ng-deep .mat-sort-header-container {
+    display: flex;
+    justify-content: center;
 }

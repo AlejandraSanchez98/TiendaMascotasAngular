@@ -1,5 +1,5 @@
 .fondo{
-  background: url('../../assets/img/fondo10.jpg');
+  background: url('../../assets/img/fondo47.jpg');
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-position: top;
@@ -23,7 +23,6 @@
   width: 160px;
 }
 
-
 table {
   width: 100%;
   background-color:rgba(30, 35, 41, 0.6);
@@ -35,7 +34,6 @@ table {
 }
 
 td, th {
-
   text-align: center;
 }
 
@@ -61,6 +59,7 @@ h1{
   background-color: #1a566d0d;
   border-color: #091c2d;
   margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .btnAceptar{
@@ -69,7 +68,33 @@ h1{
   width: 30%;
 }
 
+
+.tabIcono {
+  margin-right: 8px;
+}
+
+.cardTab{
+  background-color: #243142bf;
+  border-color: #091c2d;
+  margin-bottom: 10px;
+  margin-left: 40px;
+  margin-right: 40px;
+  margin-top: 50px;
+}
+
+.tablaTab1{
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-top: 50px;
+}
+
 :host ::ng-deep .mat-sort-header-container {
     display: flex;
     justify-content: center;
+}
+
+::ng-deep .mat-tab-label{
+  color: white;
+  background-color:#1d2a42;
+  font-size: 15px;
 }

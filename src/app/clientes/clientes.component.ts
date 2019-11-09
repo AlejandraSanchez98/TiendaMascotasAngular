@@ -4,18 +4,10 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
-import {ApiService} from '../api.service';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
-
-export interface IClientes {
-  id: number;
-  nombre: string;
-  direccion: string;
-  ciudad: string;
-  telefono: string;
-  email: string;
-  password:string;
-}
+import { sha256, sha224 } from 'js-sha256';
+import {ApiService} from '../api.service';
+import { IClientes } from '../api.service';
 
 @Component({
   selector: 'app-clientes',
@@ -34,7 +26,7 @@ export class ClientesComponent implements OnInit {
   public titulo:string;
 
 
-  displayedColumns = ['id', 'nombre', 'direccion', 'ciudad', 'telefono', 'email','acciones'];
+  displayedColumns: string[] = ['idCliente', 'nombreCliente', 'direccionCliente', 'ciudadCliente', 'telefonoCliente', 'emailCliente','acciones'];
   dataSource: MatTableDataSource<IClientes>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -43,15 +35,16 @@ export class ClientesComponent implements OnInit {
   constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
     //Inizializacion
     this.titulo="";
+    this.arregloClientes=[];
     //INICIALIZACION (CONSTRUCCION) DEL FORMGROUP, SOLO SE AGREGARAN ESTOS DATOS YA QUE SON LOS ESPECIFICADOS EN EL MODAL
     this.frmClientes= this.formBuilder.group({
-      id:[""],
-      nombre:["",Validators.required],
-      direccion:["",Validators.required],
-      ciudad:["",Validators.required],
-      telefono:["",Validators.required],
-      email:["",Validators.required],
-      password:["",Validators.required]
+      idCliente:[""],
+      nombreCliente:["",Validators.required],
+      direccionCliente:["",Validators.required],
+      ciudadCliente:["",Validators.required],
+      telefonoCliente:["",Validators.required],
+      emailCliente:["",Validators.required],
+      passwordCliente:["",Validators.required]
     });
   }
 
@@ -61,34 +54,31 @@ export class ClientesComponent implements OnInit {
   }
 
 
-  public openEditar(content, id: number, nombre: string, direccion:string, ciudad:string, telefono:string, email:string, password:string, ){
+  public openEditar(content, idCliente: number, nombreCliente: string, direccionCliente:string, ciudadCliente:string, telefonoCliente:string, emailCliente:string, passwordCliente:string){
     this.modal= this.modalService.open(content,{ariaLabelledBy:'modal-basic-title'});
     this.titulo = "Editar Cliente";
 
-    this.frmClientes.controls['id'].setValue(id);
-    this.frmClientes.controls['nombre'].setValue(nombre);
-    this.frmClientes.controls['direccion'].setValue(direccion);
-    this.frmClientes.controls['ciudad'].setValue(ciudad);
-    this.frmClientes.controls['telefono'].setValue(telefono);
-    this.frmClientes.controls['email'].setValue(email);
-    this.frmClientes.controls['password'].setValue(password);
-    alert("pass"+email);
-    alert("pass"+password);
+    this.frmClientes.controls['idCliente'].setValue(idCliente);
+    this.frmClientes.controls['nombreCliente'].setValue(nombreCliente);
+    this.frmClientes.controls['direccionCliente'].setValue(direccionCliente);
+    this.frmClientes.controls['ciudadCliente'].setValue(ciudadCliente);
+    this.frmClientes.controls['telefonoCliente'].setValue(telefonoCliente);
+    this.frmClientes.controls['emailCliente'].setValue(emailCliente);
   }
 
   public ejecutarPeticion(){
     //DATOS PROVENIENTES DEL FORMGROUP
-    let nombreForm = this.frmClientes.get('nombre').value;
-    let direccionForm = this.frmClientes.get('direccion').value;
-    let ciudadForm = this.frmClientes.get('ciudad').value;
-    let telefonoForm = this.frmClientes.get('telefono').value;
-    let emailForm = this.frmClientes.get('email').value;
-    let passwordForm = this.frmClientes.get('password').value;
+    let nombreClienteForm = this.frmClientes.get('nombreCliente').value;
+    let direccionClienteForm = this.frmClientes.get('direccionCliente').value;
+    let ciudadClienteForm = this.frmClientes.get('ciudadCliente').value;
+    let telefonoClienteForm = this.frmClientes.get('telefonoCliente').value;
+    let emailClienteForm = this.frmClientes.get('emailCliente').value;
+    let passwordClienteForm = this.frmClientes.get('passwordCliente').value;
 
     //EVITAMOS CREAR 2 MODALES, SIMPLEMENTE USAMOS 1 MODAL Y TIENE SU FUNCION SEGUN SU NOMBRE
     if (this.titulo == "Agregar Cliente") {
       //SE AGREGAN REGISTROS MEDIANTE POST
-      this.API.agregarCliente(nombreForm, direccionForm, ciudadForm,telefonoForm,emailForm,passwordForm).subscribe(
+      this.API.agregarCliente(nombreClienteForm, direccionClienteForm, ciudadClienteForm,telefonoClienteForm,emailClienteForm,passwordClienteForm).subscribe(
         (success: any)=>{
           console.log("exito: "+ JSON.stringify(success));
           location.reload();
@@ -101,15 +91,15 @@ export class ClientesComponent implements OnInit {
     }
     if (this.titulo == "Editar Cliente") {
       //OBTENEMOS LOS VALORES DEL FORMULARIO
-      let id = this.frmClientes.get('id').value; //recuerda que el id esta oculto asi que el user no podra editarlo
-      let nombreForm = this.frmClientes.get('nombre').value;
-      let direccionForm = this.frmClientes.get('direccion').value;
-      let ciudadForm = this.frmClientes.get('ciudad').value;
-      let telefonoForm = this.frmClientes.get('telefono').value;
-      let emailForm = this.frmClientes.get('email').value;
-      let passwordForm = this.frmClientes.get('password').value;
+      let idCliente = this.frmClientes.get('idCliente').value; //recuerda que el id esta oculto asi que el user no podra editarlo
+      let nombreClienteForm = this.frmClientes.get('nombreCliente').value;
+      let direccionClienteForm = this.frmClientes.get('direccionCliente').value;
+      let ciudadClienteForm = this.frmClientes.get('ciudadCliente').value;
+      let telefonoClienteForm = this.frmClientes.get('telefonoCliente').value;
+      let emailClienteForm = this.frmClientes.get('emailCliente').value;
+      let passwordClienteForm = sha256(this.frmClientes.get('passwordCliente').value);
       //EJECUTANDO PETICION PUT
-      this.API.editarCliente(id,nombreForm,direccionForm,ciudadForm,telefonoForm,emailForm,passwordForm).subscribe(
+      this.API.editarCliente(idCliente,nombreClienteForm,direccionClienteForm,ciudadClienteForm,telefonoClienteForm,emailClienteForm,passwordClienteForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
           location.reload();//recarga la pagina para poder notar lo cambios
@@ -122,8 +112,8 @@ export class ClientesComponent implements OnInit {
   }//----------------------fin operaciones-------------------------------------------------------------------
 
   //eliminar categoria
-  public eliminarCliente(id:number){
-    this.API.eliminarCliente(id).subscribe(
+  public eliminarCliente(idCliente:number){
+    this.API.eliminarCliente(idCliente).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
         location.reload();

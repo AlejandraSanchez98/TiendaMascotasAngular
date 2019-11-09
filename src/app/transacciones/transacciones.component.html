@@ -49,27 +49,63 @@
         <button mat-button (click)="sidenav.toggle()" style="font-size:20px;">MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
       </mat-toolbar>
       <br>
-      <h1>Reportes&nbsp;&nbsp;<mat-icon style="font-size: 45px;">assignment</mat-icon></h1>
+      <h1>Transacciones&nbsp;&nbsp;<mat-icon style="font-size: 45px;">sync_alt</mat-icon></h1>
       <mat-card class="cardTab">
         <mat-tab-group>
           <mat-tab>
-            <ng-template  mat-tab-label style="color: white;">
-              <mat-icon  class = "tabIcono"> add_shopping_cart </mat-icon>Productos más vendidos
+            <ng-template  mat-tab-label style="color: white; background-color:174677f0;">
+              <mat-icon  class = "tabIcono"> credit_card </mat-icon>Informe Ventas
             </ng-template>
             <div class="tablaTab1">
               <div class="mat-elevation-z8">
                 <table mat-table [dataSource]="dataSource" matSort>
-                  <ng-container matColumnDef="idProducto">
+                  <ng-container matColumnDef="idVenta">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-                    <td mat-cell *matCellDef="let row"> {{row.idProducto}} </td>
+                    <td mat-cell *matCellDef="let row"> {{row.idVenta}} </td>
                   </ng-container>
-                  <ng-container matColumnDef="Producto">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Producto</th>
-                    <td mat-cell *matCellDef="let row"> {{row.Producto}} </td>
+                  <ng-container matColumnDef="montoSinIVA">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Monto Sin IVA</th>
+                    <td mat-cell *matCellDef="let row"> ${{row.montoSinIVA}} </td>
                   </ng-container>
-                  <ng-container matColumnDef="TotalVentas">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> No. Productos Vendidos </th>
-                    <td mat-cell *matCellDef="let row"> {{row.TotalVentas}} </td>
+                  <ng-container matColumnDef="IVA">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> IVA </th>
+                    <td mat-cell *matCellDef="let row"> ${{row.IVA}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="montoConIVA">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Monto Con IVA </th>
+                    <td mat-cell *matCellDef="let row"> ${{row.montoConIVA}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="cantidadTotalProductos">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Cantidad Total De Productos </th>
+                    <td mat-cell *matCellDef="let row"> ${{row.cantidadTotalProductos}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="pago">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Pago </th>
+                    <td mat-cell *matCellDef="let row"> ${{row.pago}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="cambio">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Cambio </th>
+                    <td mat-cell *matCellDef="let row"> ${{row.cambio}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="fechaRegistro">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha De La Venta </th>
+                    <td mat-cell *matCellDef="let row"> {{row.fechaRegistro | date : "dd/MM/y"}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="nombreProducto">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Producto </th>
+                    <td mat-cell *matCellDef="let row"> {{row.nombreProducto}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="nombreUsuario">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Vendedor </th>
+                    <td mat-cell *matCellDef="let row"> {{row.nombreUsuario}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="nombreCliente">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </th>
+                    <td mat-cell *matCellDef="let row"> {{row.nombreCliente}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="tipoPago">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo De Pago </th>
+                    <td mat-cell *matCellDef="let row"> {{row.tipoPago}} </td>
                   </ng-container>
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -79,8 +115,8 @@
             </div>
           </mat-tab>
           <mat-tab>
-            <ng-template  mat-tab-label style="color: white;">
-              <mat-icon  class="tabIcono"> person_add </mat-icon>Vendedor con más ventas
+            <ng-template  mat-tab-label>
+              <mat-icon  class="tabIcono"> local_grocery_store </mat-icon>Informe Compras
             </ng-template>
             <div class="tablaTab1">
               <div class="mat-elevation-z8">
@@ -99,66 +135,6 @@
                   </ng-container>
                   <tr mat-header-row *matHeaderRowDef="dcVendedoresMasVentas"></tr>
                   <tr mat-row *matRowDef="let row; columns: dcVendedoresMasVentas;"></tr>
-                </table>
-                <mat-paginator [length]="5" [pageSize]="5" [pageSizeOptions]="[5]" style="background-color: #141719;"></mat-paginator>
-              </div>
-            </div>
-          </mat-tab>
-          <mat-tab>
-            <ng-template  mat-tab-label style="color: white;">
-              <mat-icon  class ="tabIcono"> remove_shopping_cart </mat-icon>Productos con stock mínimo
-            </ng-template>
-            <div class="tablaTab1">
-              <div class="mat-elevation-z8">
-                <table mat-table [dataSource]="dsProductoStockMinimo" matSort>
-                  <ng-container matColumnDef="idProducto">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-                    <td mat-cell *matCellDef="let row"> {{row.idProducto}} </td>
-                  </ng-container>
-                  <ng-container matColumnDef="nombreProducto">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Producto</th>
-                    <td mat-cell *matCellDef="let row"> {{row.nombreProducto}} </td>
-                  </ng-container>
-                  <ng-container matColumnDef="precioUnitario">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio Unitario </th>
-                    <td mat-cell *matCellDef="let row"> $ {{row.precioUnitario}} </td>
-                  </ng-container>
-                  <ng-container matColumnDef="descripcionProducto">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Descripción Del Producto </th>
-                    <td mat-cell *matCellDef="let row"> {{row.descripcionProducto}} </td>
-                  </ng-container>
-                  <ng-container matColumnDef="stock">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Stock </th>
-                    <td mat-cell *matCellDef="let row"> {{row.stock}} </td>
-                  </ng-container>
-                  <tr mat-header-row *matHeaderRowDef="dcProductoStockMinimo"></tr>
-                  <tr mat-row *matRowDef="let row; columns: dcProductoStockMinimo;"></tr>
-                </table>
-                <mat-paginator [length]="5" [pageSize]="5" [pageSizeOptions]="[5]" style="background-color: #141719;"></mat-paginator>
-              </div>
-            </div>
-          </mat-tab>
-          <mat-tab>
-            <ng-template  mat-tab-label style="color: white;">
-              <mat-icon  class ="tabIcono"> attach_money </mat-icon>Utilidad
-            </ng-template>
-            <div class="tablaTab1">
-              <div class="mat-elevation-z8">
-                <table mat-table [dataSource]="dsUtilidad" matSort>
-                  <ng-container matColumnDef="MontoTotalVentas">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Monto Total Ventas </th>
-                    <td mat-cell *matCellDef="let row"> ${{row.MontoTotalVentas}} </td>
-                  </ng-container>
-                  <ng-container matColumnDef="MontoTotalCompras">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Monto Total Compras</th>
-                    <td mat-cell *matCellDef="let row"> ${{row.MontoTotalCompras}} </td>
-                  </ng-container>
-                  <ng-container matColumnDef="Utilidad">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Utilidad </th>
-                    <td mat-cell *matCellDef="let row"> ${{row.Utilidad}} </td>
-                  </ng-container>
-                  <tr mat-header-row *matHeaderRowDef="dcUtilidad"></tr>
-                  <tr mat-row *matRowDef="let row; columns: dcUtilidad;"></tr>
                 </table>
                 <mat-paginator [length]="5" [pageSize]="5" [pageSizeOptions]="[5]" style="background-color: #141719;"></mat-paginator>
               </div>

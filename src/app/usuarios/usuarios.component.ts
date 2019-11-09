@@ -4,18 +4,14 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
-import {ApiService} from '../api.service';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 import { sha256, sha224 } from 'js-sha256';
+import {ApiService} from '../api.service';
+import { IUsuarios } from '../api.service';
 
-export interface IUsuarios {
-  id: number;
-  nombreUsuario: string;
-  telefonoUsuario:string;
-  direccionUsuario:string;
-  correo:string;
-  passwordUsuario:string;
-  tipoUsuario:string;
+
+export interface Tipo {
+  tipoU: string;
 }
 
 
@@ -25,6 +21,10 @@ export interface IUsuarios {
   styleUrls: ['./usuarios.component.scss']
 })
 export class UsuariosComponent implements OnInit {
+  tipo: Tipo[] = [
+    {tipoU: 'Vendedor'},
+    {tipoU: 'Gerente'}
+  ];
   public arregloUsuarios:IUsuarios[];
   public modal: NgbModalRef;
 
@@ -32,7 +32,7 @@ export class UsuariosComponent implements OnInit {
   public formValid:Boolean=false;
   public titulo:string;
 
-  displayedColumns = ['id', 'nombreUsuario','telefonoUsuario','direccionUsuario','correo','tipoUsuario','acciones'];
+  displayedColumns: string[] = ['idUsuario', 'nombreUsuario','telefonoUsuario','direccionUsuario','correo','tipoUsuario','acciones'];
   dataSource:MatTableDataSource<IUsuarios>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -40,10 +40,11 @@ export class UsuariosComponent implements OnInit {
 
   constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
     //Inizializacion
-    this.titulo=""
+    this.titulo="";
+    this.arregloUsuarios=[];
     //INICIALIZACION (CONSTRUCCION) DEL FORMGROUP, SOLO SE AGREGARAN ESTOS DATOS YA QUE SON LOS ESPECIFICADOS EN EL MODAL
     this.frmUsuarios= this.formBuilder.group({
-      id:[""],
+      idUsuario:[""],
       nombreUsuario:["",Validators.required],
       telefonoUsuario:["",Validators.required],
       direccionUsuario:["",Validators.required],
@@ -59,16 +60,15 @@ export class UsuariosComponent implements OnInit {
     this.titulo="Agregar Usuario"
   }
 
-  public openEditar(content, id: number, nombreUsuario: string, telefonoUsuario:string, direccionUsuario:string, correo:string, passwordUsuario:string, tipoUsuario:string){
+  public openEditar(content, idUsuario: number, nombreUsuario: string, telefonoUsuario:string, direccionUsuario:string, correo:string, passwordUsuario:string, tipoUsuario:string){
     this.modal= this.modalService.open(content,{ariaLabelledBy:'modal-basic-title'});
     this.titulo = "Editar Usuario";
 
-    this.frmUsuarios.controls['id'].setValue(id);
+    this.frmUsuarios.controls['idUsuario'].setValue(idUsuario);
     this.frmUsuarios.controls['nombreUsuario'].setValue(nombreUsuario);
     this.frmUsuarios.controls['telefonoUsuario'].setValue(telefonoUsuario);
     this.frmUsuarios.controls['direccionUsuario'].setValue(direccionUsuario);
     this.frmUsuarios.controls['correo'].setValue(correo);
-    this.frmUsuarios.controls['passwordUsuario'].setValue(passwordUsuario);
     this.frmUsuarios.controls['tipoUsuario'].setValue(tipoUsuario);
   }
 
@@ -97,7 +97,7 @@ export class UsuariosComponent implements OnInit {
     }
     if (this.titulo == "Editar Usuario") {
       //OBTENEMOS LOS VALORES DEL FORMULARIO
-      let id = this.frmUsuarios.get('id').value; //recuerda que el id esta oculto asi que el user no podra editarlo
+      let idUsuario = this.frmUsuarios.get('idUsuario').value; //recuerda que el id esta oculto asi que el user no podra editarlo
       let nombreUsuarioForm = this.frmUsuarios.get('nombreUsuario').value;
       let telefonoUsuarioForm = this.frmUsuarios.get('telefonoUsuario').value;
       let direccionUsuarioForm = this.frmUsuarios.get('direccionUsuario').value;
@@ -106,7 +106,7 @@ export class UsuariosComponent implements OnInit {
       let tipoUsuarioForm = this.frmUsuarios.get('tipoUsuario').value;    //EVITAMOS CREAR 2 MODALES, SIMPLEMENTE USAMOS 1 MODAL Y TIENE SU FUNCION SEGUN SU NOMBRE
 
       //EJECUTANDO PETICION PUT
-      this.API.editarUsuario(id,nombreUsuarioForm, telefonoUsuarioForm, direccionUsuarioForm, correoForm, passwordUsuarioForm, tipoUsuarioForm).subscribe(
+      this.API.editarUsuario(idUsuario,nombreUsuarioForm, telefonoUsuarioForm, direccionUsuarioForm, correoForm, passwordUsuarioForm, tipoUsuarioForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
           location.reload();//recarga la pagina para poder notar lo cambios
@@ -119,8 +119,8 @@ export class UsuariosComponent implements OnInit {
   }
 
   //eliminar usuario
-  public eliminarUsuario(id:number){
-    this.API.eliminarUsuario(id).subscribe(
+  public eliminarUsuario(idUsuario:number){
+    this.API.eliminarUsuario(idUsuario).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
         location.reload();

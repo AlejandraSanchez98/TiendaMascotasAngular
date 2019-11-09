@@ -25,7 +25,7 @@
 
 table {
   width: 100%;
-  background-color: rgba(50, 50,50, 0.3);
+  background-color:rgba(30, 35, 41, 0.6);
 }
 
 .mat-form-field {
@@ -35,16 +35,18 @@ table {
 
 td, th {
   width: 15%;
+  text-align: center;
 }
 
 th{
-  color: orange;
-  font-size: 15px;
+  color: #5daed4;
+  font-size: 16px;
 }
 
 .toolbar{
-  background-color: orange;
+  background-color: #174677f0;
   width: 100%;
+  height: 8%;
   position: fixed;
   z-index: 100;
 }
@@ -55,7 +57,8 @@ h1{
 }
 
 .card {
-  background-color: #ffc10733;
+  background-color: #1a566d0d;
+  border-color: #091c2d;
   margin-bottom: 10px;
 }
 
@@ -63,4 +66,9 @@ h1{
   color: white;
   border-color: white;
   width: 30%;
+}
+
+:host ::ng-deep .mat-sort-header-container {
+    display: flex;
+    justify-content: center;
 }

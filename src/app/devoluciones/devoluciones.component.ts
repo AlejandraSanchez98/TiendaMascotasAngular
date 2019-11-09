@@ -3,25 +3,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-
-export interface UserData {
-  id: string;
-  name: string;
-  progress: string;
-  color: string;
-  ciudad: string;
-  email: string;
-  cliente:string;
-}
-
-const COLORS: string[] = [
-  'maroon', 'red', 'orange', 'yellow', 'olive', 'green', 'purple', 'fuchsia', 'lime', 'teal',
-  'aqua', 'blue', 'navy', 'black', 'gray'
-];
-const NAMES: string[] = [
-  'Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack', 'Charlotte', 'Theodore', 'Isla', 'Oliver',
-  'Isabella', 'Jasper', 'Cora', 'Levi', 'Violet', 'Arthur', 'Mia', 'Thomas', 'Elizabeth'
-];
+import {Router} from '@angular/router';
+import { FormBuilder,FormGroup,Validators } from '@angular/forms';
+import {ApiService} from '../api.service';
+import { IDevoluciones } from '../api.service';
 
 @Component({
   selector: 'app-devoluciones',
@@ -29,21 +14,120 @@ const NAMES: string[] = [
   styleUrls: ['./devoluciones.component.scss']
 })
 export class DevolucionesComponent implements OnInit {
+  public arregloDevoluciones:IDevoluciones[];
+  public arregloClientesSelect:IDevoluciones[];
+  public arregloTipoDevolucionSelect:IDevoluciones[];
+  public arregloProductosSelect:IDevoluciones[];
+
   public modal: NgbModalRef;
-  displayedColumns: string[] = ['id', 'name', 'progress', 'color', 'ciudad', 'email', 'cliente'];
-  dataSource: MatTableDataSource<UserData>;
+  public frmDevoluciones:FormGroup;
+  public formValid:Boolean=false;
+  public titulo:string;
+
+  displayedColumns: string[] = ['idDevolucion', 'montoDevolucion', 'motivoDevolucion', 'nombreCliente', 'tipoDevolucion', 'nombreProducto'];
+  dataSource: MatTableDataSource<IDevoluciones>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  constructor(private modalService: NgbModal) {
-    const users = Array.from({ length: 100 }, (_, k) => createNewUser(k + 1));
-    this.dataSource = new MatTableDataSource(users);
+  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
+    //Inizializacion
+    this.titulo="";
+    this.arregloDevoluciones=[];
+    this.arregloClientesSelect=[];
+    this.arregloTipoDevolucionSelect=[];
+    this.arregloProductosSelect=[];
+
+    //INICIALIZACION (CONSTRUCCION) DEL FORMGROUP, SOLO SE AGREGARAN ESTOS DATOS YA QUE SON LOS ESPECIFICADOS EN EL MODAL
+    this.frmDevoluciones= this.formBuilder.group({
+      idDevolucion:[""],
+      montoDevolucion:["",Validators.required],
+      motivoDevolucion:["",Validators.required],
+      idCliente:["",Validators.required],
+      idTipoDevolucion:["",Validators.required],
+      idProducto:["",Validators.required]
+    });
   }
 
-  public openAlta(content) {
-    this.modal = this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+
+  //Abrir modal
+  public openAgregar(content) {
+    this.modal= this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
+    this.titulo="Agregar Producto"
   }
+
+  //listar devoluciones
+  public  listarDevoluciones(){
+    this.API.listarDevoluciones().subscribe(
+      (success:any)=>{
+        console.log("Exito"+JSON.stringify(success));
+        this.dataSource = new MatTableDataSource(this.arregloDevoluciones=success.respuesta);
+
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      },
+      (error)=>{
+        console.log("Lo sentimos"+error);
+      }
+    );
+  }
+
+  public agregarDevolucion(){
+    //DATOS PROVENIENTES DEL FORMGROUP
+    let montoDevolucionForm = this.frmDevoluciones.get('montoDevolucion').value;
+    let motivoDevolucionForm = this.frmDevoluciones.get('motivoDevolucion').value;
+    let idClienteForm = this.frmDevoluciones.get('idCliente').value;
+    let idTipoDevolucionForm = this.frmDevoluciones.get('idTipoDevolucion').value;
+    let idProductoForm = this.frmDevoluciones.get('idProducto').value;
+    //SE AGREGAN REGISTROS MEDIANTE POST
+    this.API.agregarDevolucion(montoDevolucionForm,motivoDevolucionForm,idClienteForm,idTipoDevolucionForm,idProductoForm).subscribe(
+      (success:any)=>{
+        console.log("Exito"+success);
+        location.reload();
+      },
+      (error)=>{
+        console.log("Error"+ error);
+      }
+    )
+  }
+
+
+  //listar el select de clientes
+  public listarClientes(){
+    this.API.listarClientes().subscribe(
+      (success:any)=>{
+        return this.arregloClientesSelect = success.respuesta;
+      },
+      (error)=>{
+        console.log("Error", error)
+      }
+    );
+  }
+
+  //listar el select de tipo de devoluciones
+  public listarTiposDevoluciones(){
+    this.API.listarTiposDevoluciones().subscribe(
+      (success:any)=>{
+        return this.arregloTipoDevolucionSelect = success.respuesta;
+      },
+      (error)=>{
+        console.log("Error", error)
+      }
+    );
+  }
+
+  //listar el select de productos
+  public listarProductos(){
+    this.API.listarProductos().subscribe(
+      (success:any)=>{
+        return this.arregloProductosSelect = success.respuesta;
+      },
+      (error)=>{
+        console.log("Error", error)
+      }
+    );
+  }
+
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -55,22 +139,9 @@ export class DevolucionesComponent implements OnInit {
 
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.listarDevoluciones();
+    this.listarClientes();
+    this.listarTiposDevoluciones();
+    this.listarProductos();
   }
-}
-
-function createNewUser(id: number): UserData {
-  const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))] + ' ' +
-    NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) + '.';
-
-  return {
-    id: id.toString(),
-    name: name,
-    progress: Math.round(Math.random() * 100).toString(),
-    color: COLORS[Math.round(Math.random() * (COLORS.length - 1))],
-    ciudad: COLORS[Math.round(Math.random() * (COLORS.length - 1))],
-    email: COLORS[Math.round(Math.random() * (COLORS.length - 1))],
-    cliente: COLORS[Math.round(Math.random() * (COLORS.length - 1))]
-  };
 }

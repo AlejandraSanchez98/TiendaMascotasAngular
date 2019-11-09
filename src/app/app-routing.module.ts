@@ -15,6 +15,7 @@ import { ViaEnvioComponent } from './via-envio/via-envio.component';
 import { MetodoPagoComponent } from './metodo-pago/metodo-pago.component';
 import { TipoDevolucionComponent } from './tipo-devolucion/tipo-devolucion.component';
 import { ReportesComponent } from './reportes/reportes.component';
+import { TransaccionesComponent } from './transacciones/transacciones.component';
 
 
 const routes: Routes = [
@@ -32,7 +33,8 @@ const routes: Routes = [
   {path: 'viaEnvio', component: ViaEnvioComponent},
   {path: 'metodoPago', component: MetodoPagoComponent},
   {path: 'tipoDevolucion', component:TipoDevolucionComponent},
-  {path: 'reportes', component:ReportesComponent}
+  {path: 'reportes', component:ReportesComponent},
+  {path: 'transacciones', component:TransaccionesComponent}
 ];
 
 @NgModule({

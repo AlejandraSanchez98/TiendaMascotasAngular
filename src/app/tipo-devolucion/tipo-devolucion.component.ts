@@ -4,15 +4,9 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
-import {ApiService} from '../api.service';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
-
-
-export interface ITiposDevoluciones{
-  id: number;
-  tipoDevolucion: string;
-  descripcion: string;
-}
+import {ApiService} from '../api.service';
+import { ITiposDevoluciones } from '../api.service';
 
 
 @Component({
@@ -29,7 +23,7 @@ export class TipoDevolucionComponent implements OnInit {
   public formValid:Boolean=false;
   public titulo:string;
 
-  displayedColumns = ['id', 'tipoDevolucion', 'descripcion','acciones'];
+  displayedColumns: string[] = ['idTipoDevolucion', 'tipoDevolucion', 'descripcion','acciones'];
   dataSource:MatTableDataSource<ITiposDevoluciones>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -37,10 +31,11 @@ export class TipoDevolucionComponent implements OnInit {
 
   constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
     //Inizializacion
-    this.titulo=""
+    this.titulo="";
+    this.arregloTiposDevoluciones=[];
     //INICIALIZACION (CONSTRUCCION) DEL FORMGROUP, SOLO SE AGREGARAN ESTOS DATOS YA QUE SON LOS ESPECIFICADOS EN EL MODAL
     this.frmTiposDevoluciones= this.formBuilder.group({
-      id:[""],
+      idTipoDevolucion:[""],
       tipoDevolucion:["",Validators.required],
       descripcion:["",Validators.required]
     });
@@ -53,11 +48,11 @@ export class TipoDevolucionComponent implements OnInit {
     this.titulo="Agregar Tipo De Devolución"
   }
 
-  public openEditar(content, id: number, tipoDevolucion: string, descripcion:string){
+  public openEditar(content, idTipoDevolucion: number, tipoDevolucion: string, descripcion:string){
     this.modal= this.modalService.open(content,{ariaLabelledBy:'modal-basic-title'});
     this.titulo = "Editar Tipo De Devolución";
 
-    this.frmTiposDevoluciones.controls['id'].setValue(id);
+    this.frmTiposDevoluciones.controls['idTipoDevolucion'].setValue(idTipoDevolucion);
     this.frmTiposDevoluciones.controls['tipoDevolucion'].setValue(tipoDevolucion);
     this.frmTiposDevoluciones.controls['descripcion'].setValue(descripcion);
   }
@@ -84,12 +79,12 @@ export class TipoDevolucionComponent implements OnInit {
     }
     if (this.titulo == "Editar Tipo De Devolución") {
       //OBTENEMOS LOS VALORES DEL FORMULARIO
-      let id = this.frmTiposDevoluciones.get('id').value; //recuerda que el id esta oculto asi que el user no podra editarlo
+      let idTipoDevolucion = this.frmTiposDevoluciones.get('idTipoDevolucion').value; //recuerda que el id esta oculto asi que el user no podra editarlo
       let tipoDevolucionForm = this.frmTiposDevoluciones.get('tipoDevolucion').value;
       let descripcionForm = this.frmTiposDevoluciones.get('descripcion').value;
 
       //EJECUTANDO PETICION PUT
-      this.API.editarTipoDevolucion(id,tipoDevolucionForm,descripcionForm).subscribe(
+      this.API.editarTipoDevolucion(idTipoDevolucion,tipoDevolucionForm,descripcionForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
           location.reload();//recarga la pagina para poder notar lo cambios
@@ -102,8 +97,8 @@ export class TipoDevolucionComponent implements OnInit {
   }//----------------------fin operaciones-------------------------------------------------------------------
 
   //eliminar tipo de devolución
-  public eliminarTipoDevolucion(id:number){
-    this.API.eliminarTipoDevolucion(id).subscribe(
+  public eliminarTipoDevolucion(idTipoDevolucion:number){
+    this.API.eliminarTipoDevolucion(idTipoDevolucion).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
         location.reload();

@@ -6,12 +6,7 @@ import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
 import {ApiService} from '../api.service';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
-
-export interface IViaEnvios {
-  id: number;
-  medioenvio: string;
-  descripcion: string;
-}
+import { IViaEnvios } from '../api.service';
 
 
 @Component({
@@ -28,7 +23,7 @@ export class ViaEnvioComponent implements OnInit {
   public formValid:Boolean=false;
   public titulo:string;
 
-  displayedColumns = ['id', 'medioenvio', 'descripcion','acciones'];
+  displayedColumns: string[] = ['idViaEnvio', 'medioEnvio', 'descripcion','acciones'];
   dataSource:MatTableDataSource<IViaEnvios>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -37,11 +32,12 @@ export class ViaEnvioComponent implements OnInit {
 
   constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
     //Inizializacion
-    this.titulo=""
+    this.titulo="";
+    this.arregloViaEnvios=[];
     //INICIALIZACION (CONSTRUCCION) DEL FORMGROUP, SOLO SE AGREGARAN ESTOS DATOS YA QUE SON LOS ESPECIFICADOS EN EL MODAL
     this.frmViaEnvios= this.formBuilder.group({
-      id:[""],
-      medioenvio:["",Validators.required],
+      idViaEnvio:[""],
+      medioEnvio:["",Validators.required],
       descripcion:["",Validators.required]
     });
   }
@@ -53,25 +49,25 @@ export class ViaEnvioComponent implements OnInit {
     this.titulo="Agregar Medio De Envio"
   }
 
-  public openEditar(content, id: number, medioenvio: string, descripcion:string){
+  public openEditar(content, idViaEnvio: number, medioEnvio: string, descripcion:string){
     this.modal= this.modalService.open(content,{ariaLabelledBy:'modal-basic-title'});
     this.titulo = "Editar Medio De Envio";
 
-    this.frmViaEnvios.controls['id'].setValue(id);
-    this.frmViaEnvios.controls['medioenvio'].setValue(medioenvio);
+    this.frmViaEnvios.controls['idViaEnvio'].setValue(idViaEnvio);
+    this.frmViaEnvios.controls['medioEnvio'].setValue(medioEnvio);
     this.frmViaEnvios.controls['descripcion'].setValue(descripcion);
   }
 
   //DAR DE ALTA SEGUN LOS DATOS DEL MODAL //anteriormente se llamaba darAlta
   public ejecutarPeticion(){
     //DATOS PROVENIENTES DEL FORMGROUP
-    let medioenvioForm = this.frmViaEnvios.get('medioenvio').value;
+    let medioEnvioForm = this.frmViaEnvios.get('medioEnvio').value;
     let descripcionForm = this.frmViaEnvios.get('descripcion').value;
     //EVITAMOS CREAR 2 MODALES, SIMPLEMENTE USAMOS 1 MODAL Y TIENE SU FUNCION SEGUN SU NOMBRE
     if (this.titulo == "Agregar Medio De Envio") {
 
       //SE AGREGAN REGISTROS MEDIANTE POST
-      this.API.agregarMedioEnvio(medioenvioForm, descripcionForm).subscribe(
+      this.API.agregarMedioEnvio(medioEnvioForm, descripcionForm).subscribe(
         (success: any)=>{
           alert("exito: "+ JSON.stringify(success));
           location.reload();
@@ -84,12 +80,12 @@ export class ViaEnvioComponent implements OnInit {
     }
     if (this.titulo == "Editar Medio De Envio") {
       //OBTENEMOS LOS VALORES DEL FORMULARIO
-      let id = this.frmViaEnvios.get('id').value; //recuerda que el id esta oculto asi que el user no podra editarlo
-      let medioenvioForm = this.frmViaEnvios.get('medioenvio').value;
+      let idViaEnvio = this.frmViaEnvios.get('idViaEnvio').value; //recuerda que el id esta oculto asi que el user no podra editarlo
+      let medioEnvioForm = this.frmViaEnvios.get('medioEnvio').value;
       let descripcionForm = this.frmViaEnvios.get('descripcion').value;
 
       //EJECUTANDO PETICION PUT
-      this.API.editarMedioEnvio(id,medioenvioForm,descripcionForm).subscribe(
+      this.API.editarMedioEnvio(idViaEnvio,medioEnvioForm,descripcionForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
           location.reload();//recarga la pagina para poder notar lo cambios
@@ -102,8 +98,8 @@ export class ViaEnvioComponent implements OnInit {
   }//----------------------fin operaciones-------------------------------------------------------------------
 
   //eliminar Medio de envio
-  public eliminarMedioEnvio(id:number){
-    this.API.eliminarMedioEnvio(id).subscribe(
+  public eliminarMedioEnvio(idViaEnvio:number){
+    this.API.eliminarMedioEnvio(idViaEnvio).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
         location.reload();
