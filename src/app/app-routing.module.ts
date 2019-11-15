@@ -16,7 +16,8 @@ import { MetodoPagoComponent } from './metodo-pago/metodo-pago.component';
 import { TipoDevolucionComponent } from './tipo-devolucion/tipo-devolucion.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { TransaccionesComponent } from './transacciones/transacciones.component';
-
+import { ComprasProveedorComponent } from './compras-proveedor/compras-proveedor.component';
+import { EnviosComponent } from './envios/envios.component';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -34,7 +35,9 @@ const routes: Routes = [
   {path: 'metodoPago', component: MetodoPagoComponent},
   {path: 'tipoDevolucion', component:TipoDevolucionComponent},
   {path: 'reportes', component:ReportesComponent},
-  {path: 'transacciones', component:TransaccionesComponent}
+  {path: 'transacciones', component:TransaccionesComponent},
+  {path: 'compras', component:ComprasProveedorComponent},
+  {path:'envios', component:EnviosComponent}
 ];
 
 @NgModule({

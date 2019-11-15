@@ -101,7 +101,7 @@ export interface IDevoluciones{
   idProducto:number;
 }
 
-export interface ITransaccionesVentas{
+export interface IVentas{
   idVenta:number;
   montoSinIVA:number;
   IVA:number;
@@ -116,7 +116,7 @@ export interface ITransaccionesVentas{
   tipoPago:string;
 }
 
-export interface ITransaccionesCompras{
+export interface ICompras{
   idCompra: number;
   montoTotal:number;
   fechaRegistro:string;
@@ -125,6 +125,54 @@ export interface ITransaccionesCompras{
   nombreProducto:string;
   cantidadProducto:number;
 }
+
+export interface IEnvios{
+  idEnvio:number;
+  direccion:string;
+  ciudad:string;
+  observaciones:string;
+  idVenta:number;
+  medioEnvio:string;
+}
+
+export interface IProductosCompras{
+  idProducto: number;
+  cantidadProducto: number;
+  nombreProducto:string;
+  precioUnitario:string;
+}
+
+export interface IComprasProveedor{
+  idCompra:number;
+  fechaRegistro:string;
+  cantidadProducto:number;
+}
+
+
+export interface IVentasCarrito{
+  idVenta:number;
+  fechaRegistro:string;
+  cantidadTotalProductos:number;
+}
+
+export interface IProductosCarrito{
+  idProducto:number;
+  cantidadProductos:number;
+  nombreProducto:string;
+  precioUnitario:string;
+}
+
+
+export interface IMetodosPagoCarrito{
+  idMetodoPago:number;
+}
+
+export interface  IAccesos{
+  accion:string;
+  idUsuario:number;
+}
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -326,10 +374,48 @@ export class ApiService {
     return this.http.get('http://localhost:3000/ventas/listarVentas',{headers:this.headers});
   }
 
+  public agregarVenta(idCliente:number,idUsuario:number, pago:number, productos:IProductosCarrito[], metodoPago:IMetodosPagoCarrito[]){
+    console.log("en el servicio: ", idCliente,"\n", idUsuario,"\n", pago,"\n", productos,"\n", metodoPago)
+    return this.http.post('http://localhost:3000/ventas/agregarVenta',{idCliente, idUsuario, pago, productos, metodoPago},{headers:this.headers});
+  }
+
+
+
   // METODOS QUE CONTIENEN LA PETICIÓN PARA LISTAR LAS COMPRAS
   public listarCompras(){
     return this.http.get('http://localhost:3000/compras/listarCompras',{headers:this.headers});
   }
+
+  public agregarCompra(montoTotal:number, idProveedor:number, idUsuario:number, productos:IProductosCompras[]){
+    return this.http.post('http://localhost:3000/compras/agregarCompra',{montoTotal, idProveedor, idUsuario, productos},{headers:this.headers});
+  }
+
+
+  // METODOS QUE CONTIENEN LOS DIFERENTES TIPOS DE PETICIONES DEL MODULO DE ENVIOS
+  public listarEnvios(){
+    return this.http.get('http://localhost:3000/envios/listarEnvios',{headers:this.headers});
+  }
+
+  public agregarEnvio(direccion:string, ciudad:string, observaciones:string, idVenta:number,idViaEnvio:number){
+    return this.http.post('http://localhost:3000/envios/agregarEnvio',{direccion, ciudad,observaciones,idVenta,idViaEnvio},{headers:this.headers});
+  }
+
+
+  // METODOS QUE CONTIENEN LOS DIFERENTES TIPOS DE PETICIONES DEL MODULO DE Bitacora de accesos
+  public listarAccesos(){
+    return this.http.get('http://localhost:3000/accesos/listarAccesos',{headers:this.headers});
+  }
+
+  public agregarAcceso(accion:string, idUsuario:number){
+    return this.http.post('http://localhost:3000/accesos/agregarAcceso',{accion,idUsuario},{headers:this.headers});
+  }
+
+  
+
+
+
+
+
 
 
 }

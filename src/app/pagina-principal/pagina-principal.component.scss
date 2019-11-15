@@ -1,10 +1,12 @@
 .fondo{
-  background-color: #f4be60;;
-    background-repeat: no-repeat;
-    background-attachment: scroll;
-    background-position: top;
-    background-size: cover;
-  }
+  background: url('../../assets/img/fondo10.jpg');
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-position: top;
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
+}
 
 .logoPaginas{
     margin-top: 20px;
@@ -30,10 +32,10 @@
   }
 
   .card {
-    background-color: rgba(255, 165, 0, 0.5);
+    background-color: rgba(11, 28, 53, 0.15);
     width: 950px;
-    margin: 50px;
-   
+    margin: 100px;
+
 }
 
 .main-div{
@@ -47,7 +49,7 @@ mat-chip {
   max-height: 200px;
   font-size: 30px;
   padding: 40px;
-  background-color: rgba(39, 38, 38, 0.5);
+  background-color: rgba(30, 45, 62, 0.94);
 }
 
 mat-icon{
@@ -55,5 +57,5 @@ mat-icon{
 }
 
 .colorMatChip{
-  background-color: rgba(38, 38, 38, 0.4);
+  background-color: rgba(30, 45, 62, 0.94);
 }

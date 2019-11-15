@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {ApiService} from '../api.service';
 import { IProductosMasVendidos } from '../api.service';
@@ -16,7 +17,6 @@ export class ReportesComponent implements OnInit {
   public arregloProductosMasVendidos:IProductosMasVendidos[];
   public arregloVendedoresMasVentas:IVendedoresMasVentas[];
   public arregloProductoStockMinimo:IProductoStockMinimo[];
-  public arregloUtilidad : IUtilidad[];
 
   displayedColumns: string[] = ['idProducto', 'Producto','TotalVentas'];
   dataSource:MatTableDataSource<IProductosMasVendidos>;
@@ -29,14 +29,15 @@ export class ReportesComponent implements OnInit {
 
   dcUtilidad = ['MontoTotalVentas','MontoTotalCompras','Utilidad'];
   dsUtilidad:MatTableDataSource<IUtilidad>;
-  //dataSource: MatTableDataSource<TableRecord> = new MatTableDataSource([])
+
+  @ViewChild('MatPaginatorProductosStockMinimo', {static: true}) paginatorProductosStockMinimo: MatPaginator;
+  @ViewChild('MatPaginatorUtilidad', {static: true}) paginatorUtilidad: MatPaginator;
 
 
   constructor(public API:ApiService) {
     this.arregloProductosMasVendidos=[];
     this.arregloVendedoresMasVentas=[];
     this.arregloProductoStockMinimo=[];
-    this.arregloUtilidad=[];
   }
 
   //listar productosMasVendidos
@@ -74,6 +75,9 @@ export class ReportesComponent implements OnInit {
         console.log("Exito"+JSON.stringify(success));
         this.arregloProductoStockMinimo=success.respuesta;
         this.dsProductoStockMinimo = new MatTableDataSource(this.arregloProductoStockMinimo);
+
+        this.dsProductoStockMinimo.paginator = this.paginatorProductosStockMinimo;
+
       },
       (error)=>{
         console.log("Lo sentimos"+error);
@@ -81,24 +85,31 @@ export class ReportesComponent implements OnInit {
     );
   }
 
-  /*//listar utilidad
-  public utilidad(){
-  this.API.utilidad().subscribe(
-  (success:any)=>{
-  alert("Exito"+success);
-  public ventas [0],[1]
 
-  this.arregloUtilidad=success.respuesta;
-  this.dsUtilidad = new MatTableDataSource([this.arregloUtilidad]);
-},
-(error)=>{
-console.log("Lo sentimos"+error);
-});
-}*/
-ngOnInit() {
-  this.productosMasVendidos();
-  this.vendedoresMasVentas();
-  this.productoStockMinimo();
-  //this.utilidad();
-}
+  //listar utilidad
+  public utilidad(){
+    this.API.utilidad().subscribe(
+      (success:any)=>{
+        alert("Exito"+success);
+        let ventas = success.respuesta[0][0].MontoTotalVentas;
+        let compras = success.respuesta[1][0].MontoTotalCompras;
+        let utilidad = success.respuesta[2][0].Utilidad;
+
+        let arregloUtilidad:IUtilidad[]= [{MontoTotalVentas:ventas, MontoTotalCompras:compras, Utilidad:utilidad}];
+        this.dsUtilidad = new MatTableDataSource(arregloUtilidad);
+        this.dsUtilidad.paginator = this.paginatorUtilidad;
+
+
+      },
+      (error)=>{
+        console.log("Lo sentimos"+error);
+      }
+    );
+  }
+  ngOnInit() {
+    this.productosMasVendidos();
+    this.vendedoresMasVentas();
+    this.productoStockMinimo();
+    this.utilidad();
+  }
 }

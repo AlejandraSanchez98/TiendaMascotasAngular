@@ -75,7 +75,7 @@ h1{
 }
 
 .cardTab{
-  background-color: #1a566d0d;
+  background-color: #243142f2;
   border-color: #091c2d;
   margin-bottom: 10px;
   margin-left: 130px;
@@ -91,4 +91,10 @@ h1{
 :host ::ng-deep .mat-sort-header-container {
     display: flex;
     justify-content: center;
+}
+
+::ng-deep .mat-tab-label{
+  color: white;
+  background-color:#161931fc;
+  font-size: 15px;
 }

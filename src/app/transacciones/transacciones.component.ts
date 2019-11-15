@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {ApiService} from '../api.service';
-import { ITransaccionesVentas } from '../api.service';
-import { ITransaccionesCompras } from '../api.service';
+import { IVentas } from '../api.service';
+import { ICompras } from '../api.service';
 
 
 @Component({
@@ -11,14 +11,14 @@ import { ITransaccionesCompras } from '../api.service';
   styleUrls: ['./transacciones.component.scss']
 })
 export class TransaccionesComponent implements OnInit {
-  public arregloTransaccionesVentas:ITransaccionesVentas[];
-  public arregloTransaccionesCompras:ITransaccionesCompras[];
+  public arregloTransaccionesVentas:IVentas[];
+  public arregloTransaccionesCompras:ICompras[];
 
   displayedColumns: string[] = ['idVenta', 'montoSinIVA','IVA','montoConIVA','cantidadTotalProductos','pago','cambio','fechaRegistro','nombreProducto','nombreUsuario','nombreCliente','tipoPago'];
-  dataSource:MatTableDataSource<ITransaccionesVentas>;
+  dataSource:MatTableDataSource<IVentas>;
 
   displayedColumnsCompras: string[] = ['idCompra', 'montoTotal','fechaRegistro','nombreProveedor','nombreUsuario','nombreProducto','cantidadProducto'];
-  dsCompras:MatTableDataSource<ITransaccionesCompras>;
+  dsCompras:MatTableDataSource<ICompras>;
 
 
 

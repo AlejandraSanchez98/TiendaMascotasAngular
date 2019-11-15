@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 import {ApiService} from '../api.service';
 import { IProductos } from '../api.service';
+import { ICategoria } from '../api.service';
 
 
 @Component({
@@ -17,23 +17,33 @@ import { IProductos } from '../api.service';
 export class ProductosComponent implements OnInit {
   public arregloProductos:IProductos[];
   public arregloProductosSelect:IProductos[];
+  public arregloCategorias:ICategoria[];
+
 
   public modal: NgbModalRef;
   public frmProductos:FormGroup;
+  public frmCategorias:FormGroup;
   public formValid:Boolean=false;
   public titulo:string;
 
   displayedColumns: string[] = ['idProducto', 'nombreProducto', 'precioUnitario', 'descripcionProducto', 'stock', 'nombreCategoria','acciones'];
   dataSource: MatTableDataSource<IProductos>;
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  displayedColumnsCategorias: string[] = ['idCategoria', 'nombreCategoria', 'subCategoria', 'descripcion','acciones'];
+  dsCategorias:MatTableDataSource<ICategoria>;
+
+
+  @ViewChild('MatPaginatorProductos', {static: true}) paginatorProductos: MatPaginator;
+  @ViewChild('MatPaginatorCategoria', {static: true}) paginatorCategoria: MatPaginator;
+
 
   constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
     //Inizializacion
     this.titulo="";
     this.arregloProductos=[];
     this.arregloProductosSelect=[];
+    this.arregloCategorias=[];
+
 
     //INICIALIZACION (CONSTRUCCION) DEL FORMGROUP, SOLO SE AGREGARAN ESTOS DATOS YA QUE SON LOS ESPECIFICADOS EN EL MODAL
     this.frmProductos= this.formBuilder.group({
@@ -44,14 +54,21 @@ export class ProductosComponent implements OnInit {
       stock:["",Validators.required],
       idCategoria:["",Validators.required]
     });
+
+    this.frmCategorias= this.formBuilder.group({
+      idCategoria:[""],
+      nombreCategoria:["",Validators.required],
+      subCategoria:["",Validators.required],
+      descripcion:["",Validators.required]
+    });
   }
 
-  //Abrir modal
+  //Abrir modal Productos
   public openAgregar(content) {
     this.modal= this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
     this.titulo="Agregar Producto"
   }
-
+  //Abrir modal  Editar Producto
   public openEditar(content, idProducto: number, nombreProducto: string, precioUnitario:number, descripcionProducto:string, stock:number, idCategoria:number){
     this.modal= this.modalService.open(content,{ariaLabelledBy:'modal-basic-title'});
     this.titulo = "Editar Producto";
@@ -122,7 +139,7 @@ export class ProductosComponent implements OnInit {
   }
 
   //listar el select de categorias
-  public listarCategorias(){
+  public listarCategoriasSelect(){
     this.API.listarCategorias().subscribe(
       (success:any)=>{
         return this.arregloProductosSelect = success.respuesta;
@@ -140,8 +157,7 @@ export class ProductosComponent implements OnInit {
         console.log("Exito"+JSON.stringify(success));
         this.dataSource = new MatTableDataSource(this.arregloProductos=success.respuesta);
 
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginatorProductos;
       },
       (error)=>{
         console.log("Lo sentimos"+error);
@@ -149,19 +165,108 @@ export class ProductosComponent implements OnInit {
     );
   }
 
+  //Abrir modal categorias
+  public openAgregarCategoria(contentCategoria) {
+    this.modal= this.modalService.open(contentCategoria, {ariaLabelledBy: 'modal-basic-title'});
+    this.titulo="Agregar Categoria"
+  }
 
+  public openEditarCategoria(contentCategoria, idCategoria: number, nombreCategoria: string, subCategoria:string, descripcion:string){
+    this.modal= this.modalService.open(contentCategoria,{ariaLabelledBy:'modal-basic-title'});
+    this.titulo = "Editar Categoria";
+
+    this.frmCategorias.controls['idCategoria'].setValue(idCategoria);
+    this.frmCategorias.controls['nombreCategoria'].setValue(nombreCategoria);
+    this.frmCategorias.controls['subCategoria'].setValue(subCategoria);
+    this.frmCategorias.controls['descripcion'].setValue(descripcion);
+  }
+
+  //DAR DE ALTA SEGUN LOS DATOS DEL MODAL //anteriormente se llamaba darAlta
+  public ejecutarPeticionCategoria(){
+    //DATOS PROVENIENTES DEL FORMGROUP
+    let nombreCategoriaForm = this.frmCategorias.get('nombreCategoria').value;
+    let subCategoriaForm = this.frmCategorias.get('subCategoria').value;
+    let descripcionForm = this.frmCategorias.get('descripcion').value;
+    //EVITAMOS CREAR 2 MODALES, SIMPLEMENTE USAMOS 1 MODAL Y TIENE SU FUNCION SEGUN SU NOMBRE
+    if (this.titulo == "Agregar Categoria") {
+
+      //SE AGREGAN REGISTROS MEDIANTE POST
+      this.API.agregarCategoria(nombreCategoriaForm, subCategoriaForm, descripcionForm).subscribe(
+        (success: any)=>{
+          alert("exito: "+ JSON.stringify(success));
+          location.reload();
+        },
+        (error)=>{
+          console.log("Lo siento: "+error);
+        }
+      );
+      this.modal.close();
+    }
+    if (this.titulo == "Editar Categoria") {
+      //OBTENEMOS LOS VALORES DEL FORMULARIO
+      let idCategoria = this.frmCategorias.get('idCategoria').value; //recuerda que el id esta oculto asi que el user no podra editarlo
+      let nombreCategoriaForm = this.frmCategorias.get('nombreCategoria').value;
+      let subCategoriaForm = this.frmCategorias.get('subCategoria').value;
+      let descripcionForm = this.frmCategorias.get('descripcion').value;
+
+      //EJECUTANDO PETICION PUT
+      this.API.editarCategoria(idCategoria,nombreCategoriaForm,subCategoriaForm,descripcionForm).subscribe(
+        (success: any)=>{
+          console.log("Registro editado: "+success);
+          location.reload();//recarga la pagina para poder notar lo cambios
+        },
+        (error)=>{
+          console.log("Lo siento: "+error);
+        }
+      );
+    }
+  }//----------------------fin operaciones-------------------------------------------------------------------
+
+  //eliminar categoria
+  public eliminarCategoria(idCategoria:number){
+    this.API.eliminarCategoria(idCategoria).subscribe(
+      (success:any)=>{
+        console.log("Exito"+success);
+        location.reload();
+      },
+      (error)=>{
+        console.log("Error"+ error);
+      }
+    )
+  }
+
+  //listar categorias
+  public  listarCategorias(){
+    this.API.listarCategorias().subscribe(
+      (success:any)=>{
+        console.log("Exito"+JSON.stringify(success));
+        this.dsCategorias = new MatTableDataSource(this.arregloCategorias=success.respuesta);
+
+        this.dsCategorias.paginator = this.paginatorCategoria;
+      },
+      (error)=>{
+        console.log("Lo sentimos"+error);
+      }
+    );
+  }
 
   ngOnInit() {
     this.listarProductos();
+    this.listarCategoriasSelect();
     this.listarCategorias();
 
   }
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.dsCategorias.filter = filterValue.trim().toLowerCase();
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+
+    if ( this.dsCategorias.paginator){
+      this.dsCategorias.paginator.firstPage();
     }
   }
 }

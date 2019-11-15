@@ -3,9 +3,6 @@
     <mat-sidenav #sidenav mode="push" [(opened)]="opened" style="background-color: rgba(28, 34, 37, 0.62);">
       <img class="logoPaginas" src="../../assets/img/logoPaginas.png">
       <mat-list role="list" style="margin-top: 30px;">
-        <mat-list-item role="listitem" routerLink="/categoria">
-          <mat-icon>category</mat-icon>&nbsp;&nbsp;Categoria
-        </mat-list-item>
         <mat-list-item role="listitem" routerLink="/clientes">
           <mat-icon>group</mat-icon>&nbsp;&nbsp;Clientes
         </mat-list-item>
@@ -19,22 +16,22 @@
           <mat-icon>storefront</mat-icon>&nbsp;&nbsp;Productos
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/metodoPago">
-          <mat-icon>local_atm</mat-icon>&nbsp;&nbsp; Metodo De Pago
+          <mat-icon>local_atm</mat-icon>&nbsp;&nbsp;Metodo De Pago
         </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/tipoDevolucion">
-          <mat-icon>settings_backup_restore</mat-icon>&nbsp;&nbsp; Tipo De Devolución
-        </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/viaEnvio">
-          <mat-icon>commute</mat-icon>&nbsp;&nbsp; Medio De Envio
-        </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/ventas">
-          <mat-icon>credit_card</mat-icon>&nbsp;&nbsp;Ventas
+        <mat-list-item role="listitem" routerLink="/Transacciones">
+          <mat-icon>sync_alt</mat-icon>&nbsp;&nbsp;Transacciones
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/devoluciones">
           <mat-icon>rotate_90_degrees_ccw</mat-icon>&nbsp;&nbsp;Devoluciones
         </mat-list-item>
+        <mat-list-item role="listitem" routerLink="/compras">
+          <mat-icon>local_atm</mat-icon>&nbsp;&nbsp;Compras Proveedor
+        </mat-list-item>
         <mat-list-item role="listitem" routerLink="/carrito">
           <mat-icon>shopping_cart</mat-icon>&nbsp;&nbsp;Carrito
+        </mat-list-item>
+        <mat-list-item role="listitem" routerLink="/envios">
+          <mat-icon>storefront</mat-icon>&nbsp;&nbsp;Envios
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/reportes">
           <mat-icon>assignment</mat-icon>&nbsp;&nbsp;Reportes
@@ -99,13 +96,13 @@
         </div>
       </div>
       <ng-template #content let-modal>
-        <div class="modal-header" style="background-color: #272625;">
+        <div class="modal-header" style="background-color: #214171;">
           <h3 class="modal-title" id="modal-basic-title" style="color: white;"> {{titulo}} </h3>
           <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" style="background-color: rgba(0, 0, 0, 0.7);">
+        <div class="modal-body" style="background-color:rgba(14, 28, 45, 0.72);">
           <form class="form" [formGroup]="frmMetodosPago">
             <input formControlName="idMetodoPago" type="hidden">
             <mat-form-field class="example-full-width">
@@ -114,7 +111,7 @@
             <label *ngIf="frmMetodosPago.controls.tipoPago.invalid && frmMetodosPago.controls.tipoPago.dirty">Este campo es obligatorio</label>
           </form>
         </div>
-        <div class="modal-footer" style="background-color: rgba(255,150,0,0.9);">
+        <div class="modal-footer" style="background-color: #214171;">
           <button mat-stroked-button [disabled]="frmMetodosPago.invalid" (click)="ejecutarPeticion()" class="btnAceptar">Aceptar</button>
         </div>
       </ng-template>

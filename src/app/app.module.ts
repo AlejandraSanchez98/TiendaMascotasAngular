@@ -38,6 +38,8 @@ import { MetodoPagoComponent } from './metodo-pago/metodo-pago.component';
 import { TipoDevolucionComponent } from './tipo-devolucion/tipo-devolucion.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { TransaccionesComponent } from './transacciones/transacciones.component';
+import { EnviosComponent } from './envios/envios.component';
+import { ComprasProveedorComponent } from './compras-proveedor/compras-proveedor.component';
 
 
 @NgModule({
@@ -58,7 +60,9 @@ import { TransaccionesComponent } from './transacciones/transacciones.component'
     MetodoPagoComponent,
     TipoDevolucionComponent,
     ReportesComponent,
-    TransaccionesComponent
+    TransaccionesComponent,
+    EnviosComponent,
+    ComprasProveedorComponent
   ],
   imports: [
     BrowserModule,

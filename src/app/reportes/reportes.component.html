@@ -3,9 +3,6 @@
     <mat-sidenav #sidenav mode="push" [(opened)]="opened" style="background-color:rgba(28, 34, 37, 0.62);">
       <img class="logoPaginas" src="../../assets/img/logoPaginas.png">
       <mat-list role="list" style="margin-top: 30px;">
-        <mat-list-item role="listitem" routerLink="/categoria">
-          <mat-icon>category</mat-icon>&nbsp;&nbsp;Categoria
-        </mat-list-item>
         <mat-list-item role="listitem" routerLink="/clientes">
           <mat-icon>group</mat-icon>&nbsp;&nbsp;Clientes
         </mat-list-item>
@@ -19,22 +16,22 @@
           <mat-icon>storefront</mat-icon>&nbsp;&nbsp;Productos
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/metodoPago">
-          <mat-icon>local_atm</mat-icon>&nbsp;&nbsp; Metodo De Pago
+          <mat-icon>local_atm</mat-icon>&nbsp;&nbsp;Metodo De Pago
         </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/tipoDevolucion">
-          <mat-icon>settings_backup_restore</mat-icon>&nbsp;&nbsp; Tipo De Devolución
-        </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/viaEnvio">
-          <mat-icon>commute</mat-icon>&nbsp;&nbsp; Medio De Envio
-        </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/ventas">
-          <mat-icon>credit_card</mat-icon>&nbsp;&nbsp;Ventas
+        <mat-list-item role="listitem" routerLink="/Transacciones">
+          <mat-icon>sync_alt</mat-icon>&nbsp;&nbsp;Transacciones
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/devoluciones">
           <mat-icon>rotate_90_degrees_ccw</mat-icon>&nbsp;&nbsp;Devoluciones
         </mat-list-item>
+        <mat-list-item role="listitem" routerLink="/compras">
+          <mat-icon>local_atm</mat-icon>&nbsp;&nbsp;Compras Proveedor
+        </mat-list-item>
         <mat-list-item role="listitem" routerLink="/carrito">
           <mat-icon>shopping_cart</mat-icon>&nbsp;&nbsp;Carrito
+        </mat-list-item>
+        <mat-list-item role="listitem" routerLink="/envios">
+          <mat-icon>storefront</mat-icon>&nbsp;&nbsp;Envios
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/reportes">
           <mat-icon>assignment</mat-icon>&nbsp;&nbsp;Reportes
@@ -134,7 +131,7 @@
                   <tr mat-header-row *matHeaderRowDef="dcProductoStockMinimo"></tr>
                   <tr mat-row *matRowDef="let row; columns: dcProductoStockMinimo;"></tr>
                 </table>
-                <mat-paginator [length]="5" [pageSize]="5" [pageSizeOptions]="[5]" style="background-color: #141719;"></mat-paginator>
+                <mat-paginator #MatPaginatorProductosStockMinimo [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: #141719;"></mat-paginator>
               </div>
             </div>
           </mat-tab>
@@ -160,7 +157,7 @@
                   <tr mat-header-row *matHeaderRowDef="dcUtilidad"></tr>
                   <tr mat-row *matRowDef="let row; columns: dcUtilidad;"></tr>
                 </table>
-                <mat-paginator [length]="5" [pageSize]="5" [pageSizeOptions]="[5]" style="background-color: #141719;"></mat-paginator>
+                <mat-paginator #MatPaginatorUtilidad [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: #141719;"></mat-paginator>
               </div>
             </div>
           </mat-tab>
