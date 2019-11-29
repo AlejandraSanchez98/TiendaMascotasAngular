@@ -15,15 +15,17 @@ export class LoginjwtService {
       if(resp.estatus > 0){
         window.localStorage.setItem("nombreUsuario",usuario.toLowerCase());//almacenamos variables en LS
         localStorage.setItem('token',resp.respuesta); //almacenamos el token en localstorage NOTA respuesta viene del servidor y contiene el token
-        this.router.navigate(['/paginaPrincipal']);
+
+        this.router.navigate(['/carrito']);
       }
       else
       {
         alert("Usuario Incorrecto");
       }
     });
-
   }
+
+
 //CERRAMOS SESION
   public logout() {
     localStorage.removeItem('token');

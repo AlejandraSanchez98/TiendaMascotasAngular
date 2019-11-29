@@ -6,30 +6,21 @@
       </mat-card-header>
       <img class="titulo" src="../../assets/img/titulo.png">
       <mat-card-content>
-        <form class="form">
+        <form class="form" style="margin-top: 70px;">
           <mat-form-field class="example-full-width">
-            <mat-icon matPrefix>person</mat-icon>
+            <mat-icon matPrefix style="color:#fbfafa">person</mat-icon>
             <input matInput type="text" placeholder="Nombre de usuario" [formControl]="nombreUsuario" (keyup)="validarFormulario()"  >
           </mat-form-field>
           <label *ngIf="nombreUsuario.invalid && nombreUsuario.dirty">Este campo es obligatorio</label>
           <mat-form-field class="example-full-width" >
-            <mat-icon matPrefix>lock</mat-icon>
+            <mat-icon matPrefix style="color: #fbfafa">lock</mat-icon>
             <input matInput type="password" placeholder="Password"  [formControl]="password" (keyup)="validarFormulario()">
           </mat-form-field>
           <label *ngIf="password.invalid && password.dirty">Este campo es obligatorio</label>
-          <mat-form-field class="selectTipo">
-            <mat-icon matPrefix>people</mat-icon>
-            <mat-label>&nbsp;Tipo</mat-label>
-            <mat-select>
-              <mat-option *ngFor="let rol of roles" [value]=" rol.value">
-                {{rol.viewValue}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
         </form>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-stroked-button class="btnIniciarSesion" [disabled]="!formValid" (click)="login()"> Iniciar Sesión </button>
+        <button mat-stroked-button class="btnIniciarSesion" [disabled]="!formValid" (click)="login()" style="color: #152956;"> <b>INICIAR SESIÓN</b> </button>
       </mat-card-actions>
     </mat-card>
   </div>

@@ -95,12 +95,13 @@ export class DevolucionesComponent implements OnInit {
     this.API.agregarDevolucion(montoDevolucionForm,motivoDevolucionForm,idClienteForm,idTipoDevolucionForm,idProductoForm).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
-        location.reload();
+        this.listarDevoluciones();
       },
       (error)=>{
         console.log("Error"+ error);
       }
-    )
+    );
+    this.modal.close();
   }
 
 
@@ -167,7 +168,7 @@ export class DevolucionesComponent implements OnInit {
       this.API.agregarTipoDevolucion(tipoDevolucionForm, descripcionForm).subscribe(
         (success: any)=>{
           alert("exito: "+ JSON.stringify(success));
-          location.reload();
+          this.listarTiposDevoluciones();
         },
         (error)=>{
           console.log("Lo siento: "+error);
@@ -185,12 +186,13 @@ export class DevolucionesComponent implements OnInit {
       this.API.editarTipoDevolucion(idTipoDevolucion,tipoDevolucionForm,descripcionForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
-          location.reload();//recarga la pagina para poder notar lo cambios
+          this.listarTiposDevoluciones();//recarga la pagina para poder notar lo cambios
         },
         (error)=>{
           console.log("Lo siento: "+error);
         }
       );
+      this.modal.close();
     }
   }//----------------------fin operaciones-------------------------------------------------------------------
 
@@ -199,7 +201,7 @@ export class DevolucionesComponent implements OnInit {
     this.API.eliminarTipoDevolucion(idTipoDevolucion).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
-        location.reload();
+        this.listarTiposDevoluciones();
       },
       (error)=>{
         console.log("Error"+ error);

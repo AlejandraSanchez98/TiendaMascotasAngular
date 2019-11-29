@@ -1,12 +1,3 @@
-.fondo{
-  background: url('../../assets/img/fondo47.jpg');
-  background-repeat: no-repeat;
-  background-attachment: scroll;
-  background-position: top;
-  background-size: cover;
-  height: 100vh;
-  width: 100vw;
-}
 .example-container {
   position: absolute;
   top: 0;
@@ -25,7 +16,7 @@
 
 table {
   width: 100%;
-  background-color:rgba(30, 35, 41, 0.6);
+  background-color:rgba(130, 154, 224, 0.7);
 }
 
 .mat-form-field {
@@ -38,12 +29,18 @@ td, th {
 }
 
 th{
-  color: #5daed4;
-  font-size: 16px;
+  font-weight: bold;
+  color:#002255d9;
+  font-size: 17px;
+  background-color: #eeeef9;
+}
+td{
+  color:#1b2a3a;
+  background-color: #eeeef9;
 }
 
 .toolbar{
-  background-color: #174677f0;
+  background-color: #2d5277;
   width: 100%;
   height: 8%;
   position: fixed;
@@ -52,20 +49,19 @@ th{
 
 h1{
   text-align: center;
-  margin: 60px;
+  margin-top: 30px;
+  margin-bottom: 20px;
 }
 
 .card {
-  background-color: #1a566d0d;
-  border-color: #091c2d;
-  margin-bottom: 10px;
-  margin-bottom: 10px;
+  background-color:#f9fafb;
+  margin-bottom: 20px;
 }
 
 .btnAceptar{
-  color: white;
-  border-color: white;
-  width: 30%;
+  color: #2d5277;
+  border-color: #2d5277;
+  width: 10%;
 }
 
 
@@ -74,12 +70,15 @@ h1{
 }
 
 .cardTab{
-  background-color: #243142f2;
+  background-color: #ffffffc7;
   border-color: #091c2d;
   margin-bottom: 10px;
   margin-left: 40px;
   margin-right: 40px;
-  margin-top: 50px;
+  margin-top:30px;
+}
+.close{
+  color: #f8f9fa;
 }
 
 .tablaTab1{
@@ -94,7 +93,28 @@ h1{
 }
 
 ::ng-deep .mat-tab-label{
-  color: white;
-  background-color:#161931fc;
+  color: #0d2946;
+  background-color: #eff0f9fc;
   font-size: 15px;
+}
+
+::ng-deep.mat-form-field-underline { /*cambia el color del subrayado*/
+  background-color: #052027 !important;
+  border-color: #052027 !important;
+}
+
+::ng-deep .mat-select-value {
+    color: #002235;
+}
+
+::ng-deep .mat-select-arrow  {
+    color: #002235;
+}
+
+::ng-deep .mat-paginator, .mat-paginator-page-size .mat-select-trigger{
+  color: #002235;
+}
+
+::ng-deep .mat-icon-button[disabled][disabled]{
+  color: #002235;
 }

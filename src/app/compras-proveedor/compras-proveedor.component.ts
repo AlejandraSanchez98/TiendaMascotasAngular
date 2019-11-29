@@ -12,7 +12,7 @@ import { IComprasProveedor } from '../api.service';
   styleUrls: ['./compras-proveedor.component.scss']
 })
 export class ComprasProveedorComponent implements OnInit {
-  displayedColumns: string[] = ['idCompra', 'fechaRegistro', 'cantidadTotalProductos'];//columnas tabla transacciones
+  displayedColumns: string[] = ['idCompra', 'fechaRegistro', 'cantidadProducto'];//columnas tabla transacciones
   displayedColumnsProductos: string[] = ['nombreProducto','precioUnitario','cantidadProducto'];//columnas tabla transacciones
   public dsCompras:MatTableDataSource<IComprasProveedor>; //datasource para transacciones
   public dsProductos:MatTableDataSource<IProductosCompras>; //dataSource para productos
@@ -22,7 +22,7 @@ export class ComprasProveedorComponent implements OnInit {
   public arregloUsuariosSelect: IUsuarios[] = [];
   public arregloProveedoresSelect: IProveedores[] = [];
   public arregloCompras:IComprasProveedor[] = [];
-  public ultimaVenta:any;
+  public ultimaCompra:any;
 
 
   constructor(public formBuilder: FormBuilder, public API: ApiService) {
@@ -94,9 +94,9 @@ public agregarProductos(){
 public agregarCompra(){
  let idUsuarioForm:number = 0,idProveedorForm:number = 0,montoTotalForm: number = 0;
   let arregloProductosForm:any[] = []
-  idUsuarioForm = this.frmCompras.get('idUsuario').value;
-  idProveedorForm = this.frmCompras.get('idProveedor').value;
   montoTotalForm = this.frmCompras.get('montoTotal').value;
+  idProveedorForm = this.frmCompras.get('idProveedor').value;
+  idUsuarioForm = this.frmCompras.get('idUsuario').value;
   arregloProductosForm = this.arregloProductos;
   if (arregloProductosForm.length == 0) {
       alert("entro");
@@ -104,11 +104,16 @@ public agregarCompra(){
   }
   alert("cte: "+idUsuarioForm+" pdor: "+idProveedorForm+" monto: "+montoTotalForm+" arrpdtos: "+JSON.stringify(arregloProductosForm));
 
-  this.API.agregarCompra(idUsuarioForm,idProveedorForm,montoTotalForm,arregloProductosForm).subscribe(
+  this.API.agregarCompra(montoTotalForm,idProveedorForm,idUsuarioForm,arregloProductosForm).subscribe(
     (success:any)=>{
+      console.log("arreglo productos", arregloProductosForm.length)
+      //console.log("entro con exito!")
+      console.log("contenido de success: ",success)
       if(success.estatus > 0){
-        console.log("resultado",success.respuesta);
-        this.listarCompras();
+        console.log("resultado"+success.respuesta);
+        setTimeout(()=>{
+          this.listarCompras();
+        },500)
       }else if(success.estatus < 0) {
           alert("No cuentas con el dinero suficiente | verifica tu pago");
       }else{
@@ -128,10 +133,10 @@ public listarCompras(){
     (success:any)=>{
       this.arregloCompras = success.respuesta;
       alert("arreglot: "+JSON.stringify(this.arregloCompras));
-      this.ultimaVenta = this.arregloCompras[this.arregloCompras.length - 1];
-      alert("ultima venta: "+JSON.stringify(this.ultimaVenta))
-      this.dsCompras = new MatTableDataSource([this.ultimaVenta]); //[prueba] convierto a array la variable prueba para que pueda ser iterada
-      this.arregloCompras = [this.ultimaVenta];//aplico simbolo iterador para que pueda iterarlo en un loop
+      this.ultimaCompra = this.arregloCompras[this.arregloCompras.length - 1];
+      alert("ultima venta: "+JSON.stringify(this.ultimaCompra))
+      this.dsCompras = new MatTableDataSource([this.ultimaCompra]); //[prueba] convierto a array la variable prueba para que pueda ser iterada
+      this.arregloCompras = [this.ultimaCompra];//aplico simbolo iterador para que pueda iterarlo en un loop
     },
     (error)=>{
       console.log("algo ocurrio: ",error)

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatPaginator,MatPaginatorIntl} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
@@ -8,14 +8,33 @@ import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 import {ApiService} from '../api.service';
 import { IProveedores } from '../api.service';
 
+export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  showPlus: boolean;
+
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (length == 0 || pageSize == 0) { return `0 de ${length}`; }
+
+    length = Math.max(length, 0);
+
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+
+    return `${startIndex + 1} - ${endIndex} de ${length}${this.showPlus ? '+' : ''}`;
+  }
+}
+
 
 @Component({
   selector: 'app-proveedores',
   templateUrl: './proveedores.component.html',
-  styleUrls: ['./proveedores.component.scss']
+  styleUrls: ['./proveedores.component.scss'],
+  providers: [{ provide: MatPaginatorIntl, useValue: new MyCustomPaginatorIntl() }]
+
 })
 export class ProveedoresComponent implements OnInit {
-
+  myCustomPaginatorIntl: MyCustomPaginatorIntl;
   public arregloProveedores:IProveedores[];
   public modal: NgbModalRef;
   public idProveedor:number;
@@ -31,8 +50,8 @@ export class ProveedoresComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
 
-  constructor(private modalService: NgbModal, public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
-
+  constructor(private modalService: NgbModal, public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl) {
+    this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
     //inicializacion
     this.titulo="";
     this.arregloProveedores=[];
@@ -92,8 +111,8 @@ export class ProveedoresComponent implements OnInit {
       //SE AGREGAN REGISTROS MEDIANTE POST
       this.API.agregarProveedor(nombreProveedorForm, direccionProveedorForm, telefonoProveedorForm, ciudadProveedorForm, emailProveedorForm, RFCProveedorForm, razonSocialForm).subscribe(
         (success: any)=>{
-          alert("exito: "+ JSON.stringify(success));
-          location.reload();
+          console.log("exito: "+ JSON.stringify(success));
+          this.listarProveedores();
         },
         (error)=>{
           console.log("Lo siento: "+error);
@@ -116,12 +135,13 @@ export class ProveedoresComponent implements OnInit {
       this.API.editarProveedor(idProveedor, nombreProveedorForm, direccionProveedorForm,telefonoProveedorForm, ciudadProveedorForm, emailProveedorForm, RFCProveedorForm, razonSocialForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
-          location.reload();//recarga la pagina para poder notar lo cambios
+          this.listarProveedores();//recarga la pagina para poder notar lo cambios
         },
         (error)=>{
           console.log("Lo siento: "+error);
         }
       );
+      this.modal.close();
     }
   }
 
@@ -130,12 +150,13 @@ export class ProveedoresComponent implements OnInit {
     this.API.eliminarProveedor(idProveedor).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
-        location.reload();
+        this.listarProveedores();
       },
       (error)=>{
         console.log("Error"+ error);
       }
-    )
+    );
+    this.modal.close();
   }
 
   //listar categorias
@@ -147,6 +168,8 @@ export class ProveedoresComponent implements OnInit {
 
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.dataSource.paginator._intl.itemsPerPageLabel = "Elementos por página";
+
       },
       (error)=>{
         console.log("Lo sentimos"+error);

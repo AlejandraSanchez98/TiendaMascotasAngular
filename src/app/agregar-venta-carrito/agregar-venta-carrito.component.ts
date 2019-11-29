@@ -14,7 +14,7 @@ import { IMetodosPagoCarrito } from '../api.service';
 })
 export class AgregarVentaCarritoComponent implements OnInit {
   displayedColumns: string[] = ['idVenta', 'fechaRegistro', 'cantidadTotalProductos'];//columnas tabla transacciones
-  displayedColumnsProductos: string[] = ['nombreProducto','precioUnitario','cantidadProductos'];//columnas tabla transacciones
+  displayedColumnsProductos: string[] = ['nombreProducto','precioUnitario','cantidadProductos','acciones'];//columnas tabla transacciones
   public dsVentas:MatTableDataSource<IVentasCarrito>; //datasource para transacciones
   public dsProductos:MatTableDataSource<IProductosCarrito>; //dataSource para productos
   public frmVentas: FormGroup;
@@ -26,15 +26,17 @@ export class AgregarVentaCarritoComponent implements OnInit {
   public arregloMetodosPagoLista: IMetodosPagoCarrito[] = [];
   public arregloVentas:IVentasCarrito[] = [];
   public ultimaVenta:any;
+  public montoAcumulado : number;
 
 
   constructor(public formBuilder: FormBuilder, public API: ApiService) {
+    this.montoAcumulado = 0;
     this.frmVentas = this.formBuilder.group({
         idUsuario:["",Validators.required],
         idCliente:["",Validators.required],
-        pago:["",Validators.required],
+        pago:[""],
         idProducto:["",Validators.required],
-        cantidadProducto:["",Validators.required],
+        cantidadProductos:["",Validators.required],
         idMetodoPago:["",Validators.required]
       });
  }
@@ -95,17 +97,55 @@ public agregarProductos(){
   this.API.listarProductos().subscribe(
     (success:any)=>{
       agregarValorID = this.frmVentas.get('idProducto').value;
-      agregarValorCantidad = this.frmVentas.get('cantidadProducto').value;
-      console.log("id",agregarValorID,"cantidad",agregarValorCantidad);
-      this.arregloProductosTabla.push({idProducto:agregarValorID,cantidadProductos:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
-      this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
-      console.log("insertar productos: ",this.dsProductos);
+      agregarValorCantidad = this.frmVentas.get('cantidadProductos').value;
+      //sumando monto cada que se agrega un producto
+      this.montoAcumulado = this.montoAcumulado + (success.respuesta[0].precioUnitario * agregarValorCantidad);
+
+      if (this.arregloProductosTabla.length>=1) {
+        alert("posicion en arreglo: "+this.arregloProductosTabla[0].cantidadProducto);
+        for (let i = 0; i < this.arregloProductosTabla.length; i++) {
+          if (agregarValorID == this.arregloProductosTabla[i].idProducto) {
+            this.arregloProductosTabla[i].cantidadProducto = this.arregloProductosTabla[i].cantidadProducto + agregarValorCantidad;
+            this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
+          }else{
+            if(i == this.arregloProductosTabla.length -1){
+              this.arregloProductosTabla.push({idProducto:agregarValorID,cantidadProducto:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
+              this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
+              break;
+            }
+          }
+        }
+      }
+      else{
+        this.arregloProductosTabla.push({idProducto:agregarValorID,cantidadProducto:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
+        this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
+        document.getElementById('tablaVentaConcluidaVacia').style.display = "none";
+      }
     },
     (error)=>{
       console.log("algo ocurrio",error)
     }
   );
 }
+
+//eliminar productos de tabla (carrito)
+public eliminarProductosCarrito(objetoProducto:any,indice:number){
+  console.log("producto a eliminar: ",indice-1,);
+  console.log(this.arregloProductosTabla)
+  this.arregloProductosTabla.splice(indice,1);
+  this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
+
+  //hacemos que la eliminacion de un producto afecte tambien al monto $
+  this.API.listarProductos().subscribe(
+    (success:any)=>{
+          this.montoAcumulado = this.montoAcumulado - (success.respuesta[0].precioUnitario  *  objetoProducto.cantidadProducto);
+    },
+    (error)=>{
+      console.log("algo ocurrio",error)
+    }
+  );
+}
+
 
 //almacena los tipos de pago selecionados del checkbox en un arreglo para su posterior uso.
 public agregarMetodosPago(idMetodoPago:number){
@@ -147,11 +187,12 @@ public agregarVenta(){
         console.log("supuestamente fue exitoso ",success.estatus)
         setTimeout(()=>{
           this.listarVentas();
+          this.limpiarFormulario();
         },500)
         //console.log("listando")
         //alert(":respuesta"+success.respuesta);
       }else if(success.estatus < 0) {
-          //alert("No cuentas con el dinero suficiente | verifica tu pago :(");
+          alert("No cuentas con el dinero suficiente | verifica tu pago");
       }else{
         alert("solo manda esto:"+JSON.stringify(success.respuesta));
       }
@@ -180,6 +221,16 @@ public listarVentas(){
     }
   );
 }
+
+//limpiamos el formulario una vez e haya realizado uan venta.
+public limpiarFormulario(){
+  this.frmVentas.reset();
+  this.montoAcumulado = 0;
+
+  this.dsProductos.data=[];
+  this.arregloProductosTabla = [];
+}
+
 
 ngOnInit() {
     this.listarMetodosPago();

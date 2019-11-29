@@ -118,11 +118,6 @@ export interface IVentas{
 
 export interface ICompras{
   idCompra: number;
-  montoTotal:number;
-  fechaRegistro:string;
-  nombreProveedor:string;
-  nombreUsuario:string;
-  nombreProducto:string;
   cantidadProducto:number;
 }
 
@@ -157,7 +152,7 @@ export interface IVentasCarrito{
 
 export interface IProductosCarrito{
   idProducto:number;
-  cantidadProductos:number;
+  cantidadProducto:number;
   nombreProducto:string;
   precioUnitario:string;
 }
@@ -168,6 +163,7 @@ export interface IMetodosPagoCarrito{
 }
 
 export interface  IAccesos{
+  idAcceso:number;
   accion:string;
   idUsuario:number;
 }
@@ -374,6 +370,13 @@ export class ApiService {
     return this.http.get('http://localhost:3000/ventas/listarVentas',{headers:this.headers});
   }
 
+  public listarVentasDetalles(idCompra:number){
+    return this.http.get('http://localhost:3000/ventas/listarVentasDetalles/'+ idCompra,{headers:this.headers});
+  }
+  public listarVentasSinDetalles(){
+    return this.http.get('http://localhost:3000/ventas/listarVentasSinDetalles',{headers:this.headers});
+  }
+
   public agregarVenta(idCliente:number,idUsuario:number, pago:number, productos:IProductosCarrito[], metodoPago:IMetodosPagoCarrito[]){
     console.log("en el servicio: ", idCliente,"\n", idUsuario,"\n", pago,"\n", productos,"\n", metodoPago)
     return this.http.post('http://localhost:3000/ventas/agregarVenta',{idCliente, idUsuario, pago, productos, metodoPago},{headers:this.headers});
@@ -385,7 +388,12 @@ export class ApiService {
   public listarCompras(){
     return this.http.get('http://localhost:3000/compras/listarCompras',{headers:this.headers});
   }
-
+  public listarComprasDetalles(idCompra:number){
+    return this.http.get('http://localhost:3000/compras/listarComprasDetalles/'+ idCompra,{headers:this.headers});
+  }
+  public listarComprasSinDetalles(){
+    return this.http.get('http://localhost:3000/compras/listarComprasSinDetalles',{headers:this.headers});
+  }
   public agregarCompra(montoTotal:number, idProveedor:number, idUsuario:number, productos:IProductosCompras[]){
     return this.http.post('http://localhost:3000/compras/agregarCompra',{montoTotal, idProveedor, idUsuario, productos},{headers:this.headers});
   }
@@ -410,7 +418,7 @@ export class ApiService {
     return this.http.post('http://localhost:3000/accesos/agregarAcceso',{accion,idUsuario},{headers:this.headers});
   }
 
-  
+
 
 
 

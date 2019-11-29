@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatPaginator,MatPaginatorIntl} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
@@ -9,12 +9,32 @@ import { IEnvios } from '../api.service';
 import { IViaEnvios } from '../api.service';
 
 
+export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  showPlus: boolean;
+
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (length == 0 || pageSize == 0) { return `0 de ${length}`; }
+
+    length = Math.max(length, 0);
+
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+
+    return `${startIndex + 1} - ${endIndex} de ${length}${this.showPlus ? '+' : ''}`;
+  }
+}
+
+
 @Component({
   selector: 'app-envios',
   templateUrl: './envios.component.html',
-  styleUrls: ['./envios.component.scss']
+  styleUrls: ['./envios.component.scss'],
+  providers: [{ provide: MatPaginatorIntl, useValue: new MyCustomPaginatorIntl() }]
 })
 export class EnviosComponent implements OnInit {
+  myCustomPaginatorIntl: MyCustomPaginatorIntl;
   public arregloEnvios:IEnvios[];
   public arregloVentasSelect:IEnvios[];
   public arregloEnviosSelect:IEnvios[];
@@ -35,7 +55,9 @@ export class EnviosComponent implements OnInit {
   @ViewChild('MatPaginatorEnvios', {static: true}) paginatorEnvios: MatPaginator;
   @ViewChild('MatPaginatorViaEnvios',{static: true}) paginatorViaEnvios:MatPaginator;
 
-  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
+  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl) {
+    this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
+
     //Inizializacion
     this.titulo="";
     this.arregloEnvios=[];
@@ -76,6 +98,8 @@ export class EnviosComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.arregloEnvios=success.respuesta);
 
         this.dataSource.paginator = this.paginatorEnvios;
+        this.dataSource.paginator._intl.itemsPerPageLabel = "Elementos por página";
+
       },
       (error)=>{
         console.log("Lo sentimos"+error);
@@ -94,12 +118,13 @@ export class EnviosComponent implements OnInit {
     this.API.agregarEnvio(direccionForm,ciudadForm,observacionesForm,idVentaForm,idViaEnvioForm).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
-        location.reload();
+        this.listarEnvios();
       },
       (error)=>{
         console.log("Error"+ error);
       }
-    )
+    );
+    this.modal.close();
   }
 
 
@@ -155,7 +180,7 @@ export class EnviosComponent implements OnInit {
       this.API.agregarMedioEnvio(medioEnvioForm, descripcionForm).subscribe(
         (success: any)=>{
           alert("exito: "+ JSON.stringify(success));
-          location.reload();
+          this.listarMediosEnvios();
         },
         (error)=>{
           console.log("Lo siento: "+error);
@@ -173,12 +198,13 @@ export class EnviosComponent implements OnInit {
       this.API.editarMedioEnvio(idViaEnvio,medioEnvioForm,descripcionForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
-          location.reload();//recarga la pagina para poder notar lo cambios
+          this.listarMediosEnvios();
         },
         (error)=>{
           console.log("Lo siento: "+error);
         }
       );
+      this.modal.close();
     }
   }//----------------------fin operaciones-------------------------------------------------------------------
 
@@ -187,7 +213,7 @@ export class EnviosComponent implements OnInit {
     this.API.eliminarMedioEnvio(idViaEnvio).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
-        location.reload();
+        this.listarMediosEnvios();
       },
       (error)=>{
         console.log("Error"+ error);
@@ -204,6 +230,8 @@ export class EnviosComponent implements OnInit {
         this.dsViaEnvios = new MatTableDataSource(this.arregloViaEnvios);
 
         this.dsViaEnvios.paginator = this.paginatorViaEnvios;
+        this.dsViaEnvios.paginator._intl.itemsPerPageLabel = "Elementos por página";
+
       },
       (error)=>{
         console.log("Lo sentimos"+error);

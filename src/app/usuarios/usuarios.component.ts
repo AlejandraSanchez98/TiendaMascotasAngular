@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatPaginator,MatPaginatorIntl} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
@@ -8,6 +8,23 @@ import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 import { sha256, sha224 } from 'js-sha256';
 import {ApiService} from '../api.service';
 import { IUsuarios } from '../api.service';
+
+export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  showPlus: boolean;
+
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (length == 0 || pageSize == 0) { return `0 de ${length}`; }
+
+    length = Math.max(length, 0);
+
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+
+    return `${startIndex + 1} - ${endIndex} de ${length}${this.showPlus ? '+' : ''}`;
+  }
+}
 
 
 export interface Tipo {
@@ -18,9 +35,12 @@ export interface Tipo {
 @Component({
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
-  styleUrls: ['./usuarios.component.scss']
+  styleUrls: ['./usuarios.component.scss'],
+  providers: [{ provide: MatPaginatorIntl, useValue: new MyCustomPaginatorIntl() }]
+
 })
 export class UsuariosComponent implements OnInit {
+  myCustomPaginatorIntl: MyCustomPaginatorIntl;
   tipo: Tipo[] = [
     {tipoU: 'Vendedor'},
     {tipoU: 'Gerente'}
@@ -38,7 +58,8 @@ export class UsuariosComponent implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
+  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl) {
+    this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
     //Inizializacion
     this.titulo="";
     this.arregloUsuarios=[];
@@ -86,8 +107,8 @@ export class UsuariosComponent implements OnInit {
       //SE AGREGAN REGISTROS MEDIANTE POST
       this.API.agregarUsuario(nombreUsuarioForm, telefonoUsuarioForm, direccionUsuarioForm,correoForm, passwordUsuarioForm, tipoUsuarioForm).subscribe(
         (success: any)=>{
-          alert("exito: "+ JSON.stringify(success));
-          location.reload();
+          //alert("exito: "+ JSON.stringify(success));
+          this.listarUsuarios();
         },
         (error)=>{
           console.log("Lo siento: "+error);
@@ -109,12 +130,13 @@ export class UsuariosComponent implements OnInit {
       this.API.editarUsuario(idUsuario,nombreUsuarioForm, telefonoUsuarioForm, direccionUsuarioForm, correoForm, passwordUsuarioForm, tipoUsuarioForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
-          location.reload();//recarga la pagina para poder notar lo cambios
+          this.listarUsuarios();
         },
         (error)=>{
           console.log("Lo siento: "+error);
         }
       );
+      this.modal.close();
     }
   }
 
@@ -123,24 +145,26 @@ export class UsuariosComponent implements OnInit {
     this.API.eliminarUsuario(idUsuario).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
-        location.reload();
+        this.listarUsuarios();
       },
       (error)=>{
         console.log("Error"+ error);
       }
-    )
+    );
+    this.modal.close();
   }
 
   //listar usuario
   public  listarUsuarios(){
     this.API.listarUsuarios().subscribe(
       (success:any)=>{
-        alert("Exito"+JSON.stringify(success));
         this.arregloUsuarios=success.respuesta;
         this.dataSource = new MatTableDataSource(this.arregloUsuarios);
 
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.dataSource.paginator._intl.itemsPerPageLabel = "Elementos por página";
+
       },
       (error)=>{
         console.log("Lo sentimos"+error);

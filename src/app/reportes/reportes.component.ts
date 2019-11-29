@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatPaginator,MatPaginatorIntl} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {ApiService} from '../api.service';
 import { IProductosMasVendidos } from '../api.service';
@@ -8,12 +8,33 @@ import { IProductoStockMinimo } from '../api.service';
 import { IUtilidad } from '../api.service';
 
 
+export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  showPlus: boolean;
+
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (length == 0 || pageSize == 0) { return `0 de ${length}`; }
+
+    length = Math.max(length, 0);
+
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+
+    return `${startIndex + 1} - ${endIndex} de ${length}${this.showPlus ? '+' : ''}`;
+  }
+}
+
+
 @Component({
   selector: 'app-reportes',
   templateUrl: './reportes.component.html',
-  styleUrls: ['./reportes.component.scss']
+  styleUrls: ['./reportes.component.scss'],
+  providers: [{ provide: MatPaginatorIntl, useValue: new MyCustomPaginatorIntl() }]
+
 })
 export class ReportesComponent implements OnInit {
+  myCustomPaginatorIntl: MyCustomPaginatorIntl;
   public arregloProductosMasVendidos:IProductosMasVendidos[];
   public arregloVendedoresMasVentas:IVendedoresMasVentas[];
   public arregloProductoStockMinimo:IProductoStockMinimo[];
@@ -34,7 +55,8 @@ export class ReportesComponent implements OnInit {
   @ViewChild('MatPaginatorUtilidad', {static: true}) paginatorUtilidad: MatPaginator;
 
 
-  constructor(public API:ApiService) {
+  constructor(public API:ApiService, matPaginatorIntl: MatPaginatorIntl) {
+    this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
     this.arregloProductosMasVendidos=[];
     this.arregloVendedoresMasVentas=[];
     this.arregloProductoStockMinimo=[];
@@ -61,6 +83,7 @@ export class ReportesComponent implements OnInit {
         console.log("Exito"+JSON.stringify(success));
         this.arregloVendedoresMasVentas=success.respuesta;
         this.dsVendedoresMasVentas = new MatTableDataSource(this.arregloVendedoresMasVentas);
+
       },
       (error)=>{
         console.log("Lo sentimos"+error);
@@ -77,6 +100,8 @@ export class ReportesComponent implements OnInit {
         this.dsProductoStockMinimo = new MatTableDataSource(this.arregloProductoStockMinimo);
 
         this.dsProductoStockMinimo.paginator = this.paginatorProductosStockMinimo;
+        this.dsProductoStockMinimo.paginator._intl.itemsPerPageLabel = "Elementos por página";
+
 
       },
       (error)=>{
@@ -90,7 +115,7 @@ export class ReportesComponent implements OnInit {
   public utilidad(){
     this.API.utilidad().subscribe(
       (success:any)=>{
-        alert("Exito"+success);
+        //alert("Exito"+success);
         let ventas = success.respuesta[0][0].MontoTotalVentas;
         let compras = success.respuesta[1][0].MontoTotalCompras;
         let utilidad = success.respuesta[2][0].Utilidad;
@@ -98,6 +123,8 @@ export class ReportesComponent implements OnInit {
         let arregloUtilidad:IUtilidad[]= [{MontoTotalVentas:ventas, MontoTotalCompras:compras, Utilidad:utilidad}];
         this.dsUtilidad = new MatTableDataSource(arregloUtilidad);
         this.dsUtilidad.paginator = this.paginatorUtilidad;
+        this.dsUtilidad.paginator._intl.itemsPerPageLabel = "Elementos por página";
+
 
 
       },

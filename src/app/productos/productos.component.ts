@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatPaginator,MatPaginatorIntl} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
@@ -8,13 +8,33 @@ import {ApiService} from '../api.service';
 import { IProductos } from '../api.service';
 import { ICategoria } from '../api.service';
 
+export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  showPlus: boolean;
+
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (length == 0 || pageSize == 0) { return `0 de ${length}`; }
+
+    length = Math.max(length, 0);
+
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+
+    return `${startIndex + 1} - ${endIndex} de ${length}${this.showPlus ? '+' : ''}`;
+  }
+}
+
 
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.component.html',
-  styleUrls: ['./productos.component.scss']
+  styleUrls: ['./productos.component.scss'],
+  providers: [{ provide: MatPaginatorIntl, useValue: new MyCustomPaginatorIntl() }]
+
 })
 export class ProductosComponent implements OnInit {
+  myCustomPaginatorIntl: MyCustomPaginatorIntl;
   public arregloProductos:IProductos[];
   public arregloProductosSelect:IProductos[];
   public arregloCategorias:ICategoria[];
@@ -37,7 +57,8 @@ export class ProductosComponent implements OnInit {
   @ViewChild('MatPaginatorCategoria', {static: true}) paginatorCategoria: MatPaginator;
 
 
-  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
+  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl) {
+    this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
     //Inizializacion
     this.titulo="";
     this.arregloProductos=[];
@@ -95,8 +116,8 @@ export class ProductosComponent implements OnInit {
       this.API.agregarProducto(nombreProductoForm, precioUnitarioForm, descripcionProductoForm, stockForm, idCategoriaForm ).subscribe(
         (success: any)=>{
           this.arregloProductos = success;
-          alert("exito: "+ JSON.stringify(this.arregloProductos));
-          location.reload();
+          console.log("exito: "+ JSON.stringify(this.arregloProductos));
+          this.listarProductos();
         },
         (error)=>{
           console.log("Lo siento: "+error);
@@ -115,13 +136,14 @@ export class ProductosComponent implements OnInit {
       //EJECUTANDO PETICION PUT
       this.API.editarProducto(idProducto,nombreProductoForm,precioUnitarioForm,descripcionProductoForm,stockForm,idCategoria).subscribe(
         (success: any)=>{
-          alert("Registro editado: "+ JSON.stringify(success));
-          location.reload();//recarga la pagina para poder notar lo cambios
+          console.log("Registro editado: "+ JSON.stringify(success));
+          this.listarProductos();
         },
         (error)=>{
           console.log("Lo siento: "+error);
         }
       );
+      this.modal.close();
     }
   }//----------------------fin operaciones-------------------------------------------------------------------
 
@@ -130,12 +152,12 @@ export class ProductosComponent implements OnInit {
     this.API.eliminarProducto(idProducto).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
-        location.reload();
+        this.listarProductos();
       },
       (error)=>{
         console.log("Error"+ error);
       }
-    )
+    );
   }
 
   //listar el select de categorias
@@ -158,6 +180,8 @@ export class ProductosComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.arregloProductos=success.respuesta);
 
         this.dataSource.paginator = this.paginatorProductos;
+        this.dataSource.paginator._intl.itemsPerPageLabel = "Elementos por página";
+
       },
       (error)=>{
         console.log("Lo sentimos"+error);
@@ -193,8 +217,8 @@ export class ProductosComponent implements OnInit {
       //SE AGREGAN REGISTROS MEDIANTE POST
       this.API.agregarCategoria(nombreCategoriaForm, subCategoriaForm, descripcionForm).subscribe(
         (success: any)=>{
-          alert("exito: "+ JSON.stringify(success));
-          location.reload();
+          console.log("exito: "+ JSON.stringify(success));
+          this.listarCategorias();
         },
         (error)=>{
           console.log("Lo siento: "+error);
@@ -213,12 +237,13 @@ export class ProductosComponent implements OnInit {
       this.API.editarCategoria(idCategoria,nombreCategoriaForm,subCategoriaForm,descripcionForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
-          location.reload();//recarga la pagina para poder notar lo cambios
+          this.listarCategorias();
         },
         (error)=>{
           console.log("Lo siento: "+error);
         }
       );
+      this.modal.close();
     }
   }//----------------------fin operaciones-------------------------------------------------------------------
 
@@ -227,12 +252,12 @@ export class ProductosComponent implements OnInit {
     this.API.eliminarCategoria(idCategoria).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
-        location.reload();
+        this.listarCategorias();
       },
       (error)=>{
         console.log("Error"+ error);
       }
-    )
+    );
   }
 
   //listar categorias
@@ -243,6 +268,8 @@ export class ProductosComponent implements OnInit {
         this.dsCategorias = new MatTableDataSource(this.arregloCategorias=success.respuesta);
 
         this.dsCategorias.paginator = this.paginatorCategoria;
+        this.dsCategorias.paginator._intl.itemsPerPageLabel = "Elementos por página";
+
       },
       (error)=>{
         console.log("Lo sentimos"+error);

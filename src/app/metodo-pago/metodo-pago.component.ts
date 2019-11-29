@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatPaginator,MatPaginatorIntl} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
@@ -8,13 +8,32 @@ import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 import {ApiService} from '../api.service';
 import { IMetodosPago } from '../api.service';
 
+export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  showPlus: boolean;
+
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (length == 0 || pageSize == 0) { return `0 de ${length}`; }
+
+    length = Math.max(length, 0);
+
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+
+    return `${startIndex + 1} - ${endIndex} de ${length}${this.showPlus ? '+' : ''}`;
+  }
+}
+
 
 @Component({
   selector: 'app-metodo-pago',
   templateUrl: './metodo-pago.component.html',
-  styleUrls: ['./metodo-pago.component.scss']
+  styleUrls: ['./metodo-pago.component.scss'],
+  providers: [{ provide: MatPaginatorIntl, useValue: new MyCustomPaginatorIntl() }]
 })
 export class MetodoPagoComponent implements OnInit {
+  myCustomPaginatorIntl: MyCustomPaginatorIntl;
   public arregloMetodosPago:IMetodosPago[];
   public modal: NgbModalRef;
 
@@ -29,7 +48,8 @@ export class MetodoPagoComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
 
-  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
+  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl) {
+    this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
     //Inizializacion
     this.titulo="";
     this.arregloMetodosPago=[];
@@ -65,8 +85,8 @@ export class MetodoPagoComponent implements OnInit {
       //SE AGREGAN REGISTROS MEDIANTE POST
       this.API.agregarMetodoPago(tipoPagoForm).subscribe(
         (success: any)=>{
-          alert("exito: "+ JSON.stringify(success));
-          location.reload();
+          console.log("exito: "+ JSON.stringify(success));
+          this.listarMetodosPago();
         },
         (error)=>{
           console.log("Lo siento: "+error);
@@ -83,12 +103,13 @@ export class MetodoPagoComponent implements OnInit {
       this.API.editarMetodoPago(idMetodoPago,tipoPagoForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
-          location.reload();//recarga la pagina para poder notar lo cambios
+          this.listarMetodosPago();
         },
         (error)=>{
           console.log("Lo siento: "+error);
         }
       );
+      this.modal.close();
     }
   }
 
@@ -97,12 +118,12 @@ export class MetodoPagoComponent implements OnInit {
     this.API.eliminarMetodoPago(idMetodoPago).subscribe(
       (success:any)=>{
         console.log("Exito"+success);
-        location.reload();
+        this.listarMetodosPago();
       },
       (error)=>{
         console.log("Error"+ error);
       }
-    )
+    );
   }
 
   //listar metodos de pago
@@ -115,6 +136,8 @@ export class MetodoPagoComponent implements OnInit {
 
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.dataSource.paginator._intl.itemsPerPageLabel = "Elementos por página";
+
       },
       (error)=>{
         console.log("Lo sentimos"+error);
