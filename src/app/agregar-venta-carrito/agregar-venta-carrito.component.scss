@@ -33,7 +33,6 @@ td, th {
 th{
   font-weight: bold;
   color:#002255d9;
-  font-size: 17px;
   background-color: #eeeef9;
 }
 td{
@@ -51,7 +50,6 @@ td{
 
 h2{
   text-align: center;
-  margin: 20px;
 }
 
 .card {
@@ -63,8 +61,8 @@ h2{
 .cardTab{
   background-color: #ffffffc7;
   border-color: #091c2d;
-  margin-left: 50px;
-  margin-right: 50px;
+  margin-left: 40px;
+  margin-right: 40px;
   margin-top: 30px;
   margin-bottom: 30px;
 }
@@ -78,7 +76,6 @@ h2{
 
 .mat-card{
   color: #002235;
-  margin-left: 32px;
 }
 
 :host ::ng-deep .mat-sort-header-container {
@@ -111,9 +108,6 @@ h2{
 ::ng-deep .mat-list-base .mat-list-item {
     color: #002235;
 }
-
-
-
 
 ::ng-deep .mat-select-value {
     color: #002235;

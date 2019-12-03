@@ -9,6 +9,7 @@ import { IUtilidad } from '../api.service';
 
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  itemsPerPageLabel = 'Elementos por Página'; 
   showPlus: boolean;
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {

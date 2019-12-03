@@ -67,6 +67,7 @@ export class DevolucionesComponent implements OnInit {
   //Abrir modal Devoluciones
   public openAgregar(content) {
     this.modal= this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
+    this.listarTiposDevolucionesSelect();
   }
 
   //listar devoluciones
@@ -167,7 +168,7 @@ export class DevolucionesComponent implements OnInit {
       //SE AGREGAN REGISTROS MEDIANTE POST
       this.API.agregarTipoDevolucion(tipoDevolucionForm, descripcionForm).subscribe(
         (success: any)=>{
-          alert("exito: "+ JSON.stringify(success));
+          console.log("exito: "+ JSON.stringify(success));
           this.listarTiposDevoluciones();
         },
         (error)=>{

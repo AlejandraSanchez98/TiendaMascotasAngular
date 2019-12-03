@@ -57,10 +57,10 @@ export class LoginComponent implements OnInit {
     let idUsuario:number = 0;
 
     accion="Entro al sistema";
-    idUsuario=2;
+    idUsuario=1;
     this.API.agregarAcceso(accion,idUsuario).subscribe(
       (success:any)=>{
-          alert("exito: "+ JSON.stringify(success.respuesta));
+          console.log("exito: ",JSON.stringify(success.respuesta));
       },
       (error)=>{
           alert("algo anda mal | "+ JSON.stringify(error));

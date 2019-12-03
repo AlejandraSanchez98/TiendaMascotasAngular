@@ -88,6 +88,8 @@ export class ProductosComponent implements OnInit {
   public openAgregar(content) {
     this.modal= this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
     this.titulo="Agregar Producto"
+    this.listarCategoriasSelect();
+
   }
   //Abrir modal  Editar Producto
   public openEditar(content, idProducto: number, nombreProducto: string, precioUnitario:number, descripcionProducto:string, stock:number, idCategoria:number){
@@ -118,6 +120,7 @@ export class ProductosComponent implements OnInit {
           this.arregloProductos = success;
           console.log("exito: "+ JSON.stringify(this.arregloProductos));
           this.listarProductos();
+
         },
         (error)=>{
           console.log("Lo siento: "+error);

@@ -87,6 +87,7 @@ export class EnviosComponent implements OnInit {
   public openAgregar(content) {
     this.modal= this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
     this.titulo="Agregar Envio"
+    this.listarMediosEnviosSelect();
 
   }
 
@@ -179,7 +180,7 @@ export class EnviosComponent implements OnInit {
       //SE AGREGAN REGISTROS MEDIANTE POST
       this.API.agregarMedioEnvio(medioEnvioForm, descripcionForm).subscribe(
         (success: any)=>{
-          alert("exito: "+ JSON.stringify(success));
+          console.log("exito: "+ JSON.stringify(success));
           this.listarMediosEnvios();
         },
         (error)=>{

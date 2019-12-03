@@ -33,7 +33,6 @@ td, th {
 th{
   font-weight: bold;
   color:#002255d9;
-  font-size: 17px;
   background-color: #eeeef9;
 }
 td{
@@ -93,6 +92,15 @@ h2{
   font-size: 15px;
 }
 
+::ng-deep .mat-focused {/*cambia el color del label cuando se enfoca*/
+  color: #052027 !important;
+ }
+
+ ::ng-deep.mat-form-field-underline { /*cambia el color del subrayado*/
+   background-color: #052027 !important;
+   border-color: #052027 !important;
+ }
+
 ::ng-deep.mat-form-field-label{/*color del label*/
   color: #052027 !important;
 }
@@ -104,10 +112,6 @@ h2{
     color: #002235;
 }
 
-::ng-deep.mat-form-field-underline { /*cambia el color del subrayado*/
-  background-color: #052027 !important;
-  border-color: #052027 !important;
-}
 
 ::ng-deep .mat-select-value {
     color: #002235;

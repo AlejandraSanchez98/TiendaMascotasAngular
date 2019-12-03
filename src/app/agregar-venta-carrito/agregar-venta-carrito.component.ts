@@ -14,7 +14,7 @@ import { IMetodosPagoCarrito } from '../api.service';
 })
 export class AgregarVentaCarritoComponent implements OnInit {
   displayedColumns: string[] = ['idVenta', 'fechaRegistro', 'cantidadTotalProductos'];//columnas tabla transacciones
-  displayedColumnsProductos: string[] = ['nombreProducto','precioUnitario','cantidadProductos','acciones'];//columnas tabla transacciones
+  displayedColumnsProductos: string[] = ['nombreProducto','precioUnitario','cantidadProducto','acciones'];//columnas tabla transacciones
   public dsVentas:MatTableDataSource<IVentasCarrito>; //datasource para transacciones
   public dsProductos:MatTableDataSource<IProductosCarrito>; //dataSource para productos
   public frmVentas: FormGroup;
@@ -92,24 +92,27 @@ public listarUsuarios(){
 
 public agregarProductos(){
   let agregarValorID: number = 0;
-  let agregarValorCantidad: number = 0;
+  let agregarValorCantidad: number = 0;3
 
   this.API.listarProductos().subscribe(
     (success:any)=>{
       agregarValorID = this.frmVentas.get('idProducto').value;
+      console.log("aqui estan los productos: ",agregarValorID)
       agregarValorCantidad = this.frmVentas.get('cantidadProductos').value;
       //sumando monto cada que se agrega un producto
       this.montoAcumulado = this.montoAcumulado + (success.respuesta[0].precioUnitario * agregarValorCantidad);
 
       if (this.arregloProductosTabla.length>=1) {
-        alert("posicion en arreglo: "+this.arregloProductosTabla[0].cantidadProducto);
+        alert("posicion en arreglo: "+this.arregloProductosTabla[0].cantidadProductos);
         for (let i = 0; i < this.arregloProductosTabla.length; i++) {
           if (agregarValorID == this.arregloProductosTabla[i].idProducto) {
-            this.arregloProductosTabla[i].cantidadProducto = this.arregloProductosTabla[i].cantidadProducto + agregarValorCantidad;
+            this.arregloProductosTabla[i].cantidadProductos = this.arregloProductosTabla[i].cantidadProductos + agregarValorCantidad;
             this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
           }else{
             if(i == this.arregloProductosTabla.length -1){
-              this.arregloProductosTabla.push({idProducto:agregarValorID,cantidadProducto:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
+              console.log("hola")
+              console.log("producto a agregar: ",agregarValorID-1);
+              this.arregloProductosTabla.push({idProducto:agregarValorID,cantidadProductos:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
               this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
               break;
             }
@@ -117,7 +120,7 @@ public agregarProductos(){
         }
       }
       else{
-        this.arregloProductosTabla.push({idProducto:agregarValorID,cantidadProducto:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
+        this.arregloProductosTabla.push({idProducto:agregarValorID,cantidadProductos:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
         this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
         document.getElementById('tablaVentaConcluidaVacia').style.display = "none";
       }
@@ -177,20 +180,22 @@ public agregarVenta(){
   if (arregloProductosForm.length == 0) {
       alert(" presionar boton de agregar productos \n");
   }
-//  alert("cte: "+idClienteForm+" vdor: "+idUsuarioForm+" pago: "+pagoForm+" arrpdtos: "+JSON.stringify(arregloProductosForm)+" arrtipag: "+JSON.stringify(arregloMetodosPagoForm));
+  if (arregloMetodosPagoForm[0].idTipoPago == 1) {
+    pagoForm = this.montoAcumulado;
+  }
+
   this.API.agregarVenta(idClienteForm,idUsuarioForm,pagoForm,arregloProductosForm,arregloMetodosPagoForm).subscribe(
     (success:any)=>{
-      console.log("arreglo productos", arregloProductosForm.length)
-      //console.log("entro con exito!")
-      console.log("contenido de success: ",success)
       if(success.estatus > 0){
         console.log("supuestamente fue exitoso ",success.estatus)
-        setTimeout(()=>{
+        this.listarVentas();
+        this.limpiarFormulario();
+        /*setTimeout(()=>{
           this.listarVentas();
           this.limpiarFormulario();
-        },500)
-        //console.log("listando")
-        //alert(":respuesta"+success.respuesta);
+        },1000)*/
+        console.log("listando")
+        alert(":respuesta"+success.respuesta);
       }else if(success.estatus < 0) {
           alert("No cuentas con el dinero suficiente | verifica tu pago");
       }else{

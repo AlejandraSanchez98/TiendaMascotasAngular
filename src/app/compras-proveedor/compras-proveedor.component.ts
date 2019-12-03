@@ -13,7 +13,7 @@ import { IComprasProveedor } from '../api.service';
 })
 export class ComprasProveedorComponent implements OnInit {
   displayedColumns: string[] = ['idCompra', 'fechaRegistro', 'cantidadProducto'];//columnas tabla transacciones
-  displayedColumnsProductos: string[] = ['nombreProducto','precioUnitario','cantidadProducto'];//columnas tabla transacciones
+  displayedColumnsProductos: string[] = ['nombreProducto','precioUnitario','cantidadProducto','acciones'];//columnas tabla transacciones
   public dsCompras:MatTableDataSource<IComprasProveedor>; //datasource para transacciones
   public dsProductos:MatTableDataSource<IProductosCompras>; //dataSource para productos
   public frmCompras: FormGroup;
@@ -23,13 +23,14 @@ export class ComprasProveedorComponent implements OnInit {
   public arregloProveedoresSelect: IProveedores[] = [];
   public arregloCompras:IComprasProveedor[] = [];
   public ultimaCompra:any;
+  public montoAcumulado : number;
 
 
   constructor(public formBuilder: FormBuilder, public API: ApiService) {
+    this.montoAcumulado = 0;
     this.frmCompras = this.formBuilder.group({
         idUsuario:["",Validators.required],
         idProveedor:["",Validators.required],
-        montoTotal:["",Validators.required],
         idProducto:["",Validators.required],
         cantidadProducto:["",Validators.required],
       });
@@ -78,10 +79,55 @@ public agregarProductos(){
   this.API.listarProductos().subscribe(
     (success:any)=>{
       agregarValorID = this.frmCompras.get('idProducto').value;
+      console.log("aqui estan los productos: ",agregarValorID)
       agregarValorCantidad = this.frmCompras.get('cantidadProducto').value;
-      this.arregloProductos.push({idProducto:agregarValorID,cantidadProducto:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
-      this.dsProductos = new MatTableDataSource(this.arregloProductos);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
-      console.log("insertar productos: ",this.dsProductos);
+      //sumando monto cada que se agrega un producto
+      this.montoAcumulado = this.montoAcumulado + (success.respuesta[0].precioUnitario * agregarValorCantidad);
+      alert("Monto"+success.respuesta[0].precioUnitario);
+      alert("Monto"+agregarValorCantidad);
+      alert("Monto"+this.montoAcumulado);
+
+
+      if (this.arregloProductos.length>=1) {
+        alert("posicion en arreglo: "+this.arregloProductos[0].cantidadProducto);
+        for (let i = 0; i < this.arregloProductos.length; i++) {
+          if (agregarValorID == this.arregloProductos[i].idProducto) {
+            this.arregloProductos[i].cantidadProducto = this.arregloProductos[i].cantidadProducto + agregarValorCantidad;
+            this.dsProductos = new MatTableDataSource(this.arregloProductos);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
+          }else{
+            if(i == this.arregloProductos.length -1){
+              console.log("hola")
+              console.log("producto a agregar: ",agregarValorID-1);
+              this.arregloProductos.push({idProducto:agregarValorID,cantidadProducto:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
+              this.dsProductos = new MatTableDataSource(this.arregloProductos);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
+              break;
+            }
+          }
+        }
+      }
+      else{
+        this.arregloProductos.push({idProducto:agregarValorID,cantidadProducto:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
+        this.dsProductos = new MatTableDataSource(this.arregloProductos);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
+        document.getElementById('tablaCompraConcluidaVacia').style.display = "none";
+      }
+    },
+    (error)=>{
+      console.log("algo ocurrio",error)
+    }
+  );
+}
+
+//eliminar productos de tabla (carrito)
+public eliminarProductosCarrito(objetoProducto:any,indice:number){
+  console.log("producto a eliminar: ",indice-1,);
+  console.log(this.arregloProductos)
+  this.arregloProductos.splice(indice,1);
+  this.dsProductos = new MatTableDataSource(this.arregloProductos);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
+
+  //hacemos que la eliminacion de un producto afecte tambien al monto $
+  this.API.listarProductos().subscribe(
+    (success:any)=>{
+          this.montoAcumulado = this.montoAcumulado - (success.respuesta[0].precioUnitario  *  objetoProducto.cantidadProducto);
     },
     (error)=>{
       console.log("algo ocurrio",error)
@@ -94,7 +140,7 @@ public agregarProductos(){
 public agregarCompra(){
  let idUsuarioForm:number = 0,idProveedorForm:number = 0,montoTotalForm: number = 0;
   let arregloProductosForm:any[] = []
-  montoTotalForm = this.frmCompras.get('montoTotal').value;
+  montoTotalForm = this.montoAcumulado;
   idProveedorForm = this.frmCompras.get('idProveedor').value;
   idUsuarioForm = this.frmCompras.get('idUsuario').value;
   arregloProductosForm = this.arregloProductos;
@@ -113,6 +159,7 @@ public agregarCompra(){
         console.log("resultado"+success.respuesta);
         setTimeout(()=>{
           this.listarCompras();
+          this.limpiarFormulario();
         },500)
       }else if(success.estatus < 0) {
           alert("No cuentas con el dinero suficiente | verifica tu pago");
@@ -142,6 +189,15 @@ public listarCompras(){
       console.log("algo ocurrio: ",error)
     }
   );
+}
+
+//limpiamos el formulario una vez e haya realizado una compra.
+public limpiarFormulario(){
+  this.frmCompras.reset();
+  this.montoAcumulado = 0;
+
+  this.dsProductos.data=[];
+  this.arregloProductos = [];
 }
 
 

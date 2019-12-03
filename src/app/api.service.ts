@@ -152,7 +152,7 @@ export interface IVentasCarrito{
 
 export interface IProductosCarrito{
   idProducto:number;
-  cantidadProducto:number;
+  cantidadProductos:number;
   nombreProducto:string;
   precioUnitario:string;
 }
