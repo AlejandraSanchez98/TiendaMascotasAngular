@@ -5,6 +5,7 @@ import { ApiService, IClientes,IUsuarios } from '../api.service';
 import { IProductosCarrito } from '../api.service';
 import { IVentasCarrito } from '../api.service';
 import { IMetodosPagoCarrito } from '../api.service';
+import {IVentas} from '../api.service';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class AgregarVentaCarritoComponent implements OnInit {
   public arregloUsuariosSelect: IUsuarios[] = [];
   public arregloMetodosPagoSelect: IMetodosPagoCarrito[] = [];
   public arregloMetodosPagoLista: IMetodosPagoCarrito[] = [];
-  public arregloVentas:IVentasCarrito[] = [];
+  public arregloVentas:any[] = [];
+  public arregloVentasDetalles:IVentas[] = [];
   public ultimaVenta:any;
   public montoAcumulado : number;
 
@@ -92,18 +94,19 @@ public listarUsuarios(){
 
 public agregarProductos(){
   let agregarValorID: number = 0;
-  let agregarValorCantidad: number = 0;3
+  let agregarValorCantidad: number = 0;
 
   this.API.listarProductos().subscribe(
     (success:any)=>{
       agregarValorID = this.frmVentas.get('idProducto').value;
-      console.log("aqui estan los productos: ",agregarValorID)
-      agregarValorCantidad = this.frmVentas.get('cantidadProductos').value;
-      //sumando monto cada que se agrega un producto
-      this.montoAcumulado = this.montoAcumulado + (success.respuesta[0].precioUnitario * agregarValorCantidad);
 
-      if (this.arregloProductosTabla.length>=1) {
-        alert("posicion en arreglo: "+this.arregloProductosTabla[0].cantidadProductos);
+      agregarValorCantidad = this.frmVentas.get('cantidadProductos').value;
+
+      this.montoAcumulado = this.montoAcumulado + (success.respuesta[agregarValorID-1].precioUnitario * agregarValorCantidad);
+      //sumando monto cada que se agrega un producto
+
+      if (this.arregloProductosTabla.length >= 1) {
+        //alert("posicion en arreglo: "+this.arregloProductosTabla[0].cantidadProductos);
         for (let i = 0; i < this.arregloProductosTabla.length; i++) {
           if (agregarValorID == this.arregloProductosTabla[i].idProducto) {
             this.arregloProductosTabla[i].cantidadProductos = this.arregloProductosTabla[i].cantidadProductos + agregarValorCantidad;
@@ -161,7 +164,7 @@ public agregarMetodosPago(idMetodoPago:number){
         }else if(prueba == false){//elimina los elementos desmarcados
             this.arregloMetodosPagoLista.splice(idMetodoPago-1,1)
         }
-        alert("arreglo final: "+JSON.stringify(this.arregloMetodosPagoLista));
+        //alert("arreglo final: "+JSON.stringify(this.arregloMetodosPagoLista));
     },
     (error)=>{
       console.log("algo ocurrio: ",error)
@@ -195,7 +198,7 @@ public agregarVenta(){
           this.limpiarFormulario();
         },1000)*/
         console.log("listando")
-        alert(":respuesta"+success.respuesta);
+        //alert(":respuesta"+success.respuesta);
       }else if(success.estatus < 0) {
           alert("No cuentas con el dinero suficiente | verifica tu pago");
       }else{
@@ -211,8 +214,9 @@ public agregarVenta(){
 
 //muestra la transaccion hecha despues de que se oprime el btn de vender
 public listarVentas(){
-    this.API.listarVentas().subscribe(
+  this.API.listarVentas().subscribe(
     (success:any)=>{
+
       this.arregloVentas = success.respuesta;
       //alert("arreglot: "+JSON.stringify(this.arregloVentas));
       this.ultimaVenta = this.arregloVentas[this.arregloVentas.length - 1];
@@ -226,6 +230,8 @@ public listarVentas(){
     }
   );
 }
+
+
 
 //limpiamos el formulario una vez e haya realizado uan venta.
 public limpiarFormulario(){

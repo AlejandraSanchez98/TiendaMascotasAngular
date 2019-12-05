@@ -82,14 +82,9 @@ public agregarProductos(){
       console.log("aqui estan los productos: ",agregarValorID)
       agregarValorCantidad = this.frmCompras.get('cantidadProducto').value;
       //sumando monto cada que se agrega un producto
-      this.montoAcumulado = this.montoAcumulado + (success.respuesta[0].precioUnitario * agregarValorCantidad);
-      alert("Monto"+success.respuesta[0].precioUnitario);
-      alert("Monto"+agregarValorCantidad);
-      alert("Monto"+this.montoAcumulado);
-
+      this.montoAcumulado = this.montoAcumulado + (success.respuesta[agregarValorID-1].precioUnitario * agregarValorCantidad);
 
       if (this.arregloProductos.length>=1) {
-        alert("posicion en arreglo: "+this.arregloProductos[0].cantidadProducto);
         for (let i = 0; i < this.arregloProductos.length; i++) {
           if (agregarValorID == this.arregloProductos[i].idProducto) {
             this.arregloProductos[i].cantidadProducto = this.arregloProductos[i].cantidadProducto + agregarValorCantidad;
@@ -145,10 +140,10 @@ public agregarCompra(){
   idUsuarioForm = this.frmCompras.get('idUsuario').value;
   arregloProductosForm = this.arregloProductos;
   if (arregloProductosForm.length == 0) {
-      alert("entro");
+
       alert("presionar boton de agregar productos \n");
   }
-  alert("cte: "+idUsuarioForm+" pdor: "+idProveedorForm+" monto: "+montoTotalForm+" arrpdtos: "+JSON.stringify(arregloProductosForm));
+  //alert("cte: "+idUsuarioForm+" pdor: "+idProveedorForm+" monto: "+montoTotalForm+" arrpdtos: "+JSON.stringify(arregloProductosForm));
 
   this.API.agregarCompra(montoTotalForm,idProveedorForm,idUsuarioForm,arregloProductosForm).subscribe(
     (success:any)=>{
@@ -179,9 +174,9 @@ public listarCompras(){
     this.API.listarCompras().subscribe(
     (success:any)=>{
       this.arregloCompras = success.respuesta;
-      alert("arreglot: "+JSON.stringify(this.arregloCompras));
+      //alert("arreglot: "+JSON.stringify(this.arregloCompras));
       this.ultimaCompra = this.arregloCompras[this.arregloCompras.length - 1];
-      alert("ultima venta: "+JSON.stringify(this.ultimaCompra))
+      //alert("ultima venta: "+JSON.stringify(this.ultimaCompra))
       this.dsCompras = new MatTableDataSource([this.ultimaCompra]); //[prueba] convierto a array la variable prueba para que pueda ser iterada
       this.arregloCompras = [this.ultimaCompra];//aplico simbolo iterador para que pueda iterarlo en un loop
     },

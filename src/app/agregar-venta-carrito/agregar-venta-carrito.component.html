@@ -49,7 +49,7 @@
       <mat-card class="cardTab">
         <div class="container">
           <div class="row">
-            <div class="col-3" style="background-color: #e2e9ef;color: #002235;font-size: 15px;border-radius: 7px;padding: 20px;">
+            <div class="col-3" style="background-color: #e2e9ef;color: #002235;font-size: 15px;border-radius: 7px;padding: 7px;">
               <form class="form" [formGroup]="frmVentas">
                 <mat-form-field style="font-size: 15px;">
                   <mat-select formControlName="idUsuario" placeholder="Vendedor" >
@@ -75,20 +75,19 @@
                       <input matInput placeholder="Cantidad" formControlName="cantidadProductos" type="number" min="1" style="color: #002235;">
                     </div>
                   </mat-form-field>
-                      <button mat-mini-fab style="background-color: rgb(17, 68, 121);top: 5px;margin-left: 16px;" matTooltip="Agregar producto y cantidad a la venta" [disabled]="frmVentas.controls.idProducto.invalid || frmVentas.controls.cantidadProductos.invalid" (click)="agregarProductos()">
-                        <mat-icon style="color: white; text-align:center;">add</mat-icon>
-                      </button>
-                      <label *ngIf="(frmVentas.controls.idProducto.invalid && frmVentas.controls.idProducto.dirty) || (frmVentas.controls.cantidadProductos.invalid && frmVentas.controls.cantidadProductos.dirty)">Este campo es obligatorio</label>
+                  <button mat-mini-fab style="background-color: rgb(17, 68, 121);top: 5px;margin-left: 16px;" matTooltip="Agregar producto y cantidad a la venta" [disabled]="frmVentas.controls.idProducto.invalid || frmVentas.controls.cantidadProductos.invalid" (click)="agregarProductos()">
+                    <mat-icon style="color: white; text-align:center;">add</mat-icon>
+                  </button>
+                  <label *ngIf="(frmVentas.controls.idProducto.invalid && frmVentas.controls.idProducto.dirty) || (frmVentas.controls.cantidadProductos.invalid && frmVentas.controls.cantidadProductos.dirty)">Este campo es obligatorio</label>
                 </div>
                 <hr>
-                <p>Tipo de Pago:</p>
                 <div style="display: grid;">
                   <mat-checkbox formControlName="idMetodoPago" *ngFor="let i of arregloMetodosPagoSelect" value="{{i.idMetodoPago}}" style="margin:10px;font-size: 15px;" (change)="agregarMetodosPago(i.idMetodoPago)">{{i.tipoPago}}</mat-checkbox>
                 </div>
                 <label *ngIf="frmVentas.controls.idMetodoPago.invalid && frmVentas.controls.idMetodoPago.dirty">Este campo es obligatorio</label>
                 <hr>
-                <mat-form-field class="example-full-width" style="font-size: 15px; float: right;width: 50%;">
-                  <input matInput placeholder="Pagó con ($)" formControlName="pago" type="number" min="1" style="color: color: #002235;">
+                <mat-form-field class="example-full-width" style="font-size: 15px;">
+                  <input matInput placeholder="Pago" formControlName="pago" type="number" min="1" style="color: color: #002235;">
                 </mat-form-field>
                 <label *ngIf="frmVentas.controls.pago.invalid && frmVentas.controls.pago.dirty">Este campo es obligatorio</label>
               </form>
@@ -131,7 +130,7 @@
                         </div>
                         <hr>
                       </div>
-                      <label  style="font-size:20px;">Monto $: <input  class="outputMonto" type="text" readonly [(ngModel)]="montoAcumulado" style="background-color: #c5d5e0;border: #c5d5e0;"></label>
+                      <label  style="font-size:20px;">Monto $: <input class="outputMonto" type="text" readonly [(ngModel)]="montoAcumulado" style="background-color: #c5d5e0;border: #c5d5e0;"></label>
                     </div>
                     <div class="col-6">
                       <p style="text-align:center;font-size:18px;font-weight: bold;">Información General Venta:</p>
