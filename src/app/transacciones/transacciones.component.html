@@ -46,11 +46,11 @@
         <button mat-button (click)="sidenav.toggle()" style="font-size:20px;">MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
       </mat-toolbar>
       <br>
-      <h1 style="font-weight: bold; color:#002255d9;">Transacciones&nbsp;&nbsp;<mat-icon style="font-size: 45px;">sync_alt</mat-icon></h1>
       <mat-card class="cardTab">
+        <h2 style="font-weight: bold; color:#002255d9;">Transacciones&nbsp;&nbsp;<mat-icon style="font-size: 40px;">sync_alt</mat-icon></h2>
         <mat-tab-group>
           <mat-tab>
-            <ng-template  mat-tab-label style="color: white; background-color:174677f0;">
+            <ng-template  mat-tab-label>
               <mat-icon  class = "tabIcono"> credit_card </mat-icon>Informe Ventas
             </ng-template>
             <div class="tablaTab1">
@@ -147,43 +147,17 @@
           </button>
         </div>
         <div class="modal-body" style="background-color: white">
-          <div class="mat-elevation-z8" style="margin:30px">
-            <table mat-table [dataSource]="dsComprasDetalles" matSort>
-              <ng-container matColumnDef="idCompra">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;padding-left:30px"> ID </th>
-                <td mat-cell *matCellDef="let row" style="text-align: left;"> {{row.idCompra}} </td>
-              </ng-container>
-              <ng-container matColumnDef="montoTotal">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Monto Total</th>
-                <td mat-cell *matCellDef="let row" style="text-align: left;"> ${{row.montoTotal}} </td>
-              </ng-container>
-              <ng-container matColumnDef="fechaRegistro">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Fecha </th>
-                <td mat-cell *matCellDef="let row" style="text-align: left;"> {{row.fechaRegistro | date : "dd/MM/y"}} </td>
-              </ng-container>
-              <ng-container matColumnDef="nombreProveedor">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Proveedor </th>
-                <td mat-cell *matCellDef="let row" style="text-align: left;"> {{row.nombreProveedor}} </td>
-              </ng-container>
-              <ng-container matColumnDef="nombreUsuario">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Vendedor </th>
-                <td mat-cell *matCellDef="let row" style="text-align: left;"> {{row.nombreUsuario}} </td>
-              </ng-container>
-              <ng-container matColumnDef="nombreProducto">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Producto </th>
-                <td mat-cell *matCellDef="let row" style="text-align: left;"> {{row.nombreProducto}} </td>
-              </ng-container>
-              <ng-container matColumnDef="cantidadProducto">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Cantidad </th>
-                <td mat-cell *matCellDef="let row" style="text-align: left;"> {{row.cantidadProducto}} </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumnsComprasDetalles"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumnsComprasDetalles;"></tr>
-            </table>
+          <div *ngFor="let i of arregloComprasDetalles">
+            <p style="margin-top: 25px;margin-left: 17%;font-size: 18px;">
+              <b>ID Compra: </b> {{i.idCompra}}
+              <br><b>Vendedor: </b> {{i.nombreUsuario}}
+              <br><b>Proveedor: </b> {{i.nombreProveedor}}
+              <br><b>Fecha : </b> {{i.fechaRegistro | date: 'dd-MM-yyyy HH:mm:ss'}}
+              <br><b>Productos : </b> {{i.productos}}
+              <br><b>Cantidad de Productos: </b> {{i.cantidadProducto}}
+              <br><b>Monto Total: </b> {{i.montoTotal}}
+            </p>
           </div>
-        </div>
-        <div class="modal-footer" style="background-color: white;">
-          <button mat-stroked-button  class="btnAceptar" (click)="modal.dismiss('Cross click')">Aceptar</button>
         </div>
       </ng-template>
       <!-- Modal ventas -->
@@ -195,63 +169,22 @@
           </button>
         </div>
         <div class="modal-body" style="background-color: white">
-          <div class="mat-elevation-z8" style="margin:30px">
-            <table mat-table [dataSource]="dsVentasDetalles" matSort>
-              <ng-container matColumnDef="idVenta">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> ID </th>
-                <td mat-cell *matCellDef="let row"> {{row.idVenta}} </td>
-              </ng-container>
-              <ng-container matColumnDef="montoSinIVA">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Monto Sin IVA</th>
-                <td mat-cell *matCellDef="let row"> ${{row.montoSinIVA}} </td>
-              </ng-container>
-              <ng-container matColumnDef="IVA">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> IVA </th>
-                <td mat-cell *matCellDef="let row"> ${{row.IVA}} </td>
-              </ng-container>
-              <ng-container matColumnDef="montoConIVA">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Monto Con IVA </th>
-                <td mat-cell *matCellDef="let row"> ${{row.montoConIVA}} </td>
-              </ng-container>
-              <ng-container matColumnDef="cantidadTotalProductos" >
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Cantidad </th>
-                <td mat-cell *matCellDef="let row"> {{row.cantidadTotalProductos}} </td>
-              </ng-container>
-              <ng-container matColumnDef="pago">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Pago </th>
-                <td mat-cell *matCellDef="let row"> ${{row.pago}} </td>
-              </ng-container>
-              <ng-container matColumnDef="cambio">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Cambio </th>
-                <td mat-cell *matCellDef="let row"> ${{row.cambio}} </td>
-              </ng-container>
-              <ng-container matColumnDef="fechaRegistro">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Fecha </th>
-                <td mat-cell *matCellDef="let row"> {{row.fechaRegistro | date : "dd/MM/y"}} </td>
-              </ng-container>
-              <ng-container matColumnDef="nombreProducto">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Producto </th>
-                <td mat-cell *matCellDef="let row"> {{row.nombreProducto}} </td>
-              </ng-container>
-              <ng-container matColumnDef="nombreUsuario">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Vendedor </th>
-                <td mat-cell *matCellDef="let row"> {{row.nombreUsuario}} </td>
-              </ng-container>
-              <ng-container matColumnDef="nombreCliente">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Cliente </th>
-                <td mat-cell *matCellDef="let row"> {{row.nombreCliente}} </td>
-              </ng-container>
-              <ng-container matColumnDef="tipoPago">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #e0e4e6;"> Tipo De Pago </th>
-                <td mat-cell *matCellDef="let row"> {{row.tipoPago}} </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumnsVentasDetalles"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumnsVentasDetalles;"></tr>
-            </table>
+          <div *ngFor="let i of arregloVentasDetalles">
+            <p style="margin-top: 25px;margin-left:17%;font-size: 18px;">
+              <b>ID Venta: </b> {{i.idVenta}}
+              <br><b>Vendedor: </b> {{i.nombreUsuario}}
+              <br><b>Cliente: </b> {{i.nombreCliente}}
+              <br><b>Fecha : </b> {{i.fechaRegistro | date: 'dd-MM-yyyy HH:mm:ss'}}
+              <br><b>Productos : </b> {{i.productos}}
+              <br><b>Cantidad de Productos: </b> {{i.cantidadTotalProductos}}
+              <br><b>Monto sin IVA: </b> {{i.montoSinIVA}}
+              <br><b>IVA: </b> {{i.IVA}}
+              <br><b>Monto con IVA: </b> {{i.montoConIVA}}
+              <br><b>Tipo de Pago: </b> {{i.tipoPago}}
+              <br><b>Pago: </b> {{i.pago}}
+              <br><b>Cambio: </b> {{i.cambio}}
+            </p>
           </div>
-        </div>
-        <div class="modal-footer" style="background-color: white;">
-          <button mat-stroked-button  class="btnAceptar" (click)="modal.dismiss('Cross click')">Aceptar</button>
         </div>
       </ng-template>
     </mat-sidenav-content>

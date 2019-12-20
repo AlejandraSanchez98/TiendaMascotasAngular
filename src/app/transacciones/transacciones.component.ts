@@ -37,8 +37,8 @@ export class TransaccionesComponent implements OnInit {
   public arregloTransaccionesCompras:ICompras[];
   //public arregloVentasDetalles:any[] = [];
   //public arregloComprasDetalles:any[] = [];
-  public arregloComprasDetalles:ICompras[];
-  public arregloVentasDetalles:IVentas[];
+  public arregloComprasDetalles:any[];
+  public arregloVentasDetalles:any[];
 
   public modal: NgbModalRef;
   public titulo:string;
@@ -73,7 +73,7 @@ export class TransaccionesComponent implements OnInit {
   //Abrir Modal Mostrar Más Información Ventas
   //Abrir modal
   public openVentas(contentVenta:any,idVenta:number) {
-    this.modal= this.modalService.open(contentVenta,  {ariaLabelledBy: 'modal-basic-title', size: 'xl',scrollable: true });
+    this.modal= this.modalService.open(contentVenta,  {ariaLabelledBy: 'modal-basic-title',scrollable: true });
     this.listarVentasDetalles(idVenta);
 
   }
@@ -101,7 +101,7 @@ export class TransaccionesComponent implements OnInit {
     this.API.listarVentasDetalles(idVenta).subscribe(
       (success:any)=>{
         this.arregloVentasDetalles=success.respuesta;
-        /*let arregloProductos:any[] = [];
+        let arregloProductos:any[] = [];
         let productos: string[] = [];
 
         for (let i = 0; i < success.respuesta.length; i++) {
@@ -110,16 +110,21 @@ export class TransaccionesComponent implements OnInit {
         }
         productos = arregloProductos
         //arreglo de objetos listo para iterar
-        this.arregloComprasDetalles = [{
-          idCompra:success.respuesta[0].idCompra,
-          montoTotal:success.respuesta[0].montoTotal,
+        this.arregloVentasDetalles = [{
+          idVenta:success.respuesta[0].idVenta,
+          montoSinIVA:success.respuesta[0].montoSinIVA,
+          IVA:success.respuesta[0].IVA,
+          montoConIVA:success.respuesta[0].montoConIVA,
+          cantidadTotalProductos:success.respuesta[0].cantidadTotalProductos,
+          pago:success.respuesta[0].pago,
+          cambio:success.respuesta[0].cambio,
           fechaRegistro:success.respuesta[0].fechaRegistro,
-          nombreProveedor:success.respuesta[0].nombreProveedor,
-          nombreUsuario:success.respuesta[0].nombreUsuario,
           productos:productos,
-          cantidadProducto:success.respuesta[0].cantidadProducto,
-        }];*/
-        this.dsVentasDetalles = new MatTableDataSource(this.arregloVentasDetalles);
+          nombreUsuario:success.respuesta[0].nombreUsuario,
+          nombreCliente:success.respuesta[0].nombreCliente,
+          tipoPago:success.respuesta[0].tipoPago
+        }];
+        //this.dsVentasDetalles = new MatTableDataSource(this.arregloVentasDetalles);
 
 
         console.log("contenido arregloDetalleCompra: ",this.arregloVentasDetalles)
@@ -135,7 +140,7 @@ export class TransaccionesComponent implements OnInit {
   //Abrir Modal Mostrar Más Información Compras
   public openCompras(content:any,idCompra:number) {
     console.log("idTransaccion",idCompra);
-    this.modal= this.modalService.open(content,  {ariaLabelledBy: 'modal-basic-title', size: 'xl',scrollable: true });
+    this.modal= this.modalService.open(content,  {ariaLabelledBy: 'modal-basic-title',scrollable: true });
     this.listarComprasDetalles(idCompra);
 
   }
@@ -164,7 +169,7 @@ export class TransaccionesComponent implements OnInit {
     this.API.listarComprasDetalles(idCompra).subscribe(
       (success:any)=>{
         this.arregloComprasDetalles=success.respuesta;
-        /*let arregloProductos:any[] = [];
+        let arregloProductos:any[] = [];
         let productos: string[] = [];
 
         for (let i = 0; i < success.respuesta.length; i++) {
@@ -181,8 +186,8 @@ export class TransaccionesComponent implements OnInit {
           nombreUsuario:success.respuesta[0].nombreUsuario,
           productos:productos,
           cantidadProducto:success.respuesta[0].cantidadProducto,
-        }];*/
-        this.dsComprasDetalles = new MatTableDataSource(this.arregloComprasDetalles);
+        }];
+        //this.dsComprasDetalles = new MatTableDataSource(this.arregloComprasDetalles);
 
 
         console.log("contenido arregloDetalleCompra: ",this.arregloComprasDetalles)

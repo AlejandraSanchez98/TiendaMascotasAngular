@@ -9,6 +9,8 @@ import { IProductos } from '../api.service';
 import { ICategoria } from '../api.service';
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  nextPageLabel = 'Siguiente Página';
+  previousPageLabel = 'Página Anterior';
   showPlus: boolean;
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
@@ -120,6 +122,7 @@ export class ProductosComponent implements OnInit {
           this.arregloProductos = success;
           console.log("exito: "+ JSON.stringify(this.arregloProductos));
           this.listarProductos();
+          this.frmProductos.reset();
 
         },
         (error)=>{
@@ -222,6 +225,7 @@ export class ProductosComponent implements OnInit {
         (success: any)=>{
           console.log("exito: "+ JSON.stringify(success));
           this.listarCategorias();
+          this.frmCategorias.reset();
         },
         (error)=>{
           console.log("Lo siento: "+error);

@@ -24,4 +24,12 @@
       </mat-card-actions>
     </mat-card>
   </div>
+
+
+  <section class="example-section">
+    <button mat-raised-button color="primary" (click)="showProgressSpinner()">Spinner With Backdrop</button>
+  </section>
+  <app-template-progress-spinner class="example-margin" [color]="color" [mode]="mode" [value]="value" [backdropEnabled]="true" [positionGloballyCenter]="true"[displayProgressSpinner]="displayProgressSpinner">
+  </app-template-progress-spinner>
+
 </div>

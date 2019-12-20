@@ -300,6 +300,10 @@ export class ApiService {
     return this.http.get('http://localhost:3000/usuarios/listarUsuarios',{headers:this.headers});
   }
 
+  public listarUsuariosPornombre(nombreUsuario:string){
+    return this.http.post('http://localhost:3000/usuarios/listarUsuariosPornombre/',{nombreUsuario},{headers:this.headers});
+  }
+
   public agregarUsuario(nombreUsuario:string, telefonoUsuario:string, direccionUsuario:string, correo:string, passwordUsuario:string, tipoUsuario:string){
     return this.http.post('http://localhost:3000/usuarios/agregarUsuario',{nombreUsuario, telefonoUsuario, direccionUsuario, correo, passwordUsuario, tipoUsuario},{headers:this.headers});
   }

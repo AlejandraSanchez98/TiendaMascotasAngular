@@ -52,8 +52,8 @@
             <ng-template  mat-tab-label style="color: white; background-color:#161931fc;">
               <mat-icon  class = "tabIcono"> storefront </mat-icon>Productos
             </ng-template>
-            <h1 style="font-weight: bold; color:#002255d9;">Productos&nbsp;&nbsp;<mat-icon style="font-size: 35px;">storefront</mat-icon></h1>
-            <div style="margin: 20px;">
+            <h2 style="font-weight: bold; color:#002255d9;">Productos&nbsp;&nbsp;<mat-icon style="font-size: 35px;">storefront</mat-icon></h2>
+            <div style="margin-top:20px;">
               <mat-card class="card">
                 <div class="container">
                   <div class="row">
@@ -100,7 +100,7 @@
                   <ng-container matColumnDef="acciones">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
                     <td mat-cell *matCellDef="let row">
-                      <button mat-mini-fab style="margin-left: 10px;background-color:rgb(222, 95, 5);" matTooltip="Editar Categoria" (click)="openEditar(content, row.idProducto, row.nombreProducto, row.precioUnitario,row.descripcionProducto, row.stock, row.nombreCategoria)">
+                      <button mat-mini-fab style="background-color:rgb(222, 95, 5);" matTooltip="Editar Categoria" (click)="openEditar(content, row.idProducto, row.nombreProducto, row.precioUnitario,row.descripcionProducto, row.stock, row.nombreCategoria)">
                         <mat-icon style="color: white">edit_attributes</mat-icon>
                       </button>
                       <button mat-mini-fab style="margin-left: 10px;background-color: rgb(160, 8, 8);" matTooltip="Eliminar Categoria" (click)="eliminarProducto(row.idProducto)">
@@ -111,7 +111,7 @@
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
-                <mat-paginator #MatPaginatorProductos [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: rgba(194, 200, 208, 0.9);"></mat-paginator>
+                <mat-paginator #MatPaginatorProductos [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]" style="background-color:#abaeb1;"></mat-paginator>
               </div>
             </div>
           </mat-tab>
@@ -119,7 +119,7 @@
             <ng-template  mat-tab-label>
               <mat-icon  class="tabIcono"> category </mat-icon>Categorias
             </ng-template>
-            <h1 style="font-weight: bold; color:#002255d9;">Categoria&nbsp;&nbsp;<mat-icon style="font-size: 30px;">category</mat-icon></h1>
+            <h2 style="font-weight: bold; color:#002255d9;">Categoria&nbsp;&nbsp;<mat-icon style="font-size: 30px;">category</mat-icon></h2>
             <div style="margin: 30px;">
               <mat-card class="card">
                 <div class="container">
@@ -158,7 +158,7 @@
                   <ng-container matColumnDef="acciones">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
                     <td mat-cell *matCellDef="let row">
-                      <button mat-mini-fab style="margin-left: 10px;background-color:rgb(222, 95, 5);" matTooltip="Editar Categoria" (click)="openEditarCategoria(contentCategoria, row.idCategoria, row.nombreCategoria, row.subCategoria,row.descripcion)">
+                      <button mat-mini-fab style="background-color:rgb(222, 95, 5);" matTooltip="Editar Categoria" (click)="openEditarCategoria(contentCategoria, row.idCategoria, row.nombreCategoria, row.subCategoria,row.descripcion)">
                         <mat-icon style="color: white">edit_attributes</mat-icon>
                       </button>
                       <button mat-mini-fab style="margin-left: 10px;background-color: rgb(160, 8, 8);" matTooltip="Eliminar Categoria" (click)="eliminarCategoria(row.idCategoria)">
@@ -169,7 +169,7 @@
                   <tr mat-header-row *matHeaderRowDef="displayedColumnsCategorias"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumnsCategorias;"></tr>
                 </table>
-                <mat-paginator #MatPaginatorCategoria [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: rgba(194, 200, 208, 0.9);"></mat-paginator>
+                <mat-paginator #MatPaginatorCategoria [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]" style="background-color:#abaeb1"></mat-paginator>
               </div>
             </div>
           </mat-tab>

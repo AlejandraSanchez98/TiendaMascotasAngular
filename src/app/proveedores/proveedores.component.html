@@ -46,9 +46,9 @@
         <button mat-button (click)="sidenav.toggle()" style="font-size:20px;">MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
       </mat-toolbar>
       <br>
-      <h1 style="font-weight: bold; color:#002255d9;">Proveedores&nbsp;&nbsp;<mat-icon style="font-size: 40px;">local_shipping</mat-icon></h1>
-      <div style="margin: 50px;">
+      <div>
         <mat-card class="cardPrincipal">
+          <h2 style="font-weight: bold; color:#002255d9;">Proveedores&nbsp;&nbsp;<mat-icon style="font-size: 40px;">local_shipping</mat-icon></h2>
           <mat-card class="card">
             <div class="container">
               <div class="row">
@@ -102,7 +102,7 @@
               <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
                 <td mat-cell *matCellDef="let row">
-                  <button mat-mini-fab style="margin-left: 10px;background-color:rgb(222, 95, 5);" matTooltip="Editar Proveedor" (click)="openEditar(content, row.idProveedor, row.nombreProveedor, row.direccionProveedor,row.telefonoProveedor,row.ciudadProveedor,row.emailProveedor,row.RFCProveedor,row.razonSocial)">
+                  <button mat-mini-fab style="background-color:rgb(222, 95, 5);" matTooltip="Editar Proveedor" (click)="openEditar(content, row.idProveedor, row.nombreProveedor, row.direccionProveedor,row.telefonoProveedor,row.ciudadProveedor,row.emailProveedor,row.RFCProveedor,row.razonSocial)">
                     <mat-icon style="color: white">edit_attributes</mat-icon>
                   </button>
                   <button mat-mini-fab style="margin-left: 10px;background-color: rgb(160, 8, 8);" matTooltip="Eliminar Proveedor" (click)="eliminarProveedor(row.idProveedor)">
@@ -113,7 +113,7 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
-            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: rgba(194, 200, 208, 0.9);"></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: #abaeb1;"></mat-paginator>
           </div>
         </mat-card>
       </div>

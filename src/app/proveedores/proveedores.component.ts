@@ -9,6 +9,8 @@ import {ApiService} from '../api.service';
 import { IProveedores } from '../api.service';
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  nextPageLabel = 'Siguiente Página';
+  previousPageLabel = 'Página Anterior';
   showPlus: boolean;
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
@@ -113,6 +115,7 @@ export class ProveedoresComponent implements OnInit {
         (success: any)=>{
           console.log("exito: "+ JSON.stringify(success));
           this.listarProveedores();
+          this.frmProveedores.reset();
         },
         (error)=>{
           console.log("Lo siento: "+error);

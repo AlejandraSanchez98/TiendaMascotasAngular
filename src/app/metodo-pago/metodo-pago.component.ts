@@ -9,6 +9,8 @@ import {ApiService} from '../api.service';
 import { IMetodosPago } from '../api.service';
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  nextPageLabel = 'Siguiente Página';
+  previousPageLabel = 'Página Anterior';
   showPlus: boolean;
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
@@ -87,6 +89,7 @@ export class MetodoPagoComponent implements OnInit {
         (success: any)=>{
           console.log("exito: "+ JSON.stringify(success));
           this.listarMetodosPago();
+          this.frmMetodosPago.reset();
         },
         (error)=>{
           console.log("Lo siento: "+error);

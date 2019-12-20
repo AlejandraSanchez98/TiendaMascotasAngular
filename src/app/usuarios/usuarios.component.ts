@@ -10,6 +10,8 @@ import {ApiService} from '../api.service';
 import { IUsuarios } from '../api.service';
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  nextPageLabel = 'Siguiente Página';
+  previousPageLabel = 'Página Anterior';
   showPlus: boolean;
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
@@ -109,6 +111,8 @@ export class UsuariosComponent implements OnInit {
         (success: any)=>{
           //alert("exito: "+ JSON.stringify(success));
           this.listarUsuarios();
+          this.frmUsuarios.reset();
+
         },
         (error)=>{
           console.log("Lo siento: "+error);
@@ -171,6 +175,11 @@ export class UsuariosComponent implements OnInit {
       }
     );
   }
+
+
+
+
+
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();

@@ -10,6 +10,8 @@ import {ApiService} from '../api.service';
 import { IClientes } from '../api.service';
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  nextPageLabel = 'Siguiente Página';
+  previousPageLabel = 'Página Anterior';
   showPlus: boolean;
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
@@ -101,6 +103,7 @@ export class ClientesComponent implements OnInit {
         (success: any)=>{
           console.log("exito: "+ JSON.stringify(success));
           this.listarClientes();
+          this.limpiarFormulario();
         },
         (error)=>{
           console.log("Lo siento: "+error);
@@ -160,6 +163,13 @@ export class ClientesComponent implements OnInit {
       }
     );
   }
+
+  //limpiamos el formulario una vez e haya realizado uan venta.
+  public limpiarFormulario(){
+    this.frmClientes.reset();
+
+  }
+
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();

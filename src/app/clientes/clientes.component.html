@@ -1,54 +1,54 @@
 <div class="fondo">
   <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="push" [(opened)]="opened" style="background-color:rgba(231, 235, 241, 0.98)">
+    <mat-sidenav #sidenav mode="push" [(opened)]="opened" style="background-color:rgba(230, 234, 241, 0.98); margin-right:0px" class="invisible-scrollbar">
       <img class="logoPaginas" src="../../assets/img/logoPaginas.png">
-      <mat-list role="list" style="margin-top: 30px;">
+      <mat-list role="list" style="margin-top:20px;">
         <mat-list-item role="listitem" routerLink="/clientes">
-          <mat-icon>group</mat-icon>&nbsp;&nbsp;Clientes
+          <mat-icon>group</mat-icon>&nbsp;&nbsp;&nbsp;Clientes
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/proveedores">
-          <mat-icon>local_shipping</mat-icon>&nbsp;&nbsp;Proveedores
+          <mat-icon>local_shipping</mat-icon>&nbsp;&nbsp;&nbsp;Proveedores
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/usuarios">
-          <mat-icon>supervised_user_circle</mat-icon>&nbsp;&nbsp;Usuarios
+          <mat-icon>supervised_user_circle</mat-icon>&nbsp;&nbsp;&nbsp;Usuarios
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/productos">
-          <mat-icon>storefront</mat-icon>&nbsp;&nbsp;Productos
+          <mat-icon>storefront</mat-icon>&nbsp;&nbsp;&nbsp;Productos
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/metodoPago">
-          <mat-icon>local_atm</mat-icon>&nbsp;&nbsp;Metodo De Pago
+          <mat-icon>local_atm</mat-icon>&nbsp;&nbsp;&nbsp;Metodo De Pago
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/transacciones">
-          <mat-icon>sync_alt</mat-icon>&nbsp;&nbsp;Transacciones
+          <mat-icon>sync_alt</mat-icon>&nbsp;&nbsp;&nbsp;Transacciones
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/devoluciones">
-          <mat-icon>rotate_90_degrees_ccw</mat-icon>&nbsp;&nbsp;Devoluciones
+          <mat-icon>rotate_90_degrees_ccw</mat-icon>&nbsp;&nbsp;&nbsp;Devoluciones
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/compras">
-          <mat-icon>local_atm</mat-icon>&nbsp;&nbsp;Compras Proveedor
+          <mat-icon>local_atm</mat-icon>&nbsp;&nbsp;&nbsp;Compras Proveedor
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/carrito">
-          <mat-icon>shopping_cart</mat-icon>&nbsp;&nbsp;Carrito
+          <mat-icon>shopping_cart</mat-icon>&nbsp;&nbsp;&nbsp;Carrito
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/envios">
-          <mat-icon>storefront</mat-icon>&nbsp;&nbsp;Envios
+          <mat-icon>storefront</mat-icon>&nbsp;&nbsp;&nbsp;Envios
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/reportes">
-          <mat-icon>assignment</mat-icon>&nbsp;&nbsp;Reportes
+          <mat-icon>assignment</mat-icon>&nbsp;&nbsp;&nbsp;Reportes
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/accesos">
-          <mat-icon>lock_open</mat-icon>&nbsp;&nbsp;Bitacora De Accesos
+          <mat-icon>lock_open</mat-icon>&nbsp;&nbsp;&nbsp;Bitacora De Accesos
         </mat-list-item>
       </mat-list>
     </mat-sidenav>
-    <mat-sidenav-content style="background-color: rgba(247, 247, 247, 0.95);">
+    <mat-sidenav-content style="background-color: rgba(247, 247, 247, 0.95);margin-right:0px">
       <mat-toolbar color="primary" class="toolbar">
         <button mat-button (click)="sidenav.toggle()" style="font-size:20px;">MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
       </mat-toolbar>
       <br>
-      <h1 style="font-weight: bold; color:#002255d9;">Clientes&nbsp;&nbsp;<mat-icon style="font-size: 40px;">group</mat-icon></h1>
-      <div style="margin: 50px;">
+      <div>
         <mat-card class="cardPrincipal">
+          <h2 style="font-weight: bold; color:#002255d9;">Clientes&nbsp;&nbsp;<mat-icon style="font-size: 40px;">group</mat-icon></h2>
           <mat-card class="card">
             <div class="container">
               <div class="row">
@@ -94,7 +94,7 @@
               <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
                 <td mat-cell *matCellDef="let row">
-                  <button mat-mini-fab style="margin-left: 10px;background-color:rgb(222, 95, 5);" matTooltip="Editar Cliente" (click)="openEditar(content, row.idCliente, row.nombreCliente, row.direccionCliente,row.ciudadCliente,row.telefonoCliente,row.emailCliente,row.passwordCliente)">
+                  <button mat-mini-fab style="background-color:rgb(222, 95, 5);" matTooltip="Editar Cliente" (click)="openEditar(content, row.idCliente, row.nombreCliente, row.direccionCliente,row.ciudadCliente,row.telefonoCliente,row.emailCliente,row.passwordCliente)">
                     <mat-icon style="color: white">edit_attributes</mat-icon>
                   </button>
                   <button mat-mini-fab style="margin-left: 10px;background-color: rgb(160, 8, 8);" matTooltip="Eliminar Cliente" (click)="eliminarCliente(row.idCliente)">
@@ -105,7 +105,7 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
-            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: rgba(194, 200, 208, 0.9);"></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" style="background-color:#abaeb1;"></mat-paginator>
           </div>
         </mat-card>
       </div>

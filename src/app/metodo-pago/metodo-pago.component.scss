@@ -1,3 +1,7 @@
+.invisible-scrollbar ::ng-deep ::-webkit-scrollbar {
+  overflow:initial;
+}
+
 .example-container {
   position: absolute;
   top: 0;
