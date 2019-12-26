@@ -7,9 +7,14 @@ import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 import {ApiService} from '../api.service';
 import { IEnvios } from '../api.service';
 import { IViaEnvios } from '../api.service';
+import { EliminarService } from '../eliminar.service';
+import { LoginjwtService } from '../loginjwt.service';
+
 
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  nextPageLabel = 'Siguiente Página';
+  previousPageLabel = 'Página Anterior';
   showPlus: boolean;
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
@@ -45,6 +50,10 @@ export class EnviosComponent implements OnInit {
   public frmViaEnvios:FormGroup;
   public formValid:Boolean=false;
   public titulo:string;
+  public usuarioEnSesion:string;
+  public rolUsuario:string;
+
+
 
   displayedColumns: string[] = ['idEnvio','direccion','ciudad','observaciones','idVenta','medioEnvio']
   dataSource: MatTableDataSource<IEnvios>;
@@ -55,7 +64,9 @@ export class EnviosComponent implements OnInit {
   @ViewChild('MatPaginatorEnvios', {static: true}) paginatorEnvios: MatPaginator;
   @ViewChild('MatPaginatorViaEnvios',{static: true}) paginatorViaEnvios:MatPaginator;
 
-  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl) {
+  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl,public eliminarCorrectamente: EliminarService,public verificarRolUsuario:LoginjwtService) {
+    this.usuarioEnSesion = window.localStorage.getItem('nombreUsuario');
+    this.rolUsuario = window.localStorage.getItem('tipoUsuario');
     this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
 
     //Inizializacion
@@ -64,7 +75,6 @@ export class EnviosComponent implements OnInit {
     this.arregloVentasSelect=[];
     this.arregloEnviosSelect=[];
     this.arregloViaEnvios=[];
-    //INICIALIZACION (CONSTRUCCION) DEL FORMGROUP, SOLO SE AGREGARAN ESTOS DATOS YA QUE SON LOS ESPECIFICADOS EN EL MODAL
 
     this.frmEnvios = this.formBuilder.group({
       idEnvio:[""],
@@ -169,15 +179,11 @@ export class EnviosComponent implements OnInit {
     this.frmViaEnvios.controls['descripcion'].setValue(descripcion);
   }
 
-  //DAR DE ALTA SEGUN LOS DATOS DEL MODAL //anteriormente se llamaba darAlta
   public ejecutarPeticionViaEnvio(){
-    //DATOS PROVENIENTES DEL FORMGROUP
     let medioEnvioForm = this.frmViaEnvios.get('medioEnvio').value;
     let descripcionForm = this.frmViaEnvios.get('descripcion').value;
-    //EVITAMOS CREAR 2 MODALES, SIMPLEMENTE USAMOS 1 MODAL Y TIENE SU FUNCION SEGUN SU NOMBRE
     if (this.titulo == "Agregar Medio De Envio") {
 
-      //SE AGREGAN REGISTROS MEDIANTE POST
       this.API.agregarMedioEnvio(medioEnvioForm, descripcionForm).subscribe(
         (success: any)=>{
           console.log("exito: "+ JSON.stringify(success));
@@ -190,8 +196,7 @@ export class EnviosComponent implements OnInit {
       this.modal.close();
     }
     if (this.titulo == "Editar Medio De Envio") {
-      //OBTENEMOS LOS VALORES DEL FORMULARIO
-      let idViaEnvio = this.frmViaEnvios.get('idViaEnvio').value; //recuerda que el id esta oculto asi que el user no podra editarlo
+      let idViaEnvio = this.frmViaEnvios.get('idViaEnvio').value;
       let medioEnvioForm = this.frmViaEnvios.get('medioEnvio').value;
       let descripcionForm = this.frmViaEnvios.get('descripcion').value;
 
@@ -207,19 +212,25 @@ export class EnviosComponent implements OnInit {
       );
       this.modal.close();
     }
-  }//----------------------fin operaciones-------------------------------------------------------------------
-
+  }
   //eliminar Medio de envio
   public eliminarMedioEnvio(idViaEnvio:number){
-    this.API.eliminarMedioEnvio(idViaEnvio).subscribe(
-      (success:any)=>{
-        console.log("Exito"+success);
-        this.listarMediosEnvios();
-      },
-      (error)=>{
-        console.log("Error"+ error);
-      }
-    )
+    let resultado: boolean = false;
+    resultado = this.eliminarCorrectamente.confirmarEliminacion();
+    if (resultado==true) {
+      this.API.eliminarMedioEnvio(idViaEnvio).subscribe(
+        (success:any)=>{
+          console.log("Exito"+success);
+          this.listarMediosEnvios();
+        },
+        (error)=>{
+          console.log("Error"+ error);
+        }
+      )
+    }
+    else{
+      console.log("Eliminación cancelada");
+    }
   }
 
   //listar Medios de envio
@@ -254,8 +265,16 @@ export class EnviosComponent implements OnInit {
     }
   }
 
+  //CERRAMOS SESION
+  public cerrarSesion(){
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
+
+
 
   ngOnInit() {
+    this.verificarRolUsuario.verificarAcceso();
     this.listarEnvios();
     this.listarVentas();
     this.listarMediosEnviosSelect();

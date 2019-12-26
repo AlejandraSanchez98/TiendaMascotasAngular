@@ -1,6 +1,12 @@
-.invisible-scrollbar ::ng-deep ::-webkit-scrollbar {
-  overflow:initial;
+.example-spacer {
+  flex: 1 1 auto;
 }
+
+.dropdown-toggle::after {
+    display:none;
+}
+
+
 .example-container {
   position: absolute;
   top: 0;
@@ -48,9 +54,15 @@ td{
 .toolbar{
   background-color: #2d5277;
   width: 100%;
-  height: 8%;
   position: fixed;
   z-index: 100;
+}
+
+.container{
+  padding-left: 0;
+  margin-left: 0;
+  padding-right: 0;
+  margin-right: 0;
 }
 
 h2{
@@ -60,10 +72,10 @@ h2{
 
 .card {
   background-color:#eeeef9;
-  margin-bottom: 20px;
+  margin: 20px;
 }
 
-.cardPrincipal{
+.cardTab{
   background-color: #ffffffc7;
   border-color: #091c2d;
   margin-bottom: 30px;
@@ -119,6 +131,13 @@ label{
 
 }
 
+::ng-deep .mat-tab-label{
+  color: #0d2946;
+  background-color: #eff0f9fc;
+  font-size: 15px;
+}
+
+
 ::ng-deep .mat-select-value {
     color: #002235;
 }
@@ -144,4 +163,8 @@ mat-sidenav-content{
 
 .mat-list-item{
   height: 45px !important;
+}
+
+.invisible-scrollbar ::ng-deep ::-webkit-scrollbar {
+  overflow:initial;
 }

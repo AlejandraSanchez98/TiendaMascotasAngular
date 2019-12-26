@@ -4,13 +4,7 @@
       <img class="logoPaginas" src="../../assets/img/logoPaginas.png">
       <mat-list role="list" style="margin-top:20px;">
         <mat-list-item role="listitem" routerLink="/clientes">
-          <mat-icon>group</mat-icon>&nbsp;&nbsp;&nbsp;Clientes
-        </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/proveedores">
-          <mat-icon>local_shipping</mat-icon>&nbsp;&nbsp;&nbsp;Proveedores
-        </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/usuarios">
-          <mat-icon>supervised_user_circle</mat-icon>&nbsp;&nbsp;&nbsp;Usuarios
+          <mat-icon>group</mat-icon>&nbsp;&nbsp;&nbsp;Usuarios
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/productos">
           <mat-icon>storefront</mat-icon>&nbsp;&nbsp;&nbsp;Productos
@@ -42,72 +36,103 @@
       </mat-list>
     </mat-sidenav>
     <mat-sidenav-content style="background-color: rgba(247, 247, 247, 0.95);margin-right:0px">
-      <mat-toolbar color="primary" class="toolbar">
-        <button mat-button (click)="sidenav.toggle()" style="font-size:20px;">MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
+      <mat-toolbar class="toolbar">
+        <mat-toolbar-row>
+          <button mat-button (click)="sidenav.toggle()" style="font-size:20px; padding-top:5px;" matTooltip="Menú Principal">MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
+          <span class="example-spacer"></span>
+          <h4 style="padding-top:5px; float: left;cursor:default;"><b>Bienvenido {{usuarioEnSesion}}</b></h4>
+          <div ngbDropdown role="group">
+            <button mat-button ngbDropdownToggle style="margin-left: 20px;background-color: #466c90;" matTooltip="Cerrar Sesión"><mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">exit_to_app</mat-icon></button>
+            <div class="dropdown-menu" ngbDropdownMenu style="padding:20px">
+              <h6 ngbDropdownItem style="margin-top:20px;margin-bottom:20px;float: right;color: #15376b;cursor:default"><b>Tipo de usuario: </b> {{rolUsuario}}</h6>
+              <button ngbDropdownItem (click)=cerrarSesion() style="color: white;background-color:rgb(38, 83, 128);border-radius:3px;text-align:center">Cerrar Sesión</button>
+            </div>
+          </div>
+        </mat-toolbar-row>
       </mat-toolbar>
       <br>
-      <div>
-        <mat-card class="cardPrincipal">
-          <h2 style="font-weight: bold; color:#002255d9;">Clientes&nbsp;&nbsp;<mat-icon style="font-size: 40px;">group</mat-icon></h2>
-          <mat-card class="card">
-            <div class="container">
-              <div class="row">
-                <div class="col-9">
-                  <mat-form-field>
-                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar :">
-                  </mat-form-field>
-                </div>
-                <div class="col-3">
-                  <button mat-button style="background-color: rgb(38, 83, 128);height: 50px;" matTooltip="Agregar Cliente" (click)=" openAgregar(content)">
-                    <mat-icon style="color: white">add</mat-icon> Agregar Cliente
-                  </button>
+      <br>
+      <mat-card class="cardTab">
+        <mat-tab-group>
+          <mat-tab>
+            <ng-template  mat-tab-label style="color: white; background-color:#161931fc;">
+              <mat-icon  class="tabIcono">group</mat-icon>&nbsp;&nbsp;Clientes
+            </ng-template>
+            <h2 style="font-weight: bold; color:#002255d9;margin-top:20px;">Clientes&nbsp;&nbsp;<mat-icon style="font-size: 40px;">group</mat-icon></h2>
+            <mat-card class="card">
+              <div class="container">
+                <div class="row">
+                  <div class="col-9">
+                    <mat-form-field>
+                      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar :">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-3">
+                    <button mat-button style="background-color: rgb(38, 83, 128);height: 50px;" matTooltip="Agregar Cliente" (click)=" openAgregar(content)">
+                      <mat-icon style="color: white">add</mat-icon> Agregar Cliente
+                    </button>
+                  </div>
                 </div>
               </div>
+            </mat-card>
+            <div class="mat-elevation-z8" style="margin:20px">
+              <table mat-table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="idCliente">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+                  <td mat-cell *matCellDef="let row"> {{row.idCliente}} </td>
+                </ng-container>
+                <ng-container matColumnDef="nombreCliente">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+                  <td mat-cell *matCellDef="let row"> {{row.nombreCliente}} </td>
+                </ng-container>
+                <ng-container matColumnDef="direccionCliente">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Dirección </th>
+                  <td mat-cell *matCellDef="let row"> {{row.direccionCliente}} </td>
+                </ng-container>
+                <ng-container matColumnDef="ciudadCliente">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Ciudad </th>
+                  <td mat-cell *matCellDef="let row"> {{row.ciudadCliente}} </td>
+                </ng-container>
+                <ng-container matColumnDef="telefonoCliente">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Telefono </th>
+                  <td mat-cell *matCellDef="let row"> {{row.telefonoCliente}} </td>
+                </ng-container>
+                <ng-container matColumnDef="emailCliente">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+                  <td mat-cell *matCellDef="let row"> {{row.emailCliente}} </td>
+                </ng-container>
+                <ng-container matColumnDef="acciones">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
+                  <td mat-cell *matCellDef="let row">
+                    <button mat-mini-fab style="background-color:rgb(222, 95, 5);" matTooltip="Editar Cliente" (click)="openEditar(content, row.idCliente, row.nombreCliente, row.direccionCliente,row.ciudadCliente,row.telefonoCliente,row.emailCliente,row.passwordCliente)">
+                      <mat-icon style="color: white">edit_attributes</mat-icon>
+                    </button>
+                    <button mat-mini-fab style="margin-left: 10px;background-color: rgb(160, 8, 8);" matTooltip="Eliminar Cliente" (click)="eliminarCliente(row.idCliente)">
+                      <mat-icon style="color: white">delete_sweep</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" style="background-color:#abaeb1;"></mat-paginator>
             </div>
-          </mat-card>
-          <div class="mat-elevation-z8">
-            <table mat-table [dataSource]="dataSource" matSort>
-              <ng-container matColumnDef="idCliente">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-                <td mat-cell *matCellDef="let row"> {{row.idCliente}} </td>
-              </ng-container>
-              <ng-container matColumnDef="nombreCliente">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
-                <td mat-cell *matCellDef="let row"> {{row.nombreCliente}} </td>
-              </ng-container>
-              <ng-container matColumnDef="direccionCliente">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Dirección </th>
-                <td mat-cell *matCellDef="let row"> {{row.direccionCliente}} </td>
-              </ng-container>
-              <ng-container matColumnDef="ciudadCliente">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Ciudad </th>
-                <td mat-cell *matCellDef="let row"> {{row.ciudadCliente}} </td>
-              </ng-container>
-              <ng-container matColumnDef="telefonoCliente">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Telefono </th>
-                <td mat-cell *matCellDef="let row"> {{row.telefonoCliente}} </td>
-              </ng-container>
-              <ng-container matColumnDef="emailCliente">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
-                <td mat-cell *matCellDef="let row"> {{row.emailCliente}} </td>
-              </ng-container>
-              <ng-container matColumnDef="acciones">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
-                <td mat-cell *matCellDef="let row">
-                  <button mat-mini-fab style="background-color:rgb(222, 95, 5);" matTooltip="Editar Cliente" (click)="openEditar(content, row.idCliente, row.nombreCliente, row.direccionCliente,row.ciudadCliente,row.telefonoCliente,row.emailCliente,row.passwordCliente)">
-                    <mat-icon style="color: white">edit_attributes</mat-icon>
-                  </button>
-                  <button mat-mini-fab style="margin-left: 10px;background-color: rgb(160, 8, 8);" matTooltip="Eliminar Cliente" (click)="eliminarCliente(row.idCliente)">
-                    <mat-icon style="color: white">delete_sweep</mat-icon>
-                  </button>
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" style="background-color:#abaeb1;"></mat-paginator>
-          </div>
-        </mat-card>
+          </mat-tab>
+          <mat-tab>
+            <ng-template  mat-tab-label>
+              <mat-icon  class="tabIcono">supervised_user_circle</mat-icon>&nbsp;&nbsp;Usuarios
+            </ng-template>
+            <app-usuarios></app-usuarios>
+          </mat-tab>
+          <mat-tab>
+            <ng-template  mat-tab-label>
+              <mat-icon  class="tabIcono">local_shipping</mat-icon>&nbsp;&nbsp;Proveedores
+            </ng-template>
+            <app-proveedores></app-proveedores>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card>
+      <div>
       </div>
       <ng-template #content let-modal>
         <div class="modal-header" style="background-color:#2d5277;">

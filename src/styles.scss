@@ -4,3 +4,13 @@
 .cdk-global-overlay-wrapper, .cdk-overlay-container {
     z-index: 99999 !important;
 }
+
+
+body {
+    overflow-y: hidden !important;
+
+}
+
+::-webkit-scrollbar {
+    display: none;
+}

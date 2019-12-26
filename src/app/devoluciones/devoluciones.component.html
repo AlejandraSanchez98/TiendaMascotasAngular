@@ -4,13 +4,7 @@
       <img class="logoPaginas" src="../../assets/img/logoPaginas.png">
       <mat-list role="list" style="margin-top: 30px;">
         <mat-list-item role="listitem" routerLink="/clientes">
-          <mat-icon>group</mat-icon>&nbsp;&nbsp;Clientes
-        </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/proveedores">
-          <mat-icon>local_shipping</mat-icon>&nbsp;&nbsp;Proveedores
-        </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/usuarios">
-          <mat-icon>supervised_user_circle</mat-icon>&nbsp;&nbsp;Usuarios
+          <mat-icon>group</mat-icon>&nbsp;&nbsp;Usuarios
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/productos">
           <mat-icon>storefront</mat-icon>&nbsp;&nbsp;Productos
@@ -42,9 +36,21 @@
       </mat-list>
     </mat-sidenav>
     <mat-sidenav-content style="background-color: rgba(247, 247, 247, 0.95);">
-      <mat-toolbar color="primary" class="toolbar">
-        <button mat-button (click)="sidenav.toggle()" style="font-size:20px;">MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
+      <mat-toolbar class="toolbar">
+        <mat-toolbar-row>
+          <button mat-button (click)="sidenav.toggle()" style="font-size:20px; padding-top:5px;" matTooltip="Menú Principal">MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
+          <span class="example-spacer"></span>
+          <h4 style="padding-top:5px; float: left;cursor:default;"><b>Bienvenido {{usuarioEnSesion}}</b></h4>
+          <div ngbDropdown role="group">
+            <button mat-button ngbDropdownToggle style="margin-left: 20px;background-color: #466c90;" matTooltip="Cerrar Sesión"><mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">exit_to_app</mat-icon></button>
+            <div class="dropdown-menu" ngbDropdownMenu style="padding:20px">
+              <h6 ngbDropdownItem style="margin-top:20px;margin-bottom:20px;float: right;color: #15376b;cursor:default"><b>Tipo de usuario: </b> {{rolUsuario}}</h6>
+              <button ngbDropdownItem (click)=cerrarSesion() style="color: white;background-color:rgb(38, 83, 128);border-radius:3px;text-align:center">Cerrar Sesión</button>
+            </div>
+          </div>
+        </mat-toolbar-row>
       </mat-toolbar>
+      <br>
       <br>
       <mat-card class="cardTab">
         <mat-tab-group>
@@ -52,7 +58,7 @@
             <ng-template  mat-tab-label style="color: white; background-color:#161931fc;">
               <mat-icon  class = "tabIcono"> rotate_90_degrees_ccw </mat-icon>Devoluciones
             </ng-template>
-            <h1 style="font-weight: bold; color:#002255d9;">Devoluciones&nbsp;&nbsp;<mat-icon style="font-size: 40px;">rotate_90_degrees_ccw</mat-icon></h1>
+            <h2 style="font-weight: bold; color:#002255d9;margin-top:20px;">Devoluciones&nbsp;&nbsp;<mat-icon style="font-size: 40px;">rotate_90_degrees_ccw</mat-icon></h2>
             <div style="margin: 50px;">
               <mat-card class="card">
                 <div class="container">
@@ -99,7 +105,7 @@
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
-                <mat-paginator #MatPaginatorDevoluciones [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: rgba(194, 200, 208, 0.9);"></mat-paginator>
+                <mat-paginator #MatPaginatorDevoluciones [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: #abaeb1;"></mat-paginator>
               </div>
             </div>
           </mat-tab>
@@ -107,7 +113,7 @@
             <ng-template  mat-tab-label>
               <mat-icon  class="tabIcono"> settings_backup_restore </mat-icon>Tipos De Devoluciones
             </ng-template>
-            <h1 style="font-weight: bold; color:#002255d9;">Tipos De Devoluciones&nbsp;&nbsp;<mat-icon style="font-size: 40px;">settings_backup_restore</mat-icon></h1>
+            <h2 style="font-weight: bold; color:#002255d9;margin-top:20px;">Tipos De Devoluciones&nbsp;&nbsp;<mat-icon style="font-size: 40px;">settings_backup_restore</mat-icon></h2>
             <div style="margin: 30px;">
               <mat-card class="card">
                 <div class="container">
@@ -153,7 +159,7 @@
                   <tr mat-header-row *matHeaderRowDef="displayedColumnsTiposDevoluciones"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumnsTiposDevoluciones;"></tr>
                 </table>
-                <mat-paginator #MatPaginatorTiposDevoluciones [pageSize]="5"  [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: rgba(194, 200, 208, 0.9);"></mat-paginator>
+                <mat-paginator #MatPaginatorTiposDevoluciones [pageSize]="5"  [pageSizeOptions]="[5, 10, 25, 100]" style="background-color: #abaeb1;"></mat-paginator>
               </div>
             </div>
           </mat-tab>

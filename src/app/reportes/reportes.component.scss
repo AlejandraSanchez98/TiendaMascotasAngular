@@ -1,3 +1,17 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.dropdown-toggle::after {
+    display:none;
+}
+
+
+.invisible-scrollbar ::ng-deep ::-webkit-scrollbar {
+  overflow:initial;
+}
+
+
 .example-container {
   position: absolute;
   top: 0;
@@ -12,6 +26,7 @@
   display: table;
   padding-top: 0px;
   width: 160px;
+  margin-left: 20px;
 }
 
 table {
@@ -38,7 +53,9 @@ th{
 
 td{
   color:#1b2a3a;
+  text-align: center;
   background-color: #eeeef9;
+  cursor: default;
 }
 
  table, td,th{
@@ -53,13 +70,14 @@ td{
   z-index: 100;
 }
 
-h1{
+h2{
   text-align: center;
-  margin: 60px;
+  margin: 30px;
+  cursor: default;
 }
 
 .card {
-  background-color: #f9fafb;
+  background-color: #eeeef9;
   margin-bottom: 20px;
 }
 
@@ -77,15 +95,14 @@ h1{
 .cardTab{
   background-color: #ffffffc7;
   border-color: #091c2d;
-  margin-bottom: 10px;
-  margin-left: 100px;
-  margin-right: 100px;
-  margin-top: 50px;
-}
-.tablaTab1{
+  margin-bottom: 50px;
   margin-left: 50px;
   margin-right: 50px;
-  margin-top: 50px;
+  margin-top: 80px;
+}
+
+.tablaTab1{
+  margin-top: 40px;
 }
 
 :host ::ng-deep .mat-sort-header-container {
@@ -120,7 +137,9 @@ h1{
 }
 
 ::ng-deep .mat-list-base .mat-list-item {
-    color: #002235;
+  color: #002235;
+  border-bottom: 1.5px solid #d4dde4;
+  cursor:pointer;
 }
 
 ::ng-deep .mat-select-value {
@@ -133,8 +152,20 @@ h1{
 
 ::ng-deep .mat-paginator, .mat-paginator-page-size .mat-select-trigger{
   color: #002235;
+  font-size: 15px;
+  cursor: default;
 }
 
 ::ng-deep .mat-icon-button[disabled][disabled]{
   color: #002235;
+}
+
+
+//Margenes del sidenav
+mat-sidenav-content{
+  margin-right: 0 !important;
+}
+
+.mat-list-item{
+  height: 45px !important;
 }

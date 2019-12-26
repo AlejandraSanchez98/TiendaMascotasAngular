@@ -2,15 +2,9 @@
   <mat-sidenav-container class="example-container">
     <mat-sidenav #sidenav mode="push" [(opened)]="opened" style="background-color:rgba(231, 235, 241, 0.98);">
       <img class="logoPaginas" src="../../assets/img/logoPaginas.png">
-      <mat-list role="list" style="margin-top: 30px;">
+      <mat-list role="list" style="margin-top: 20px;">
         <mat-list-item role="listitem" routerLink="/clientes">
-          <mat-icon>group</mat-icon>&nbsp;&nbsp;Clientes
-        </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/proveedores">
-          <mat-icon>local_shipping</mat-icon>&nbsp;&nbsp;Proveedores
-        </mat-list-item>
-        <mat-list-item role="listitem" routerLink="/usuarios">
-          <mat-icon>supervised_user_circle</mat-icon>&nbsp;&nbsp;Usuarios
+          <mat-icon>group</mat-icon>&nbsp;&nbsp;Usuarios
         </mat-list-item>
         <mat-list-item role="listitem" routerLink="/productos">
           <mat-icon>storefront</mat-icon>&nbsp;&nbsp;Productos
@@ -42,13 +36,25 @@
       </mat-list>
     </mat-sidenav>
     <mat-sidenav-content style="background-color: rgba(247, 247, 247, 0.95);">
-      <mat-toolbar color="primary" class="toolbar">
-        <button mat-button (click)="sidenav.toggle()" style="font-size:20px;">MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
+      <mat-toolbar class="toolbar">
+        <mat-toolbar-row>
+          <button mat-button (click)="sidenav.toggle()" style="font-size:20px; padding-top:5px;" matTooltip="Menú Principal">MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
+          <span class="example-spacer"></span>
+          <h4 style="padding-top:5px; float: left;cursor:default;"><b>Bienvenido {{usuarioEnSesion}}</b></h4>
+          <div ngbDropdown role="group">
+            <button mat-button ngbDropdownToggle style="margin-left: 20px;background-color: #466c90;" matTooltip="Cerrar Sesión"><mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">exit_to_app</mat-icon></button>
+            <div class="dropdown-menu" ngbDropdownMenu style="padding:20px">
+              <h6 ngbDropdownItem style="margin-top:20px;margin-bottom:20px;float: right;color: #15376b;cursor:default"><b>Tipo de usuario: </b> {{rolUsuario}}</h6>
+              <button ngbDropdownItem (click)=cerrarSesion() style="color: white;background-color:rgb(38, 83, 128);border-radius:3px;text-align:center">Cerrar Sesión</button>
+            </div>
+          </div>
+        </mat-toolbar-row>
       </mat-toolbar>
       <br>
-      <h1 style="font-weight: bold; color:#002255d9;">Método De Pago&nbsp;&nbsp;<mat-icon style="font-size: 40px;">local_atm</mat-icon></h1>
-      <div style="margin: 50px;">
+      <br>
+      <div>
         <mat-card class="cardPrincipal">
+          <h2 style="font-weight: bold; color:#002255d9;">Método De Pago&nbsp;&nbsp;<mat-icon style="font-size: 40px;">local_atm</mat-icon></h2>
           <mat-card class="card">
             <div class="container">
               <div class="row">
@@ -78,7 +84,7 @@
               <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
                 <td mat-cell *matCellDef="let row">
-                  <button mat-mini-fab style="margin-left: 10px;background-color: rgb(222, 95, 5);" matTooltip="Editar Método De Pago" (click)="openEditar(content, row.idMetodoPago, row.tipoPago)">
+                  <button mat-mini-fab style="background-color: rgb(222, 95, 5);" matTooltip="Editar Método De Pago" (click)="openEditar(content, row.idMetodoPago, row.tipoPago)">
                     <mat-icon style="color: white">edit_attributes</mat-icon>
                   </button>
                   <button mat-mini-fab style="margin-left: 10px;background-color: rgb(160, 8, 8);" matTooltip="Eliminar Método De Pago" (click)="eliminarMetodoPago(row.idMetodoPago)">
@@ -89,7 +95,7 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
-            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" style="background-color:rgba(194, 200, 208, 0.9);"></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" style="background-color:#abaeb1;"></mat-paginator>
           </div>
         </mat-card>
       </div>

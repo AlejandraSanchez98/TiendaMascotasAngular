@@ -1,3 +1,15 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.dropdown-toggle::after {
+    display:none;
+}
+
+.invisible-scrollbar ::ng-deep ::-webkit-scrollbar {
+  overflow:initial;
+}
+
 .example-container {
   position: absolute;
   top: 0;
@@ -12,6 +24,7 @@
   display: table;
   padding-top: 0px;
   width: 160px;
+  margin-left: 20px;
 }
 
 table {
@@ -37,6 +50,7 @@ th{
 td{
   color:#1b2a3a;
   background-color: #eeeef9;
+  cursor: default;
 }
 
 .toolbar{
@@ -49,19 +63,13 @@ td{
 
 h2{
   text-align: center;
+  cursor: default;
 }
 
 .card {
-  background-color:#f9fafb;
+  background-color:#eeeef9;
   margin-bottom: 20px;
 }
-
-.btnAceptar{
-  color: #2d5277;
-  border-color: #2d5277;
-  width: 10%;
-}
-
 
 .tabIcono {
   margin-right: 8px;
@@ -95,6 +103,13 @@ h2{
     justify-content: center;
 }
 
+::ng-deep .mat-list-base .mat-list-item {
+    color: #002235;
+    border-bottom: 1.5px solid #d4dde4;
+    cursor:pointer;
+
+}
+
 ::ng-deep .mat-tab-label{
   color: #0d2946;
   background-color: #eff0f9fc;
@@ -116,8 +131,20 @@ h2{
 
 ::ng-deep .mat-paginator, .mat-paginator-page-size .mat-select-trigger{
   color: #002235;
+  font-size: 15px;
+  cursor: default;
+
 }
 
 ::ng-deep .mat-icon-button[disabled][disabled]{
   color: #002235;
+}
+
+//Margenes del sidenav
+mat-sidenav-content{
+  margin-right: 0 !important;
+}
+
+.mat-list-item{
+  height: 45px !important;
 }

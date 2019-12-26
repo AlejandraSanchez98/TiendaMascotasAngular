@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class LoginjwtService {
-
   public api = 'http://localhost:3000/login/verificarUsuario'; //origen de donde se consumira la api
   constructor(private http:HttpClient,private router:Router) { }
   public login(usuario: string, contrasenia: string) {
@@ -15,8 +14,10 @@ export class LoginjwtService {
     .subscribe((resp:any) => {
       if(resp.estatus > 0){
         window.localStorage.setItem("nombreUsuario",usuario.toLowerCase());//almacenamos variables en LS
-        localStorage.setItem('token',resp.respuesta); //almacenamos el token en localstorage NOTA respuesta viene del servidor y contiene el token
-        this.router.navigate(['/carrito']);
+        localStorage.setItem('token',resp.respuesta);
+        setTimeout(() => {
+          this.router.navigate(['/carrito']);
+        }, 3000);
       }
       else
       {
@@ -25,11 +26,15 @@ export class LoginjwtService {
     });
   }
 
+  public verificarAcceso(){
+    let rolUsuario: string="";
+    rolUsuario = localStorage.getItem('tipoUsuario')
+    if (rolUsuario != 'gerente') {
+      localStorage.clear();
+      this.router.navigate(['/login']);
+      alert("Solo puede acceder el usuario Gerente");
 
-
-
-//CERRAMOS SESION
-  public logout() {
-    localStorage.removeItem('token');
+    }
   }
+
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import {MatPaginator,MatPaginatorIntl} from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
@@ -7,7 +7,27 @@ import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 import {ApiService} from '../api.service';
 import { IDevoluciones } from '../api.service';
 import { ITiposDevoluciones } from '../api.service';
+import { EliminarService } from '../eliminar.service';
+import { LoginjwtService } from '../loginjwt.service';
 
+export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  nextPageLabel = 'Siguiente Página';
+  previousPageLabel = 'Página Anterior';
+  showPlus: boolean;
+
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (length == 0 || pageSize == 0) { return `0 de ${length}`; }
+
+    length = Math.max(length, 0);
+
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+
+    return `${startIndex + 1} - ${endIndex} de ${length}${this.showPlus ? '+' : ''}`;
+  }
+}
 
 @Component({
   selector: 'app-devoluciones',
@@ -15,6 +35,7 @@ import { ITiposDevoluciones } from '../api.service';
   styleUrls: ['./devoluciones.component.scss']
 })
 export class DevolucionesComponent implements OnInit {
+  myCustomPaginatorIntl: MyCustomPaginatorIntl;
   public arregloDevoluciones:IDevoluciones[];
   public arregloClientesSelect:IDevoluciones[];
   public arregloTipoDevolucionSelect:IDevoluciones[];
@@ -26,6 +47,9 @@ export class DevolucionesComponent implements OnInit {
   public frmTiposDevoluciones:FormGroup;
   public formValid:Boolean=false;
   public titulo:string;
+  public usuarioEnSesion:string;
+  public rolUsuario:string;
+
 
   displayedColumns: string[] = ['idDevolucion', 'montoDevolucion', 'motivoDevolucion', 'nombreCliente', 'tipoDevolucion', 'nombreProducto'];
   dataSource: MatTableDataSource<IDevoluciones>;
@@ -35,8 +59,12 @@ export class DevolucionesComponent implements OnInit {
   @ViewChild('MatPaginatorDevoluciones', { static: true }) paginatorDevoluciones: MatPaginator;
   @ViewChild('MatPaginatorTiposDevoluciones', { static: true }) paginatorTiposDevoluciones: MatPaginator;
 
-  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService) {
-    //Inizializacion
+  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl,public eliminarCorrectamente: EliminarService,public verificarRolUsuario:LoginjwtService) {
+    this.usuarioEnSesion = window.localStorage.getItem('nombreUsuario');
+    this.rolUsuario = window.localStorage.getItem('tipoUsuario');
+    this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
+
+    //Inilzializacion
     this.titulo="";
     this.arregloDevoluciones=[];
     this.arregloClientesSelect=[];
@@ -157,15 +185,11 @@ export class DevolucionesComponent implements OnInit {
     this.frmTiposDevoluciones.controls['descripcion'].setValue(descripcion);
   }
 
-  //DAR DE ALTA SEGUN LOS DATOS DEL MODAL
   public ejecutarPeticionTiposDevoluciones(){
-    //DATOS PROVENIENTES DEL FORMGROUP
     let tipoDevolucionForm = this.frmTiposDevoluciones.get('tipoDevolucion').value;
     let descripcionForm = this.frmTiposDevoluciones.get('descripcion').value;
-    //EVITAMOS CREAR 2 MODALES, SIMPLEMENTE USAMOS 1 MODAL Y TIENE SU FUNCION SEGUN SU NOMBRE
     if (this.titulo == "Agregar Tipo De Devolución") {
 
-      //SE AGREGAN REGISTROS MEDIANTE POST
       this.API.agregarTipoDevolucion(tipoDevolucionForm, descripcionForm).subscribe(
         (success: any)=>{
           console.log("exito: "+ JSON.stringify(success));
@@ -179,7 +203,7 @@ export class DevolucionesComponent implements OnInit {
     }
     if (this.titulo == "Editar Tipo De Devolución") {
       //OBTENEMOS LOS VALORES DEL FORMULARIO
-      let idTipoDevolucion = this.frmTiposDevoluciones.get('idTipoDevolucion').value; //recuerda que el id esta oculto asi que el user no podra editarlo
+      let idTipoDevolucion = this.frmTiposDevoluciones.get('idTipoDevolucion').value;
       let tipoDevolucionForm = this.frmTiposDevoluciones.get('tipoDevolucion').value;
       let descripcionForm = this.frmTiposDevoluciones.get('descripcion').value;
 
@@ -187,7 +211,7 @@ export class DevolucionesComponent implements OnInit {
       this.API.editarTipoDevolucion(idTipoDevolucion,tipoDevolucionForm,descripcionForm).subscribe(
         (success: any)=>{
           console.log("Registro editado: "+success);
-          this.listarTiposDevoluciones();//recarga la pagina para poder notar lo cambios
+          this.listarTiposDevoluciones();
         },
         (error)=>{
           console.log("Lo siento: "+error);
@@ -195,19 +219,25 @@ export class DevolucionesComponent implements OnInit {
       );
       this.modal.close();
     }
-  }//----------------------fin operaciones-------------------------------------------------------------------
+  }
 
-  //eliminar tipo de devolución
   public eliminarTipoDevolucion(idTipoDevolucion:number){
-    this.API.eliminarTipoDevolucion(idTipoDevolucion).subscribe(
-      (success:any)=>{
-        console.log("Exito"+success);
-        this.listarTiposDevoluciones();
-      },
-      (error)=>{
-        console.log("Error"+ error);
-      }
-    )
+    let resultado:boolean=false;
+    resultado = this.eliminarCorrectamente.confirmarEliminacion();
+    if (resultado==true) {
+      this.API.eliminarTipoDevolucion(idTipoDevolucion).subscribe(
+        (success:any)=>{
+          console.log("Exito"+success);
+          this.listarTiposDevoluciones();
+        },
+        (error)=>{
+          console.log("Error"+ error);
+        }
+      )
+    }
+    else{
+        console.log("Eliminación cancelada");
+    }
   }
 
   //listar tipos de devoluciones
@@ -241,7 +271,18 @@ export class DevolucionesComponent implements OnInit {
   }
 
 
+  //CERRAMOS SESION
+  public cerrarSesion(){
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
+
+
+
+
+
   ngOnInit() {
+    this.verificarRolUsuario.verificarAcceso();
     this.listarDevoluciones();
     this.listarClientes();
     this.listarTiposDevolucionesSelect();

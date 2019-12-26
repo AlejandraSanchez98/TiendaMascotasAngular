@@ -7,6 +7,9 @@ import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 import {ApiService} from '../api.service';
 import { IProductos } from '../api.service';
 import { ICategoria } from '../api.service';
+import { EliminarService } from '../eliminar.service';
+import { LoginjwtService } from '../loginjwt.service';
+
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
   nextPageLabel = 'Siguiente Página';
@@ -47,6 +50,9 @@ export class ProductosComponent implements OnInit {
   public frmCategorias:FormGroup;
   public formValid:Boolean=false;
   public titulo:string;
+  public usuarioEnSesion:string;
+  public rolUsuario:string;
+
 
   displayedColumns: string[] = ['idProducto', 'nombreProducto', 'precioUnitario', 'descripcionProducto', 'stock', 'nombreCategoria','acciones'];
   dataSource: MatTableDataSource<IProductos>;
@@ -59,7 +65,9 @@ export class ProductosComponent implements OnInit {
   @ViewChild('MatPaginatorCategoria', {static: true}) paginatorCategoria: MatPaginator;
 
 
-  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl) {
+  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl,public eliminarCorrectamente: EliminarService,public verificarRolUsuario:LoginjwtService) {
+    this.usuarioEnSesion = window.localStorage.getItem('nombreUsuario');
+    this.rolUsuario = window.localStorage.getItem('tipoUsuario');
     this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
     //Inizializacion
     this.titulo="";
@@ -155,15 +163,22 @@ export class ProductosComponent implements OnInit {
 
   //eliminar Producto
   public eliminarProducto (idProducto:number){
-    this.API.eliminarProducto(idProducto).subscribe(
-      (success:any)=>{
-        console.log("Exito"+success);
-        this.listarProductos();
-      },
-      (error)=>{
-        console.log("Error"+ error);
-      }
-    );
+    let resultado: boolean = false;
+    resultado = this.eliminarCorrectamente.confirmarEliminacion();
+    if (resultado == true) {
+      this.API.eliminarProducto(idProducto).subscribe(
+        (success:any)=>{
+          console.log("Exito"+success);
+          this.listarProductos();
+        },
+        (error)=>{
+          console.log("Error"+ error);
+        }
+      );
+    }
+    else{
+      console.log("Eliminación cancelada");
+    }
   }
 
   //listar el select de categorias
@@ -256,15 +271,22 @@ export class ProductosComponent implements OnInit {
 
   //eliminar categoria
   public eliminarCategoria(idCategoria:number){
-    this.API.eliminarCategoria(idCategoria).subscribe(
-      (success:any)=>{
-        console.log("Exito"+success);
-        this.listarCategorias();
-      },
-      (error)=>{
-        console.log("Error"+ error);
-      }
-    );
+    let resultado: boolean = false;
+    resultado = this.eliminarCorrectamente.confirmarEliminacion();
+    if (resultado == true) {
+      this.API.eliminarCategoria(idCategoria).subscribe(
+        (success:any)=>{
+          console.log("Exito"+success);
+          this.listarCategorias();
+        },
+        (error)=>{
+          console.log("Error"+ error);
+        }
+      );
+    }
+    else{
+      console.log("Eliminación cancelada");
+    }
   }
 
   //listar categorias
@@ -284,7 +306,15 @@ export class ProductosComponent implements OnInit {
     );
   }
 
+  //CERRAMOS SESION
+  public cerrarSesion(){
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
+
+
   ngOnInit() {
+    this.verificarRolUsuario.verificarAcceso();
     this.listarProductos();
     this.listarCategoriasSelect();
     this.listarCategorias();

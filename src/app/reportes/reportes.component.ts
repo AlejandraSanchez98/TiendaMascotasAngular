@@ -1,15 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatPaginator,MatPaginatorIntl} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
+import {Router} from '@angular/router';
 import {ApiService} from '../api.service';
 import { IProductosMasVendidos } from '../api.service';
 import { IVendedoresMasVentas } from '../api.service';
 import { IProductoStockMinimo } from '../api.service';
 import { IUtilidad } from '../api.service';
+import { LoginjwtService } from '../loginjwt.service';
+
 
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
-  itemsPerPageLabel = 'Elementos por Página'; 
+  itemsPerPageLabel = 'Elementos por Página';
+  nextPageLabel = 'Siguiente Página';
+  previousPageLabel = 'Página Anterior';
+
   showPlus: boolean;
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
@@ -39,6 +45,9 @@ export class ReportesComponent implements OnInit {
   public arregloProductosMasVendidos:IProductosMasVendidos[];
   public arregloVendedoresMasVentas:IVendedoresMasVentas[];
   public arregloProductoStockMinimo:IProductoStockMinimo[];
+  public usuarioEnSesion:string;
+  public rolUsuario:string;
+
 
   displayedColumns: string[] = ['idProducto', 'Producto','TotalVentas'];
   dataSource:MatTableDataSource<IProductosMasVendidos>;
@@ -56,7 +65,9 @@ export class ReportesComponent implements OnInit {
   @ViewChild('MatPaginatorUtilidad', {static: true}) paginatorUtilidad: MatPaginator;
 
 
-  constructor(public API:ApiService, matPaginatorIntl: MatPaginatorIntl) {
+  constructor(public API:ApiService,public router:Router, matPaginatorIntl: MatPaginatorIntl,public verificarRolUsuario:LoginjwtService) {
+    this.usuarioEnSesion = window.localStorage.getItem('nombreUsuario');
+    this.rolUsuario = window.localStorage.getItem('tipoUsuario');
     this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
     this.arregloProductosMasVendidos=[];
     this.arregloVendedoresMasVentas=[];
@@ -134,7 +145,18 @@ export class ReportesComponent implements OnInit {
       }
     );
   }
+
+
+  //CERRAMOS SESION
+  public cerrarSesion(){
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
+
+
+
   ngOnInit() {
+    this.verificarRolUsuario.verificarAcceso();
     this.productosMasVendidos();
     this.vendedoresMasVentas();
     this.productoStockMinimo();

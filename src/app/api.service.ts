@@ -282,6 +282,11 @@ export class ApiService {
     return this.http.get('http://localhost:3000/metodoPago/listarMetodosPago',{headers:this.headers});
   }
 
+  public listarMetodosPagoPorID(idMetodoPago:number) {
+  return this.http.get('http://localhost:3000/metodoPago/listarMetodosPagoPorID/'+idMetodoPago, { headers: this.headers });
+}
+
+
   public agregarMetodoPago(tipoPago:string){
     return this.http.post('http://localhost:3000/metodoPago/agregarMetodoPago',{tipoPago},{headers:this.headers});
   }

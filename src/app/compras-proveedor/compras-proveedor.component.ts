@@ -12,10 +12,10 @@ import { IComprasProveedor } from '../api.service';
   styleUrls: ['./compras-proveedor.component.scss']
 })
 export class ComprasProveedorComponent implements OnInit {
-  displayedColumns: string[] = ['idCompra', 'fechaRegistro', 'cantidadProducto'];//columnas tabla transacciones
-  displayedColumnsProductos: string[] = ['nombreProducto','precioUnitario','cantidadProducto','acciones'];//columnas tabla transacciones
-  public dsCompras:MatTableDataSource<IComprasProveedor>; //datasource para transacciones
-  public dsProductos:MatTableDataSource<IProductosCompras>; //dataSource para productos
+  displayedColumns: string[] = ['idCompra', 'fechaRegistro', 'cantidadProducto'];
+  displayedColumnsProductos: string[] = ['nombreProducto','precioUnitario','cantidadProducto','acciones'];
+  public dsCompras:MatTableDataSource<IComprasProveedor>;
+  public dsProductos:MatTableDataSource<IProductosCompras>;
   public frmCompras: FormGroup;
   public arregloProductosSelect: IProductosCompras[] = [];
   public arregloProductos: IProductosCompras[] = [];
@@ -81,7 +81,7 @@ public agregarProductos(){
       agregarValorID = this.frmCompras.get('idProducto').value;
       console.log("aqui estan los productos: ",agregarValorID)
       agregarValorCantidad = this.frmCompras.get('cantidadProducto').value;
-      //sumando monto cada que se agrega un producto
+
       this.montoAcumulado = this.montoAcumulado + (success.respuesta[agregarValorID-1].precioUnitario * agregarValorCantidad);
 
       if (this.arregloProductos.length>=1) {
@@ -112,14 +112,12 @@ public agregarProductos(){
   );
 }
 
-//eliminar productos de tabla (carrito)
 public eliminarProductosCarrito(objetoProducto:any,indice:number){
   console.log("producto a eliminar: ",indice-1,);
   console.log(this.arregloProductos)
   this.arregloProductos.splice(indice,1);
-  this.dsProductos = new MatTableDataSource(this.arregloProductos);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
+  this.dsProductos = new MatTableDataSource(this.arregloProductos);
 
-  //hacemos que la eliminacion de un producto afecte tambien al monto $
   this.API.listarProductos().subscribe(
     (success:any)=>{
           this.montoAcumulado = this.montoAcumulado - (success.respuesta[0].precioUnitario  *  objetoProducto.cantidadProducto);
@@ -131,7 +129,6 @@ public eliminarProductosCarrito(objetoProducto:any,indice:number){
 }
 
 
-//agregar una compra
 public agregarCompra(){
  let idUsuarioForm:number = 0,idProveedorForm:number = 0,montoTotalForm: number = 0;
   let arregloProductosForm:any[] = []
@@ -143,7 +140,6 @@ public agregarCompra(){
 
       alert("presionar boton de agregar productos \n");
   }
-  //alert("cte: "+idUsuarioForm+" pdor: "+idProveedorForm+" monto: "+montoTotalForm+" arrpdtos: "+JSON.stringify(arregloProductosForm));
 
   this.API.agregarCompra(montoTotalForm,idProveedorForm,idUsuarioForm,arregloProductosForm).subscribe(
     (success:any)=>{
@@ -169,16 +165,13 @@ public agregarCompra(){
   );
 }
 
-//muestra la transaccion hecha despues de que se oprime el btn de vender
 public listarCompras(){
     this.API.listarCompras().subscribe(
     (success:any)=>{
       this.arregloCompras = success.respuesta;
-      //alert("arreglot: "+JSON.stringify(this.arregloCompras));
       this.ultimaCompra = this.arregloCompras[this.arregloCompras.length - 1];
-      //alert("ultima venta: "+JSON.stringify(this.ultimaCompra))
-      this.dsCompras = new MatTableDataSource([this.ultimaCompra]); //[prueba] convierto a array la variable prueba para que pueda ser iterada
-      this.arregloCompras = [this.ultimaCompra];//aplico simbolo iterador para que pueda iterarlo en un loop
+      this.dsCompras = new MatTableDataSource([this.ultimaCompra]);
+      this.arregloCompras = [this.ultimaCompra];
     },
     (error)=>{
       console.log("algo ocurrio: ",error)
@@ -186,7 +179,7 @@ public listarCompras(){
   );
 }
 
-//limpiamos el formulario una vez e haya realizado una compra.
+
 public limpiarFormulario(){
   this.frmCompras.reset();
   this.montoAcumulado = 0;

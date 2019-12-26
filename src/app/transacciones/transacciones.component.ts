@@ -2,11 +2,15 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import {MatPaginator,MatPaginatorIntl} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import {Router} from '@angular/router';
 import {ApiService} from '../api.service';
 import { IVentas } from '../api.service';
 import { ICompras } from '../api.service';
+import { LoginjwtService } from '../loginjwt.service';
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  nextPageLabel = 'Siguiente Página';
+  previousPageLabel = 'Página Anterior';
   showPlus: boolean;
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
@@ -42,6 +46,9 @@ export class TransaccionesComponent implements OnInit {
 
   public modal: NgbModalRef;
   public titulo:string;
+  public usuarioEnSesion:string;
+  public rolUsuario:string;
+
 
 
   displayedColumns: string[] = ['idVenta','montoConIVA','cantidadTotalProductos','fechaRegistro','nombreUsuario','nombreCliente','acciones'];
@@ -59,7 +66,9 @@ export class TransaccionesComponent implements OnInit {
   @ViewChild('MatPaginatorVentas', {static: true}) paginatorVentas: MatPaginator;
   @ViewChild('MatPaginatorCompras', {static: true}) paginatorCompras: MatPaginator;
 
-  constructor(public API:ApiService,matPaginatorIntl: MatPaginatorIntl,private modalService: NgbModal) {
+  constructor(public API:ApiService,matPaginatorIntl: MatPaginatorIntl,private modalService: NgbModal,public router:Router,public verificarRolUsuario:LoginjwtService) {
+    this.usuarioEnSesion = window.localStorage.getItem('nombreUsuario');
+    this.rolUsuario = window.localStorage.getItem('tipoUsuario');
     this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
 
     this.arregloTransaccionesVentas=[];
@@ -124,7 +133,6 @@ export class TransaccionesComponent implements OnInit {
           nombreCliente:success.respuesta[0].nombreCliente,
           tipoPago:success.respuesta[0].tipoPago
         }];
-        //this.dsVentasDetalles = new MatTableDataSource(this.arregloVentasDetalles);
 
 
         console.log("contenido arregloDetalleCompra: ",this.arregloVentasDetalles)
@@ -187,7 +195,6 @@ export class TransaccionesComponent implements OnInit {
           productos:productos,
           cantidadProducto:success.respuesta[0].cantidadProducto,
         }];
-        //this.dsComprasDetalles = new MatTableDataSource(this.arregloComprasDetalles);
 
 
         console.log("contenido arregloDetalleCompra: ",this.arregloComprasDetalles)
@@ -212,8 +219,16 @@ export class TransaccionesComponent implements OnInit {
     }
   }
 
+  //CERRAMOS SESION
+  public cerrarSesion(){
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
+
+
 
   ngOnInit() {
+    this.verificarRolUsuario.verificarAcceso();
     this.listarVentasSinDetalles();
     this.listarComprasSinDetalles();
   }

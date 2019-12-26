@@ -81,19 +81,16 @@ input{
 
 
 
-//PERSONALIZAR EL COLOR DE INPUT
-::ng-deep .mat-focused {/*cambia el color del label cuando se enfoca*/
+
+::ng-deep .mat-focused {
   color: #052027 !important;
  }
 
-::ng-deep.mat-form-field-underline { /*cambia el color del subrayado*/
+::ng-deep.mat-form-field-underline {
   background-color: #052027 !important;
   border-color: #052027 !important;
 }
-/*::ng-deep.mat-form-field-ripple {//cambiar el color del subrayado cuando se enfoca
- background-color: #052027 !important;
- border-color: #052027 !important;
-}*/
+
 ::ng-deep.mat-form-field-label{/*color del label*/
   color: #052027 !important;
 }

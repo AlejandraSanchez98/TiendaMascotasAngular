@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import {Router} from '@angular/router';
 import { ApiService, IClientes,IUsuarios } from '../api.service';
 import { IProductosCarrito } from '../api.service';
 import { IVentasCarrito } from '../api.service';
 import { IMetodosPagoCarrito } from '../api.service';
 import {IVentas} from '../api.service';
+import {PdfService} from '../pdf.service';
 
 
 @Component({
@@ -14,10 +16,10 @@ import {IVentas} from '../api.service';
   styleUrls: ['./agregar-venta-carrito.component.scss']
 })
 export class AgregarVentaCarritoComponent implements OnInit {
-  displayedColumns: string[] = ['idVenta', 'fechaRegistro', 'cantidadTotalProductos'];//columnas tabla transacciones
-  displayedColumnsProductos: string[] = ['nombreProducto','precioUnitario','cantidadProducto','acciones'];//columnas tabla transacciones
-  public dsVentas:MatTableDataSource<IVentasCarrito>; //datasource para transacciones
-  public dsProductos:MatTableDataSource<IProductosCarrito>; //dataSource para productos
+  displayedColumns: string[] = ['idVenta', 'fechaRegistro', 'cantidadTotalProductos'];
+  displayedColumnsProductos: string[] = ['nombreProducto','precioUnitario','cantidadProducto','acciones'];
+  public dsVentas:MatTableDataSource<IVentasCarrito>;
+  public dsProductos:MatTableDataSource<IProductosCarrito>;
   public frmVentas: FormGroup;
   public arregloProductosSelect: IProductosCarrito[] = [];
   public arregloProductosTabla: IProductosCarrito[] = [];
@@ -29,18 +31,29 @@ export class AgregarVentaCarritoComponent implements OnInit {
   public arregloVentasDetalles:IVentas[] = [];
   public ultimaVenta:any;
   public montoAcumulado : number;
+  public cambio:number;
+  public usuarioEnSesion:string;
+  public rolUsuario:string;
+  public usuarioPresente:number;
+  public tipoPagoSeleccionado:number = 0;
 
 
-  constructor(public formBuilder: FormBuilder, public API: ApiService) {
+
+  constructor(public formBuilder: FormBuilder, public API: ApiService,public router:Router,public PDF: PdfService) {
+    this.usuarioPresente = 0;
+    this.usuarioEnSesion = window.localStorage.getItem('nombreUsuario');
+    this.rolUsuario = window.localStorage.getItem('tipoUsuario');
+
     this.montoAcumulado = 0;
     this.frmVentas = this.formBuilder.group({
-        idUsuario:["",Validators.required],
+        idUsuario:localStorage.getItem("nombreUsuario"),
         idCliente:["",Validators.required],
         pago:[""],
         idProducto:["",Validators.required],
         cantidadProductos:["",Validators.required],
         idMetodoPago:["",Validators.required]
       });
+      this.frmVentas.get('pago').disable();
  }
 
 
@@ -92,59 +105,70 @@ public listarUsuarios(){
   );
 }
 
-public agregarProductos(){
-  let agregarValorID: number = 0;
-  let agregarValorCantidad: number = 0;
 
-  this.API.listarProductos().subscribe(
-    (success:any)=>{
-      agregarValorID = this.frmVentas.get('idProducto').value;
+//LLENA EL INPUT DEL NOMBRE DE USUARIO, ESTE ES EL DEL USUARIO EN SESIÓN
+  public mostrarUsuarioEnSesion(){
+    this.API.listarUsuariosPornombre(localStorage.getItem("nombreUsuario")).subscribe(
+      (success:any)=>{
+          this.usuarioPresente = success.respuesta[0].idUsuario;
 
-      agregarValorCantidad = this.frmVentas.get('cantidadProductos').value;
+      },
+      (error)=>{
+        console.log(error)
+      }
+    );
+  }
 
-      this.montoAcumulado = this.montoAcumulado + (success.respuesta[agregarValorID-1].precioUnitario * agregarValorCantidad);
-      //sumando monto cada que se agrega un producto
 
-      if (this.arregloProductosTabla.length >= 1) {
-        //alert("posicion en arreglo: "+this.arregloProductosTabla[0].cantidadProductos);
-        for (let i = 0; i < this.arregloProductosTabla.length; i++) {
-          if (agregarValorID == this.arregloProductosTabla[i].idProducto) {
-            this.arregloProductosTabla[i].cantidadProductos = this.arregloProductosTabla[i].cantidadProductos + agregarValorCantidad;
-            this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
-          }else{
-            if(i == this.arregloProductosTabla.length -1){
-              console.log("hola")
-              console.log("producto a agregar: ",agregarValorID-1);
-              this.arregloProductosTabla.push({idProducto:agregarValorID,cantidadProductos:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
-              this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
-              break;
+  public agregarProductos(){
+    let productos: number = 0;//idProducto
+    let cantidad: number = 0;
+
+    this.API.listarProductos().subscribe(
+      (success:any)=>{
+        productos = this.frmVentas.get('idProducto').value;
+        cantidad = this.frmVentas.get('cantidadProductos').value;
+
+        this.montoAcumulado = this.montoAcumulado + (success.respuesta[productos-1].precioUnitario * cantidad);
+
+        if (this.arregloProductosTabla.length >= 1) {
+          alert("posicion en arreglo: "+this.arregloProductosTabla[0].cantidadProductos);
+          for (let i = 0; i < this.arregloProductosTabla.length; i++) {
+            if (productos == this.arregloProductosTabla[i].idProducto) {
+              this.arregloProductosTabla[i].cantidadProductos = this.arregloProductosTabla[i].cantidadProductos + cantidad;
+              this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);
+              if(i == this.arregloProductosTabla.length -1){
+                this.arregloProductosTabla.push({idProducto:productos,cantidadProductos:cantidad,nombreProducto:success.respuesta[productos-1].nombreProducto,precioUnitario:success.respuesta[productos-1].precioUnitario});
+                this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);
+                break;
+              }
+
             }
           }
+
+        }else{
+          this.arregloProductosTabla.push({idProducto:productos,cantidadProductos:cantidad,nombreProducto:success.respuesta[productos-1].nombreProducto,precioUnitario:success.respuesta[productos-1].precioUnitario});
+          this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);
+          document.getElementById('tablaVentaConcluidaVacia').style.display = "none";
         }
+      },
+      (error)=>{
+        console.log("algo ocurrio",error)
       }
-      else{
-        this.arregloProductosTabla.push({idProducto:agregarValorID,cantidadProductos:agregarValorCantidad,nombreProducto:success.respuesta[agregarValorID-1].nombreProducto,precioUnitario:success.respuesta[agregarValorID-1].precioUnitario});
-        this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
-        document.getElementById('tablaVentaConcluidaVacia').style.display = "none";
-      }
-    },
-    (error)=>{
-      console.log("algo ocurrio",error)
-    }
-  );
-}
+    );
+  }
 
 //eliminar productos de tabla (carrito)
 public eliminarProductosCarrito(objetoProducto:any,indice:number){
   console.log("producto a eliminar: ",indice-1,);
   console.log(this.arregloProductosTabla)
   this.arregloProductosTabla.splice(indice,1);
-  this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);//paso la info del arreglo al dataSource de la tabla para mostrarlos cada que se agregue un nuevo registro
+  this.dsProductos = new MatTableDataSource(this.arregloProductosTabla);
 
-  //hacemos que la eliminacion de un producto afecte tambien al monto $
+
   this.API.listarProductos().subscribe(
     (success:any)=>{
-          this.montoAcumulado = this.montoAcumulado - (success.respuesta[0].precioUnitario  *  objetoProducto.cantidadProducto);
+          this.montoAcumulado = this.montoAcumulado - (objetoProducto.precioUnitario  *  objetoProducto.cantidadProducto);
     },
     (error)=>{
       console.log("algo ocurrio",error)
@@ -153,77 +177,100 @@ public eliminarProductosCarrito(objetoProducto:any,indice:number){
 }
 
 
-//almacena los tipos de pago selecionados del checkbox en un arreglo para su posterior uso.
+
 public agregarMetodosPago(idMetodoPago:number){
   this.API.listarMetodosPago().subscribe(
     (success:any)=>{
-        let prueba = this.frmVentas.get('idMetodoPago').value;
+        let tipoPago = this.frmVentas.get('idMetodoPago').value;
+        this.frmVentas.controls['pago'].setValue(null);
         //si el checkbox esta marcado
-        if (prueba == true) {
+        if (tipoPago == true) {
+          this.tipoPagoSeleccionado++;
+          this.frmVentas.get('pago').enable();
           this.arregloMetodosPagoLista.push({idMetodoPago:idMetodoPago})
-        }else if(prueba == false){//elimina los elementos desmarcados
-            this.arregloMetodosPagoLista.splice(idMetodoPago-1,1)
+        }else if(tipoPago == false){
+          this.tipoPagoSeleccionado--;
+          this.arregloMetodosPagoLista.splice(idMetodoPago-1,1)
         }
-        //alert("arreglo final: "+JSON.stringify(this.arregloMetodosPagoLista));
-    },
-    (error)=>{
-      console.log("algo ocurrio: ",error)
+
+
+        if(this.tipoPagoSeleccionado == 0){
+          console.log("seleccionar el  tipo de pago");
+          this.frmVentas.get('pago').disable();
+        }
+
+      },
+      (error)=>{
+        console.log("algo ocurrio: ",error)
     }
   );
 }
-//agregar una transaccion
 public agregarVenta(){
- let idClienteForm:number = 0,idUsuarioForm:number = 0,pagoForm: number = 0;
- let arregloProductosForm:any[] = [],arregloMetodosPagoForm:any[] = [];
+  let idClienteForm:number = 0,idUsuarioForm:number = 0,pagoForm: number = 0;
+  let arregloProductosForm:any[] = [],arregloMetodosPagoForm:any[] = [];
   idClienteForm = this.frmVentas.get('idCliente').value;
-  idUsuarioForm = this.frmVentas.get('idUsuario').value;
+  idUsuarioForm = this.usuarioPresente;
   pagoForm = this.frmVentas.get('pago').value;
   arregloProductosForm = this.arregloProductosTabla;
   arregloMetodosPagoForm = this.arregloMetodosPagoLista;
+
   if (arregloProductosForm.length == 0) {
-      alert(" presionar boton de agregar productos \n");
-  }
-  if (arregloMetodosPagoForm[0].idTipoPago == 1) {
-    pagoForm = this.montoAcumulado;
+    alert(" presionar boton de agregar productos \n");
+    return;
   }
 
-  this.API.agregarVenta(idClienteForm,idUsuarioForm,pagoForm,arregloProductosForm,arregloMetodosPagoForm).subscribe(
+  console.log("tipo de pago en transaccion: ", arregloMetodosPagoForm);
+  this.API.listarMetodosPagoPorID(arregloMetodosPagoForm[0].idMetodoPago).subscribe(
     (success:any)=>{
-      if(success.estatus > 0){
-        console.log("supuestamente fue exitoso ",success.estatus)
-        this.listarVentas();
-        this.limpiarFormulario();
-        /*setTimeout(()=>{
-          this.listarVentas();
-          this.limpiarFormulario();
-        },1000)*/
-        console.log("listando")
-        //alert(":respuesta"+success.respuesta);
-      }else if(success.estatus < 0) {
-          alert("No cuentas con el dinero suficiente | verifica tu pago");
-      }else{
-        alert("solo manda esto:"+JSON.stringify(success.respuesta));
-      }
+      if (success.respuesta[0].tipoPago != "efectivo") {
+        pagoForm = this.montoAcumulado;
 
+        console.log("no pagaste en efectivo")
+      }
+      this.API.agregarVenta(idClienteForm,idUsuarioForm,pagoForm,arregloProductosForm,arregloMetodosPagoForm).subscribe(
+        (success:any)=>{
+          if(success.estatus > 0){
+            setTimeout(()=>{
+              alert(success.respuesta);
+              document.getElementById('agregarVenta').style.pointerEvents = "none";
+              this.listarVentas();
+
+            },500)
+          }else if(success.estatus < 0) {
+            alert("No cuentas con el dinero suficiente | verifica tu pago");
+            console.log("verdadero error: ",success.respuesta)
+          }else{
+            alert(JSON.stringify(success.respuesta));
+          }
+
+        },
+        (error)=>{
+          alert("algo anda mal | "+ JSON.stringify(error));
+        }
+      );
     },
-    (error)=>{
-      alert("error | "+ JSON.stringify(error));
+    (error:any)=>{
+
     }
   );
 }
 
-//muestra la transaccion hecha despues de que se oprime el btn de vender
 public listarVentas(){
   this.API.listarVentas().subscribe(
     (success:any)=>{
 
       this.arregloVentas = success.respuesta;
-      //alert("arreglot: "+JSON.stringify(this.arregloVentas));
       this.ultimaVenta = this.arregloVentas[this.arregloVentas.length - 1];
-      //alert("ultima venta: "+JSON.stringify(this.ultimaVenta));
-      this.dsVentas = new MatTableDataSource([this.ultimaVenta]); //[prueba] convierto a array la variable prueba para que pueda ser iterada
-      this.arregloVentas = [this.ultimaVenta];//aplico simbolo iterador para que pueda iterarlo en un loop
-      //alert("arreglo mostrado: "+JSON.stringify(this.arregloTransacciones));
+
+      this.dsVentas = new MatTableDataSource([this.ultimaVenta]);
+      this.arregloVentas = [this.ultimaVenta];
+
+      setTimeout(()=>{
+        this.generarPDF('pdf');
+        this.cambio = this.arregloVentas[0].cambio;
+        document.getElementById('cambio').style.display = "contents";
+      },0);
+
     },
     (error)=>{
       console.log("algo ocurrio: ",error)
@@ -233,17 +280,43 @@ public listarVentas(){
 
 
 
-//limpiamos el formulario una vez e haya realizado uan venta.
+
 public limpiarFormulario(){
   this.frmVentas.reset();
+  this.frmVentas.controls['idUsuario'].setValue(localStorage.getItem("nombreUsuario"));
   this.montoAcumulado = 0;
+  this.frmVentas.get('pago').disable();
 
   this.dsProductos.data=[];
-  this.arregloProductosTabla = [];
+  this.arregloProductosTabla = []
+  this.arregloMetodosPagoLista = [];
+  document.getElementById('tablaVentaConcluidaVacia').style.display = "block";
+  document.getElementById('cambio').style.display = "none";
+  document.getElementById('agregarVenta').style.pointerEvents = "unset";
+  document.getElementById('LimpiarInformacionVenta').style.display = "none";
 }
 
 
+//CERRAMOS SESION
+public cerrarSesion(){
+  localStorage.clear();
+  this.router.navigate(['/login']);
+}
+
+
+  public generarPDF(pdf:string){
+    console.log("este es el parametro de tu pdf: ",pdf);
+    this.PDF.generarPDF(pdf);
+    setTimeout(()=>{
+      document.getElementById('pdf').style.display = "none";
+    },100000);
+
+  }
+
+
+
 ngOnInit() {
+    this.mostrarUsuarioEnSesion();
     this.listarMetodosPago();
     this.listarProductos();
     this.listarUsuarios();

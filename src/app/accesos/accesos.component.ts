@@ -2,10 +2,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatPaginator,MatPaginatorIntl} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import {Router} from '@angular/router';
 import {ApiService} from '../api.service';
 import { IAccesos } from '../api.service';
+import { LoginjwtService } from '../loginjwt.service';
+
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
+  nextPageLabel = 'Siguiente Página';
+  previousPageLabel = 'Página Anterior';
   showPlus: boolean;
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
@@ -22,8 +27,6 @@ export class MyCustomPaginatorIntl extends MatPaginatorIntl {
   }
 }
 
-
-
 @Component({
   selector: 'app-accesos',
   templateUrl: './accesos.component.html',
@@ -32,9 +35,12 @@ export class MyCustomPaginatorIntl extends MatPaginatorIntl {
 
 })
 export class AccesosComponent implements OnInit {
-
   myCustomPaginatorIntl: MyCustomPaginatorIntl;
   public arregloAccesos:IAccesos[];
+
+  public usuarioEnSesion:string;
+  public rolUsuario:string;
+
 
   displayedColumns: string[] = ['id', 'accion','fechaRegistro','nombreUsuario'];
   dataSource:MatTableDataSource<IAccesos>;
@@ -43,8 +49,11 @@ export class AccesosComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
 
-  constructor(public API:ApiService,matPaginatorIntl: MatPaginatorIntl) {
+  constructor(public API:ApiService,matPaginatorIntl: MatPaginatorIntl,public router:Router,public verificarRolUsuario:LoginjwtService) {
     this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
+    this.usuarioEnSesion = window.localStorage.getItem('nombreUsuario');
+    this.rolUsuario = window.localStorage.getItem('tipoUsuario');
+
     //Inizializacion
     this.arregloAccesos=[];
   }
@@ -73,7 +82,16 @@ export class AccesosComponent implements OnInit {
       this.dataSource.paginator.firstPage();
     }
   }
+
+  //CERRAMOS SESION
+  public cerrarSesion(){
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
+
+
   ngOnInit() {
+    this.verificarRolUsuario.verificarAcceso();
     this.listarAccesos();
   }
 

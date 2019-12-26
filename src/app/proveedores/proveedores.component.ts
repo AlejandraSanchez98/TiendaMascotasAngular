@@ -7,6 +7,8 @@ import {Router} from '@angular/router';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 import {ApiService} from '../api.service';
 import { IProveedores } from '../api.service';
+import { EliminarService } from '../eliminar.service';
+
 
 export class MyCustomPaginatorIntl extends MatPaginatorIntl {
   nextPageLabel = 'Siguiente Página';
@@ -52,7 +54,7 @@ export class ProveedoresComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
 
-  constructor(private modalService: NgbModal, public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl) {
+  constructor(private modalService: NgbModal, public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl,public eliminarCorrectamente: EliminarService) {
     this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
     //inicializacion
     this.titulo="";
@@ -150,16 +152,22 @@ export class ProveedoresComponent implements OnInit {
 
   //eliminar categoria
   public eliminarProveedor(idProveedor:number){
-    this.API.eliminarProveedor(idProveedor).subscribe(
-      (success:any)=>{
-        console.log("Exito"+success);
-        this.listarProveedores();
-      },
-      (error)=>{
-        console.log("Error"+ error);
-      }
-    );
-    this.modal.close();
+    let resultado: boolean = false;
+    resultado = this.eliminarCorrectamente.confirmarEliminacion();
+    if (resultado == true) {
+      this.API.eliminarProveedor(idProveedor).subscribe(
+        (success:any)=>{
+          console.log("Exito"+success);
+          this.listarProveedores();
+        },
+        (error)=>{
+          console.log("Error"+ error);
+        }
+      );
+    }
+    else{
+      console.log("Eliminación cancelada");
+    }
   }
 
   //listar categorias
