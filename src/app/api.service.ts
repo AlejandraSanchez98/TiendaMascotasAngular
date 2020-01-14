@@ -426,9 +426,6 @@ export class ApiService {
     return this.http.get('http://localhost:3000/accesos/listarAccesos',{headers:this.headers});
   }
 
-  public agregarAcceso(accion:string, idUsuario:number){
-    return this.http.post('http://localhost:3000/accesos/agregarAcceso',{accion,idUsuario},{headers:this.headers});
-  }
 
 
 

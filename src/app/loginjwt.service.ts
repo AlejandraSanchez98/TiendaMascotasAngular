@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http'
+import {HttpClient,  HttpHeaders} from '@angular/common/http';
 import { Router } from '@angular/router';
-import {ApiService} from './api.service';
 
 
 @Injectable({
@@ -11,10 +10,11 @@ export class LoginjwtService {
   public usuarioRegistrarSalida:string;
   public accion:string="";
   public usuario:number = 0;
+  public headers= new HttpHeaders();
 
 
   public api = 'http://localhost:3000/login/verificarUsuario'; //origen de donde se consumira la api
-  constructor(private http:HttpClient,private router:Router,public API:ApiService) { }
+  constructor(private http:HttpClient,private router:Router) { }
   public login(usuario: string, contrasenia: string) {
     this.http.post(this.api, {nombreUsuario: usuario, passwordUsuario:contrasenia})
     .subscribe((resp:any) => {
@@ -42,9 +42,9 @@ export class LoginjwtService {
   }
 
   public mostrarPorNombreUsuario(){
-    this.API.listarUsuariosPornombre(localStorage.getItem("nombreUsuario")).subscribe(
+    let nombreUsuario=localStorage.getItem("nombreUsuario");
+    this.http.post('http://localhost:3000/usuarios/listarUsuariosPornombre/',{nombreUsuario},{headers:this.headers}).subscribe(
       (success:any)=>{
-          this.usuarioRegistrarSalida=success.respuesta[0].tipoUsuario;
           this.usuario=success.respuesta[0].idUsuario;
       },
       (error)=>{
@@ -54,8 +54,9 @@ export class LoginjwtService {
   }
 
   agregarAccesoSalida(){
-    this.accion="Salida del sistema";
-    this.API.agregarAcceso(this.accion,this.usuario).subscribe(
+    let accion="Salida del sistema";
+    let idUsuario = this.usuario; //esta variable global contiene el id
+    this.http.post('http://localhost:3000/accesos/agregarAcceso',{accion,idUsuario},{headers:this.headers}).subscribe(
       (success:any)=>{
           console.log("exito: ",JSON.stringify(success.respuesta));
       },
@@ -64,5 +65,21 @@ export class LoginjwtService {
       }
     );
   }
+
+  agregarAccesoEntrada(){
+    let accion="Entro al sistema";
+    let idUsuario = this.usuario;
+
+    console.log("esto contiene id usuario: ",idUsuario);
+    this.http.post('http://localhost:3000/accesos/agregarAcceso',{accion,idUsuario},{headers:this.headers}).subscribe(
+      (success:any)=>{
+          console.log("exito: ",JSON.stringify(success.respuesta));
+      },
+      (error)=>{
+          alert("algo anda mal | "+ JSON.stringify(error));
+      }
+    );
+  }
+
 
 }
