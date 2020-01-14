@@ -1,0 +1,32 @@
+<div class="fondo">
+  <div class="main-div">
+    <mat-card class="card">
+      <mat-card-header>
+        <div mat-card-avatar class="header-image"></div>
+      </mat-card-header>
+      <img class="titulo" src="../../assets/img/titulo.png">
+      <mat-card-content>
+        <form class="form" style="margin-top: 40px;" [formGroup]="frmCambiarContrasenia">
+          <mat-form-field class="example-full-width">
+            <mat-icon matPrefix style="color:#152956">lock</mat-icon>
+            <input matInput type="text" placeholder="Ingrese la nueva Contraseña" formControlName="contrasenia">
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <mat-icon matPrefix style="color:#152956">offline_pin</mat-icon>
+            <input matInput type="text" placeholder="Confirmar Contraseña" formControlName="confirmarContrasenia">
+          </mat-form-field>
+          <label *ngIf="frmCambiarContrasenia.controls.confirmarContrasenia.invalid && frmCambiarContrasenia.controls.confirmarContrasenia.dirty">Es necesario confirmar la contraseña</label>
+
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-stroked-button [disabled]="frmCambiarContrasenia.invalid" class="btnIniciarSesion" (click)="cambiarPassword()" style="color: white;background-color: #19284c;"><b>CONTINUAR</b></button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <section class="example-section">
+    <button mat-raised-button color="primary" (click)="showProgressSpinner()">Spinner With Backdrop</button>
+  </section>
+  <app-template-progress-spinner id="spinnerLogin" class="example-margin" [color]="color" [mode]="mode" [value]="value" [backdropEnabled]="true" [positionGloballyCenter]="true"[displayProgressSpinner]="displayProgressSpinner">
+  </app-template-progress-spinner>
+</div>

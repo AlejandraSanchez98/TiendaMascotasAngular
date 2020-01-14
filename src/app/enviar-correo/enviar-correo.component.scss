@@ -1,5 +1,22 @@
+
+
+.logoPaginas{
+  margin: 10px;
+  display: table;
+  padding-top: 0px;
+  width: 160px;
+}
+
+.toolbarVendedor{
+  background-color: #ffffffc7;
+  width: 100%;
+  height: 8%;
+  position: fixed;
+  z-index: 100;
+}
+
 .fondo{
-  background: url('../../assets/img/fondo53.jpg');
+  background-color: rgba(247, 247, 247, 0.95);
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-position: top;
@@ -8,12 +25,12 @@
   width: 100vw;
 }
 .card {
-  max-width: 340px;
+  width: 415px;
   background-color: ghostwhite;
-  margin: 15px;
+  margin: 50px;
   padding: 20px;
   border-radius: 15px;
-  height: 550px;
+  height: 450px;
 }
 
 .header-image {
@@ -29,6 +46,7 @@
 .mat-card-avatar {
   border-radius: 20%;
 }
+
 
 .form {
   min-width: 150px;
@@ -82,8 +100,6 @@ label{
 input{
   color: #002235;
 }
-
-
 
 
 ::ng-deep .mat-focused {

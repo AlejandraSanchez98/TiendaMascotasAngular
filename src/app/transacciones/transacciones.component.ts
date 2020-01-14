@@ -66,7 +66,7 @@ export class TransaccionesComponent implements OnInit {
   @ViewChild('MatPaginatorVentas', {static: true}) paginatorVentas: MatPaginator;
   @ViewChild('MatPaginatorCompras', {static: true}) paginatorCompras: MatPaginator;
 
-  constructor(public API:ApiService,matPaginatorIntl: MatPaginatorIntl,private modalService: NgbModal,public router:Router,public verificarRolUsuario:LoginjwtService) {
+  constructor(public API:ApiService,matPaginatorIntl: MatPaginatorIntl,private modalService: NgbModal,public router:Router,public jwt:LoginjwtService) {
     this.usuarioEnSesion = window.localStorage.getItem('nombreUsuario');
     this.rolUsuario = window.localStorage.getItem('tipoUsuario');
     this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
@@ -221,14 +221,21 @@ export class TransaccionesComponent implements OnInit {
 
   //CERRAMOS SESION
   public cerrarSesion(){
-    localStorage.clear();
-    this.router.navigate(['/login']);
-  }
-
+    setTimeout(() => {
+      this.jwt.mostrarPorNombreUsuario();
+    },1000);
+    setTimeout(() => {
+      this.jwt.agregarAccesoSalida();
+    },2000);
+    setTimeout(() => {
+      localStorage.clear();
+      this.router.navigate(['/login']);
+    },1000);
+  }  
 
 
   ngOnInit() {
-    this.verificarRolUsuario.verificarAcceso();
+    //this.verificarRolUsuario.verificarAcceso();
     this.listarVentasSinDetalles();
     this.listarComprasSinDetalles();
   }

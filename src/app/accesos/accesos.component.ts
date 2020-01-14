@@ -49,7 +49,7 @@ export class AccesosComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
 
-  constructor(public API:ApiService,matPaginatorIntl: MatPaginatorIntl,public router:Router,public verificarRolUsuario:LoginjwtService) {
+  constructor(public API:ApiService,matPaginatorIntl: MatPaginatorIntl,public router:Router,public jwt:LoginjwtService) {
     this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
     this.usuarioEnSesion = window.localStorage.getItem('nombreUsuario');
     this.rolUsuario = window.localStorage.getItem('tipoUsuario');
@@ -85,13 +85,21 @@ export class AccesosComponent implements OnInit {
 
   //CERRAMOS SESION
   public cerrarSesion(){
-    localStorage.clear();
-    this.router.navigate(['/login']);
+    setTimeout(() => {
+      this.jwt.mostrarPorNombreUsuario();
+    },1000);
+    setTimeout(() => {
+      this.jwt.agregarAccesoSalida();
+    },2000);
+    setTimeout(() => {
+      localStorage.clear();
+      this.router.navigate(['/login']);
+    },1000);
   }
-
+  
 
   ngOnInit() {
-    this.verificarRolUsuario.verificarAcceso();
+    //this.verificarRolUsuario.verificarAcceso();
     this.listarAccesos();
   }
 

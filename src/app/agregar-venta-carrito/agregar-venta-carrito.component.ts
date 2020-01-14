@@ -8,6 +8,8 @@ import { IVentasCarrito } from '../api.service';
 import { IMetodosPagoCarrito } from '../api.service';
 import {IVentas} from '../api.service';
 import {PdfService} from '../pdf.service';
+import { LoginjwtService } from '../loginjwt.service';
+
 
 
 @Component({
@@ -39,7 +41,7 @@ export class AgregarVentaCarritoComponent implements OnInit {
 
 
 
-  constructor(public formBuilder: FormBuilder, public API: ApiService,public router:Router,public PDF: PdfService) {
+  constructor(public formBuilder: FormBuilder, public API: ApiService,public router:Router,public PDF: PdfService,public jwt:LoginjwtService) {
     this.usuarioPresente = 0;
     this.usuarioEnSesion = window.localStorage.getItem('nombreUsuario');
     this.rolUsuario = window.localStorage.getItem('tipoUsuario');
@@ -297,13 +299,6 @@ public limpiarFormulario(){
 }
 
 
-//CERRAMOS SESION
-public cerrarSesion(){
-  localStorage.clear();
-  this.router.navigate(['/login']);
-}
-
-
   public generarPDF(pdf:string){
     console.log("este es el parametro de tu pdf: ",pdf);
     this.PDF.generarPDF(pdf);
@@ -313,9 +308,22 @@ public cerrarSesion(){
 
   }
 
-
+  //CERRAMOS SESION
+  public cerrarSesion(){
+    setTimeout(() => {
+      this.jwt.mostrarPorNombreUsuario();
+    },1000);
+    setTimeout(() => {
+      this.jwt.agregarAccesoSalida();
+    },2000);
+    setTimeout(() => {
+      localStorage.clear();
+      this.router.navigate(['/login']);
+    },1000);
+  }
 
 ngOnInit() {
+    this.jwt.verificarAcceso();
     this.mostrarUsuarioEnSesion();
     this.listarMetodosPago();
     this.listarProductos();

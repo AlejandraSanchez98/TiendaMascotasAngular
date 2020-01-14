@@ -40,6 +40,8 @@ import {TransaccionesComponent } from './transacciones/transacciones.component';
 import {EnviosComponent } from './envios/envios.component';
 import {ComprasProveedorComponent } from './compras-proveedor/compras-proveedor.component';
 import {TemplateProgressSpinnerComponent } from './template-progress-spinner/template-progress-spinner.component';
+import { EnviarCorreoComponent } from './enviar-correo/enviar-correo.component';
+import { CambiarContraseniaComponent } from './cambiar-contrasenia/cambiar-contrasenia.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -56,7 +58,9 @@ import {TemplateProgressSpinnerComponent } from './template-progress-spinner/tem
     TransaccionesComponent,
     EnviosComponent,
     ComprasProveedorComponent,
-    TemplateProgressSpinnerComponent
+    TemplateProgressSpinnerComponent,
+    EnviarCorreoComponent,
+    CambiarContraseniaComponent
   ],
   imports: [
     CommonModule,

@@ -36,9 +36,9 @@
       </mat-list>
     </mat-sidenav>
     <mat-sidenav-content style="background-color: rgba(247, 247, 247, 0.95);">
-      <mat-toolbar class="toolbar">
+      <mat-toolbar class="toolbar" id="idmenu">
         <mat-toolbar-row>
-          <button mat-button (click)="sidenav.toggle()" style="font-size:20px; padding-top:5px;" matTooltip="Menú Principal">MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
+          <button mat-button (click)="sidenav.toggle()" style="font-size:20px; padding-top:5px;" matTooltip="Menú Principal" >MENÚ&nbsp;<mat-icon style="font-size:30px; padding-bottom: 36px;"> menu_open</mat-icon></button>
           <span class="example-spacer"></span>
           <h4 style="padding-top:5px; float: left;cursor:default;"><b>Bienvenido {{usuarioEnSesion}}</b></h4>
           <div ngbDropdown role="group">
@@ -50,6 +50,21 @@
           </div>
         </mat-toolbar-row>
       </mat-toolbar>
+      <mat-toolbar class="toolbarVendedor" id="logo">
+        <mat-toolbar-row>
+          <img class="logoPaginas" src="../../assets/img/logoPaginas.png" >
+          <span class="example-spacer"></span>
+          <h4 style="padding-top:5px; float: left;cursor:default;color: #002255d9"><b>Bienvenido {{usuarioEnSesion}}</b></h4>
+          <div ngbDropdown role="group">
+            <button mat-button ngbDropdownToggle style="margin-left: 20px;background-color: #466c90;" matTooltip="Cerrar Sesión"><mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">exit_to_app</mat-icon></button>
+            <div class="dropdown-menu" ngbDropdownMenu style="padding:20px">
+              <h6 ngbDropdownItem style="margin-top:20px;margin-bottom:20px;float: right;color: #15376b;cursor:default"><b>Tipo de usuario: </b> {{rolUsuario}}</h6>
+              <button ngbDropdownItem (click)=cerrarSesion() style="color: white;background-color:rgb(38, 83, 128);border-radius:3px;text-align:center">Cerrar Sesión</button>
+            </div>
+          </div>
+        </mat-toolbar-row>
+      </mat-toolbar>
+
       <br>
       <br>
       <mat-card class="cardTab">
@@ -68,7 +83,6 @@
                   </mat-select>
                 </mat-form-field>
                 <label *ngIf="frmVentas.controls.idCliente.invalid && frmVentas.controls.idCliente.dirty">Este campo es obligatorio</label>
-                <hr>
                 <mat-form-field style="font-size:15px;">
                   <mat-select formControlName="idProducto" placeholder="Producto">
                     <mat-option *ngFor="let i of arregloProductosSelect" [value]="i.idProducto">{{ i.nombreProducto }} </mat-option>
@@ -85,14 +99,12 @@
                   </button>
                   <label *ngIf="(frmVentas.controls.idProducto.invalid && frmVentas.controls.idProducto.dirty) || (frmVentas.controls.cantidadProductos.invalid && frmVentas.controls.cantidadProductos.dirty)">Este campo es obligatorio</label>
                 </div>
-                <hr>
                 <div style="display: grid;">
                   <mat-checkbox formControlName="idMetodoPago" *ngFor="let i of arregloMetodosPagoSelect" value="{{i.idMetodoPago}}" style="margin:10px;font-size: 15px;" (change)="agregarMetodosPago(i.idMetodoPago)">{{i.tipoPago}}</mat-checkbox>
                 </div>
                 <label *ngIf="frmVentas.controls.idMetodoPago.invalid && frmVentas.controls.idMetodoPago.dirty">Este campo es obligatorio</label>
-                <hr>
                 <mat-form-field class="example-full-width" style="font-size: 15px;">
-                  <input matInput placeholder="Pago" formControlName="pago" type="number" min="1" pattern="^[0-9]+" onkeypress="return event.charCode >= 48"  onkeyup="this.value = this.value.replace(/^0*/, '')" style="color: color: #002235;">
+                  <input matInput placeholder="Pago" formControlName="pago" type="number" min="1" pattern="^[0-9]+" onkeypress="return event.charCode >= 48"  onkeyup="this.value = this.value.replace(/^0*/, '')" style="color: #002235;">
                 </mat-form-field>
                 <label *ngIf="frmVentas.controls.pago.invalid && frmVentas.controls.pago.dirty">Este campo es obligatorio</label>
               </form>

@@ -175,13 +175,16 @@ export interface  IAccesos{
 })
 export class ApiService {
   //CABECERAS
-  public headers= new HttpHeaders({
-    'Authorization': 'Bearer ' + localStorage.getItem('token'), //token almacenado en LS
-    'Content-Type': 'application/json',//tipo de contenido JSON
-    'Accept': 'application/json' //acepta el cuerpo de la peticion JSON
-  });
+  public headers:any;
 
-  constructor(public http:HttpClient) { }
+  constructor(public http:HttpClient) {
+    console.log(localStorage.getItem('token'));
+    this.headers= new HttpHeaders({
+      'Authorization': 'Bearer ' + localStorage.getItem('token'), //token almacenado en LS
+      'Content-Type': 'application/json',//tipo de contenido JSON
+      'Accept': 'application/json' //acepta el cuerpo de la peticion JSON
+    });
+  }
 
   // METODOS QUE CONTIENEN LOS DIFERENTES TIPOS DE PETICIONES DEL MODULO DE CATEGORIA
   public listarCategorias(){

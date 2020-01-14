@@ -13,10 +13,14 @@ import { ReportesComponent } from './reportes/reportes.component';
 import { TransaccionesComponent } from './transacciones/transacciones.component';
 import { ComprasProveedorComponent } from './compras-proveedor/compras-proveedor.component';
 import { EnviosComponent } from './envios/envios.component';
+import { EnviarCorreoComponent } from './enviar-correo/enviar-correo.component';
+import { CambiarContraseniaComponent } from './cambiar-contrasenia/cambiar-contrasenia.component';
 import{AuthGuard}from './auth.guard';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
+  {path:'enviarCorreo',component:EnviarCorreoComponent},
+  {path:'cambiarPassword',component:CambiarContraseniaComponent},
   {path: 'productos', component:ProductosComponent, canActivate:[AuthGuard]},
   {path: 'proveedores', component:ProveedoresComponent, canActivate:[AuthGuard]},
   {path: 'clientes', component:ClientesComponent, canActivate:[AuthGuard]},

@@ -59,7 +59,7 @@ export class DevolucionesComponent implements OnInit {
   @ViewChild('MatPaginatorDevoluciones', { static: true }) paginatorDevoluciones: MatPaginator;
   @ViewChild('MatPaginatorTiposDevoluciones', { static: true }) paginatorTiposDevoluciones: MatPaginator;
 
-  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl,public eliminarCorrectamente: EliminarService,public verificarRolUsuario:LoginjwtService) {
+  constructor(private modalService: NgbModal,public router:Router,public formBuilder: FormBuilder, public API:ApiService,matPaginatorIntl: MatPaginatorIntl,public eliminarCorrectamente: EliminarService,public jwt:LoginjwtService) {
     this.usuarioEnSesion = window.localStorage.getItem('nombreUsuario');
     this.rolUsuario = window.localStorage.getItem('tipoUsuario');
     this.myCustomPaginatorIntl = <MyCustomPaginatorIntl>matPaginatorIntl;
@@ -273,16 +273,21 @@ export class DevolucionesComponent implements OnInit {
 
   //CERRAMOS SESION
   public cerrarSesion(){
-    localStorage.clear();
-    this.router.navigate(['/login']);
+    setTimeout(() => {
+      this.jwt.mostrarPorNombreUsuario();
+    },1000);
+    setTimeout(() => {
+      this.jwt.agregarAccesoSalida();
+    },2000);
+    setTimeout(() => {
+      localStorage.clear();
+      this.router.navigate(['/login']);
+    },1000);
   }
 
 
-
-
-
   ngOnInit() {
-    this.verificarRolUsuario.verificarAcceso();
+    //this.verificarRolUsuario.verificarAcceso();
     this.listarDevoluciones();
     this.listarClientes();
     this.listarTiposDevolucionesSelect();

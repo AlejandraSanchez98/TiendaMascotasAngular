@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
+import {Router} from '@angular/router';
 import {ApiService, IUsuarios, IProveedores} from '../api.service';
 import { IProductosCompras } from '../api.service';
 import { IComprasProveedor } from '../api.service';
+import { LoginjwtService } from '../loginjwt.service';
+
 
 
 @Component({
@@ -26,7 +29,7 @@ export class ComprasProveedorComponent implements OnInit {
   public montoAcumulado : number;
 
 
-  constructor(public formBuilder: FormBuilder, public API: ApiService) {
+  constructor(public formBuilder: FormBuilder,public router:Router, public API: ApiService, public jwt:LoginjwtService) {
     this.montoAcumulado = 0;
     this.frmCompras = this.formBuilder.group({
         idUsuario:["",Validators.required],
@@ -188,6 +191,20 @@ public limpiarFormulario(){
   this.arregloProductos = [];
 }
 
+
+  //CERRAMOS SESION
+  public cerrarSesion(){
+    setTimeout(() => {
+      this.jwt.mostrarPorNombreUsuario();
+    },1000);
+    setTimeout(() => {
+      this.jwt.agregarAccesoSalida();
+    },2000);
+    setTimeout(() => {
+      localStorage.clear();
+      this.router.navigate(['/login']);
+    },1000);
+  }
 
 
   ngOnInit() {

@@ -26,9 +26,11 @@ export class LoginComponent implements OnInit {
   public usuario:number = 0;
 
   constructor(public router:Router, private jwt: LoginjwtService,public API: ApiService ) {
+
     this.nombreUsuario=new FormControl("",Validators.required);
     this.password=new FormControl("",Validators.required);
     this.formValid=false;
+    localStorage.clear();
   }
 
   validarFormulario(){
@@ -45,8 +47,9 @@ export class LoginComponent implements OnInit {
     this.displayProgressSpinner = true;
     setTimeout(() => {
       this.displayProgressSpinner = false;
-    }, 3000);
+    },3000);
     var constrasenaEncriptada = sha256(this.password.value)
+    console.log("variable de usuario: ",this.nombreUsuario)
     this.jwt.login(this.nombreUsuario.value, constrasenaEncriptada);
     setTimeout(() => {
       this.mostrarPorNombreUsuario();
@@ -55,13 +58,14 @@ export class LoginComponent implements OnInit {
       window.localStorage.setItem("tipoUsuario",this.rolUsuario.toLowerCase());
       this.agregarAccesoEntrada();
 
-    }, 3000);
+    },3000);
   };
 
 
   public mostrarPorNombreUsuario(){
     this.API.listarUsuariosPornombre(localStorage.getItem("nombreUsuario")).subscribe(
       (success:any)=>{
+          console.log("success de listar por usuario: ",success);
           this.rolUsuario=success.respuesta[0].tipoUsuario;
           this.usuario=success.respuesta[0].idUsuario;
       },
