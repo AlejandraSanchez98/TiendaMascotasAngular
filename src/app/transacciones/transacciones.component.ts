@@ -221,17 +221,13 @@ export class TransaccionesComponent implements OnInit {
 
   //CERRAMOS SESION
   public cerrarSesion(){
-    setTimeout(() => {
-      this.jwt.mostrarPorNombreUsuario();
-    },1000);
-    setTimeout(() => {
-      this.jwt.agregarAccesoSalida();
-    },2000);
+    let accion:string="Salida del sistema";
+    this.jwt.registrarAccesoUsuario(accion, localStorage.getItem('nombreUsuario'));
     setTimeout(() => {
       localStorage.clear();
       this.router.navigate(['/login']);
-    },1000);
-  }  
+    },3000);
+  }
 
 
   ngOnInit() {

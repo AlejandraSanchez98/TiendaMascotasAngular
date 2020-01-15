@@ -7,20 +7,19 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class LoginjwtService {
-  public usuarioRegistrarSalida:string;
-  public accion:string="";
-  public usuario:number = 0;
   public headers= new HttpHeaders();
 
 
   public api = 'http://localhost:3000/login/verificarUsuario'; //origen de donde se consumira la api
   constructor(private http:HttpClient,private router:Router) { }
   public login(usuario: string, contrasenia: string) {
+    let accion:string ="Entrada al sistema";
     this.http.post(this.api, {nombreUsuario: usuario, passwordUsuario:contrasenia})
     .subscribe((resp:any) => {
       if(resp.estatus > 0){
-        window.localStorage.setItem("nombreUsuario",usuario.toLowerCase());//almacenamos variables en LS
         localStorage.setItem('token',resp.respuesta);
+        window.localStorage.setItem("nombreUsuario",usuario.toLowerCase());//almacenamos variables en LS
+        this.registrarAccesoUsuario(accion,usuario)
         setTimeout(() => {
           this.router.navigate(['/carrito']);
         },3000);
@@ -41,11 +40,12 @@ export class LoginjwtService {
     }
   }
 
-  public mostrarPorNombreUsuario(){
-    let nombreUsuario=localStorage.getItem("nombreUsuario");
+  public registrarAccesoUsuario(accion:string, nombreUsuario: string){
     this.http.post('http://localhost:3000/usuarios/listarUsuariosPornombre/',{nombreUsuario},{headers:this.headers}).subscribe(
       (success:any)=>{
-          this.usuario=success.respuesta[0].idUsuario;
+        let usuario: number = 0;
+        usuario=success.respuesta[0].idUsuario;
+        this.agregarAcceso(accion,usuario)
       },
       (error)=>{
         console.log("algo ocurrio: ",error)
@@ -53,9 +53,7 @@ export class LoginjwtService {
     );
   }
 
-  agregarAccesoSalida(){
-    let accion="Salida del sistema";
-    let idUsuario = this.usuario; //esta variable global contiene el id
+  public agregarAcceso(accion:string,idUsuario:number){
     this.http.post('http://localhost:3000/accesos/agregarAcceso',{accion,idUsuario},{headers:this.headers}).subscribe(
       (success:any)=>{
           console.log("exito: ",JSON.stringify(success.respuesta));
@@ -65,21 +63,5 @@ export class LoginjwtService {
       }
     );
   }
-
-  agregarAccesoEntrada(){
-    let accion="Entro al sistema";
-    let idUsuario = this.usuario;
-
-    console.log("esto contiene id usuario: ",idUsuario);
-    this.http.post('http://localhost:3000/accesos/agregarAcceso',{accion,idUsuario},{headers:this.headers}).subscribe(
-      (success:any)=>{
-          console.log("exito: ",JSON.stringify(success.respuesta));
-      },
-      (error)=>{
-          alert("algo anda mal | "+ JSON.stringify(error));
-      }
-    );
-  }
-
 
 }

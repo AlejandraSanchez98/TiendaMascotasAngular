@@ -13,7 +13,9 @@ import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 export class CambiarContraseniaComponent implements OnInit {
   public frmCambiarContrasenia:FormGroup;
   public formValid:Boolean=false;
+  public contraseniaIgual:Boolean;
   constructor(public formBuilder: FormBuilder,private router:Router,public cambiarContrasenia:CambiarContraseniaService, public activateRoute:ActivatedRoute) {
+    this.contraseniaIgual = false;
     this.verificarToken();
     this.frmCambiarContrasenia=this.formBuilder.group({
       contrasenia:["",Validators.required],
@@ -21,8 +23,22 @@ export class CambiarContraseniaComponent implements OnInit {
     })
    }
 
-  public verificarToken(){
-    this.activateRoute.queryParams.subscribe((params: any)=>{
+   public confirmarPassword(event:any){
+     console.log("entro a conicidencia",event);
+     let  contrasenia = this.frmCambiarContrasenia.get('contrasenia').value;
+     let  confirmarContrasenia = this.frmCambiarContrasenia.get('confirmarContrasenia').value;
+     if (confirmarContrasenia != contrasenia) {
+       this.contraseniaIgual = false;
+       return this.contraseniaIgual;
+     }else{
+       this.contraseniaIgual = true;
+       return this.contraseniaIgual;
+     }
+
+   }
+
+   public verificarToken(){
+     this.activateRoute.queryParams.subscribe((params: any)=>{
       let token: string;
       token=params['token'];
       this.cambiarContrasenia.verificarToken(token).subscribe(

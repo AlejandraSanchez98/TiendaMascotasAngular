@@ -57,7 +57,6 @@ export class LoginComponent implements OnInit {
     },1000);
     setTimeout(() => {
       window.localStorage.setItem("tipoUsuario",this.rolUsuario.toLowerCase());
-      this.jwt.agregarAccesoEntrada();
 
     },3000);
   };
